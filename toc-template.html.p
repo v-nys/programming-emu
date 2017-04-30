@@ -1,3 +1,4 @@
+◊(local-require (only-in racket/function curry))
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,6 +7,8 @@
 </head>
 <body>
 ◊(->html doc)
-◊(next* here)
+<ul>
+◊(map (compose1 (curry format "<li>~a</li>") (curry select 'h1)) (siblings here))
+</ul>
 </body>
 </html>
