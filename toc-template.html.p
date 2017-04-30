@@ -8,7 +8,7 @@
 <body>
 ◊(->html doc)
 <ul>
-◊(map (compose1 (curry format "<li>~a</li>") (curry select 'h1)) (siblings here))
+◊(map (compose (curry format "<a href='~a'><li>~a</li></a>") (λ (e) (values e (select 'h1 e)))) (siblings here))
 </ul>
 </body>
 </html>
