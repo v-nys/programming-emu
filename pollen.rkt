@@ -1,5 +1,9 @@
 #lang racket/base
-(require pollen/core pollen/decode pollen/misc/tutorial pollen/pagetree txexpr)
+(require pollen/core
+         pollen/decode
+         pollen/misc/tutorial
+         pollen/pagetree
+         txexpr)
 (define (root . elements)
   (txexpr 'root empty (decode-elements elements
                                        #:txexpr-elements-proc decode-paragraphs
@@ -12,7 +16,7 @@
 ;(define (toc) (txexpr 'toc empty (next* 'toc.html (get-pagetree "index.ptree"))))
 (define (toc)
   (txexpr 'toc empty
-          (map (λ (fn) (txexpr 'tocentry empty (list fn)))
+          (map (λ (fn) (txexpr 'tocentry empty (list fn (select 'h1 fn))))
                (next* 'toc.html (get-pagetree "index.ptree")))))
 (provide toc)
 
