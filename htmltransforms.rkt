@@ -3,7 +3,7 @@
 
 (define (tocentry->li e)
   (match e
-    [(list-rest 'tocentry fn title)
-     (list 'li fn title)]
+    [(list 'tocentry fn title)
+     `(li (a ((href ,(symbol->string fn))) ,title))]
     [_ e]))
 (provide tocentry->li)
