@@ -1,3 +1,5 @@
+◊(local-require txexpr
+                "htmltransforms.rkt")
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,9 +7,10 @@
 <title>◊(select 'h1 doc)</title>
 </head>
 <body>
-◊(->html doc #:splice? #t)
-◊(local-require "htmltransforms.rkt")
-◊(when (select 'toc doc)
-   (format "<ul>~a</ul>" (->html (map tocentry->li (select* 'toc doc)))))
+◊(define-values (no-toc tocs)
+   (splitf-txexpr doc (λ (e) (and (txexpr? e) (equal? 'toc (get-tag e))))))
+◊(->html no-toc #:splice? #t)
+◊(when (not (null? tocs))
+   (map (λ (toc) (format "<ul>~a</ul>" (->html (map tocentry->li (get-elements toc))))) tocs))
 </body>
 </html>
