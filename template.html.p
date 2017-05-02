@@ -5,6 +5,7 @@
 <head>
 <meta charset="utf-8">
 <title>◊(select 'h1 doc)</title>
+<link rel="stylesheet" type="text/css" href="common.css" />
 </head>
 <body>
 ◊(define-values (no-toc tocs)
