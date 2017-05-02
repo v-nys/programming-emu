@@ -11,9 +11,11 @@
 (provide root)
 
 (define (toc)
-  (txexpr 'toc empty
-          (map (λ (fn) (txexpr 'tocentry empty (list fn (select 'h1 fn))))
-               (next* 'toc.html (get-pagetree "index.ptree")))))
+  (txexpr
+   'ul
+   '((class "toc"))
+   (map (λ (pn) `(li (a ((href ,(symbol->string pn))) ,(select 'h1 pn))))
+        (next* 'toc.html (get-pagetree "index.ptree")))))
 (provide toc)
 
 (define (todo . elements)

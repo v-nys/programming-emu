@@ -1,5 +1,3 @@
-◊(local-require txexpr
-                "htmltransforms.rkt")
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,10 +6,6 @@
 <link rel="stylesheet" type="text/css" href="common.css" />
 </head>
 <body>
-◊(define-values (no-toc tocs)
-   (splitf-txexpr doc (λ (e) (and (txexpr? e) (equal? 'toc (get-tag e))))))
-◊(->html no-toc #:splice? #t)
-◊(when (not (null? tocs))
-   (map (λ (toc) (format "<ul>~a</ul>" (->html (map tocentry->li (get-elements toc))))) tocs))
+◊(->html doc #:splice? #t)
 </body>
 </html>
