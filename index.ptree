@@ -3,5 +3,6 @@ toc.html
 introduction.html
 ◊parenlog/parenlog.html{
  parenlog/introduction.html
+ parenlog/predicates_variables_and_unification.html
 }
 glossary.html
