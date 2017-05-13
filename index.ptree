@@ -1,8 +1,6 @@
 #lang pollen
-toc.html
+index.html
 introduction.html
-◊parenlog/parenlog.html{
- parenlog/introduction.html
- parenlog/predicates_variables_and_unification.html
-}
+◊(for/list ([fn (cadr (dynamic-require "parenlog/parenlog.ptree" 'doc))])
+   (string->symbol (string-append "parenlog/" (symbol->string fn))))
 glossary.html

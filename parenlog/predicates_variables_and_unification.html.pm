@@ -1,6 +1,6 @@
 #lang pollen
-◊h1{Variables, predicates and unification}
-◊h2{Logic variables vs. Racket variables}
+◊h2{Variables, predicates and unification}
+◊h3{Logic variables vs. Racket variables}
 Variables in a logic programming language are different from variables in Racket (and most languages). They are more like unknowns in mathematics: they represent one, immutable value, but that value may not yet be known where the variable is used. Consider again our theory from before:◊includecode[#:lang "prolog" "theory.pl" "theory.pl"]
 
 In Prolog, we could write the query likes(X,math) and learn that the query is successful for X equal to eratosthenes, but we could not write something like ◊code{likes(X,math), X = ares}◊todo{Implement cross-referencing}. Or rather, we could, but Prolog will not yield a single answer. Once a value has been assigned to a variable, it cannot be changed until Prolog backtracks. At that point, it will be as if said variable was never assigned in the first place.

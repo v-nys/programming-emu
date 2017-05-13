@@ -1,2 +1,2 @@
 #lang pollen
-◊h1{Glossary}
+◊h2{Glossary}
