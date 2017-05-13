@@ -7,7 +7,7 @@
 ◊(define fuchsia "#cc0066")
 ◊(define mint-green "#00cc66")
 ◊(define orange "#ff6600")
-◊(define regular-link-color fuchsia)
+◊(define regular-link-color mint-green)
 ◊(require (only-in racket/string string-join))
 
 ◊(define fontfacestr #<<HERE
