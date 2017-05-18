@@ -7,7 +7,7 @@
 ◊(define fuchsia "#cc0066")
 ◊(define mint-green "#00cc66")
 ◊(define orange "#ff6600")
-◊(define regular-link-color mint-green)
+◊(define regular-link-color orange)
 ◊(require (only-in racket/string string-join))
 
 ◊(define fontfacestr #<<HERE
@@ -16,7 +16,7 @@ font-family: ~a;
 src: url(/static/~a.woff);
 }
 HERE
-)
+   )
 ◊(string-join
   (for/list ([font '(fanwood junction lindenhill prociono leaguespartan raleway)])
     (format fontfacestr (capitalize (symbol->string font)) font))
@@ -64,7 +64,7 @@ font-style: italic;
 padding: 0;
 }
 
-.todonote {
+.todonote, .aside {
 position: absolute;
 right: ◊(/ todo-margin-percentage 2)%;
 width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
@@ -73,9 +73,13 @@ width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
 .toc li {
 font-family: Junction;
 font-variant: small-caps;
-list-style-type: none;
+list-style-position: inside;
 margin: 0;
 padding: 0;
+}
+
+ul.toc li {
+list-style-type: none;
 }
 
 .toc li a {

@@ -131,6 +131,10 @@
   (txexpr 'span '((class "todonote")) elements))
 (provide todo)
 
+(define (aside . elements)
+  (txexpr 'span '((class "aside")) elements))
+(provide aside)
+
 (define (work . elements)
   (txexpr 'span '((class "work")) elements))
 (provide work)

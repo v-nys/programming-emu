@@ -5,7 +5,7 @@
 ◊caveat{The original code and my own reimplementation are LGPL code.}
 
 ◊h3{Table of contents}
-◊toc[#:ptree "parenlog.ptree" #:depth 2 #:exceptions '(parenlog.html)]
+◊toc[#:ptree "parenlog.ptree" #:depth 2 #:exceptions '(parenlog.html) #:ordered? #t]
 
 ◊;TODO
 ◊;Resolution and variable renaming
