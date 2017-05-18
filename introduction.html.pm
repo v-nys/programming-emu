@@ -1,4 +1,25 @@
 #lang pollen
+◊;{MIT License
+
+Copyright (c) 2017 Vincent Nys
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.}
 ◊h2{Introduction}
 I'm a poor ◊a[#:href "http://www.racket-lang.org"]{Racket} programmer. If you give me an end-to-end task, I can probably write code that accomplishes it, but said code may be orders of magnitude longer and slower than it needs to be. I can figure out what I need to do at compile time and what I need to do at runtime, but often through trial and error. I only have ◊a[#:href "https://github.com/v-nys/cclp"]{one moderately large Racket codebase} and I'm extremely embarrassed to point you to it. Those are the facts, so what to do?
 
