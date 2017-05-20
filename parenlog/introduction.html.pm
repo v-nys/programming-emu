@@ -29,19 +29,7 @@ Let's step it up. Suppose we have the following knowledge in addition to what we
 
 Now, you'll agree that Eratosthenes, Pythagoras and Athena are all friends. Again, so will Prolog. And you (and Prolog) will agree that Ares and Athena are friends who should be feared. Or that every one of these individuals has a friend who should be feared. And all you have to do is write down this knowledge (the “◊glossaryterm{theory}”) using the following syntax:
 
-friends(X,Y) :- likes(X,Z), likes(Y,Z).◊todo{Add syntax highlighting}
-likes(ares,battle).
-likes(athena,battle).
-feared(X) :- likes(X,battle).
-part(primes,math).
-part(triangles,math).
-part(logic,math).
-likes(eratosthenes,primes).
-likes(pythagoras,triangles).
-likes(athena,logic).
-likes(X,Y) :- part(Z,Y), likes(X,Z).
-likes(father(athena),lightning).
-greek(X).
+◊includecode["code/theory.pl" #:lang "prolog"]
 
 Pretty straightforward, right? There are only a few bits of syntax worth pointing out. First, ◊predicate{friends}, ◊predicate{likes},... are all ◊glossaryterm{predicate}s. They are ◊glossaryterm[#:canonical "term"]{terms} which provide information about other terms which are ◊glossaryterm{logic variable}s (which begin with an upper case letter), ◊glossaryterm[#:canonical "atom"]{atoms} (which begin with a lower case letter), or ◊glossaryterm[#:canonical "compound"]{compounds} (which begin with a lower case letter and have other terms as their arguments, so they look like predicates, but predicates only occur in the outermost syntactic position as far as we're concerned). That information can take the form of a ◊glossaryterm{fact}, which is just "raw" information or the form of a ◊glossaryterm{rule}, which is knowledge that can be used in a deduction. Facts are written as predicates immediately followed by a period (e.g. likes(ares,battle).) and rules are written as one predicate, followed by the ◊glossaryterm{implication} symbol ◊shortcode{:-}, followed by a non-zero number of predicates again.
 

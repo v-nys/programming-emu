@@ -27,6 +27,7 @@
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
+         racket/file
          racket/function
          racket/logging
          racket/match
@@ -168,6 +169,10 @@
 (define (capitalize str)
   (regexp-replace #rx"^." str string-upcase))
 (provide capitalize)
+
+(define (includecode path #:lang [lang "racket"] #:filename [fn ""])
+  (highlight lang (file->string path #:mode 'text)))
+(provide includecode)
 
 (define-logger emu)
 (define err-receiver (make-log-receiver emu-logger 'debug))

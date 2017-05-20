@@ -1,7 +1,7 @@
 #lang pollen
 ◊h2{Variables, predicates and unification}
 ◊h3{Logic variables vs. Racket variables}
-Variables in a logic programming language are different from variables in Racket (and most languages). They are more like unknowns in mathematics: they represent one, immutable value, but that value may not yet be known where the variable is used. Consider again our theory from before:◊includecode[#:lang "prolog" "theory.pl" "theory.pl"]
+Variables in a logic programming language are different from variables in Racket (and most languages). They are more like unknowns in mathematics: they represent one, immutable value, but that value may not yet be known where the variable is used. Consider again our theory from before: ◊includecode["code/theory.pl" #:lang "prolog"]
 
 In Prolog, we could write the query likes(X,math) and learn that the query is successful for X equal to eratosthenes, but we could not write something like ◊code{likes(X,math), X = ares}◊todo{Implement cross-referencing}. Or rather, we could, but Prolog will not yield a single answer. Once a value has been assigned to a variable, it cannot be changed until Prolog backtracks. At that point, it will be as if said variable was never assigned in the first place.
 
@@ -15,13 +15,12 @@ Here's a suggested function signature:
 ;; S-expression -> S-expression -> environment -> (or/c environment #f)
 
 Here are some ◊note{tests} for a function with said signature. I would advise you to read these first, as they can clarify some of the expected behavior. There's one case in which a variable is used on the left-hand side and on the right-hand side. That's something we'll typically avoid, but it still makes for a useful test case.
-◊includecode["unify-tests.rkt" "parenlog.rkt"]
+◊includecode["code/unify-tests.rkt" #:lang "racket"]
 
-For all you eager down-scrollers, I've blurred out my own code. Click the flashlight icon to reveal the code.
-◊todo{What it says, again.}
-◊includecode["unify.rkt" "parenlog.rkt"]
+Here's my code.
+◊includecode["code/unify.rkt" #:lang "racket"]
 
 To be fair, I rebuilt Parenlog twice. Once with some peeking at the original code, once from scratch. My first implementation of unification was a much clunkier near-transliteration of the Martelli-Montanari algorithm. The version just above is cleaner because of the insights I gained from doing this the first time.
 
 Finally, here's Jay McCarthy's code.
-◊includecode["unify-jay.rkt" "parenlog.rkt"]
+◊includecode["code/unify-jay.rkt" #:lang "racket"]
