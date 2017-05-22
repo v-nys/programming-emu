@@ -19,7 +19,6 @@
 ;; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
-
 #lang racket/base
 (require (only-in control while)
          pollen/core
@@ -27,16 +26,49 @@
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
+         pollen/unstable/pygments
          racket/file
          racket/function
          racket/logging
          racket/match
          racket/string
+         scribble/xref
+         setup/xref
+         sugar/coerce
          txexpr)
+
+(provide highlight)
+
+(define docs-class "docs")
+(define (docs module-path export . xs-in)
+  (log-emu-debug (format "export is: ~s\n" export))
+  (define xref (load-collections-xref))
+  (define linkname (if (null? xs-in) (list export) xs-in))
+  (define tag (xref-binding->definition-tag xref (list module-path (->symbol export)) #f))
+  (define-values (path url-tag)
+    (xref-tag->path+anchor xref tag #:external-root-url "http://pkg-build.racket-lang.org/doc/"))
+  `(a ((href ,(format "~a#~a" path url-tag)) (class ,docs-class)) ,@linkname))
+
+(define (link-to-docs tx)
+  (cond [(and (eq? (get-tag tx) 'span)
+              (attrs-have-key? (get-attrs tx) 'class)
+              (member (attr-ref tx 'class) '("k" "nb")))
+         (log-emu-debug (format "export argument is: ~s" (string-join (get-elements tx) "")))
+         (log-emu-debug (format "remaining arguments are: ~s" (cdr (get-elements tx))))
+         (docs 'racket (string-join (get-elements tx) ""))]
+        [else tx]))
+
 (define (root . elements)
-  (txexpr 'root empty (decode-elements elements
-                                       #:txexpr-elements-proc decode-paragraphs
-                                       #:string-proc (compose1 smart-quotes smart-dashes))))
+  (let ([decoded
+         (txexpr 'root empty
+                 (decode-elements elements
+                                  #:txexpr-elements-proc decode-paragraphs
+                                  #:inline-txexpr-proc link-to-docs
+                                  #:string-proc (compose1 smart-quotes smart-dashes)
+                                  #:exclude-tags '(style script)))])
+    (log-emu-debug (format "undecoded root is: ~s\n" (txexpr 'root empty elements)))
+    (log-emu-debug (format "decoded root is: ~s\n" decoded))
+    decoded))
 (provide root)
 
 (define (toc #:depth [depth 1]
