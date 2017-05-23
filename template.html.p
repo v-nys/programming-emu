@@ -24,7 +24,7 @@ SOFTWARE.}
 <head>
 <meta charset="utf-8">
 <title>◊(select 'h2 doc)</title>
-<link rel="stylesheet" type="text/css" href="/common.css" />
+<link rel="stylesheet" type="text/css" href="/static/common.css" />
 </head>
 <body>
 ◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="/◊(previous here)"></a>}
