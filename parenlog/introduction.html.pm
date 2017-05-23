@@ -37,15 +37,19 @@ Your typical Prolog program is also different from most programs in that, when y
 
 Prolog will answer these queries by providing a ◊glossaryterm{substitution} for your query: an assignment of a value to each input variable. For the three individuals who like math, you might get:
 
-X = eratosthenes
-Y = pythagoras
+◊highlight['prolog]{
+X = eratosthenes,
+Y = pythagoras,
 Z = athena
+}
 
 However, that won't be the only answer you'll get, nor will it be the first. The first answer you'll get is actually a little tricky:
 
-X = eratosthenes
-Y = eratosthenes
+◊highlight['prolog]{
+X = eratosthenes,
+Y = eratosthenes,
 Z = eratosthenes
+}
 
 This is because, strictly according to the knowledge in the system, this is correct. We haven't specified that X, Y and Z need to be different values. And the reason we get the value ◊shortcode{eratosthenes} is because the knowledge base is ordered: no one explicitly likes math, so Prolog first looks for someone who likes some part of math. And the first part of math it finds is prime numbers. And the person who likes primes is Eratosthenes. There's a somewhat more technical explanation, but I'll refer you to the mechanisms section if you're interested.◊todo{Mechanisms section with grammar, unification, resolution, rule application, backtracking} You will ◊em{also} get the more intuitive answer, though. This is because Prolog uses a technique called ◊mechanism{backtracking}. Backtracking means that, once we cannot continue a derivation (because we have an answer or because no rules apply any more), Prolog will undo the most recent step in the derivation and try to come up with a new solution. If there are no more ways to come up with a new solution, it will undo the second most recent step, and so on. Again, look at the mechanisms section if you want to know more details.
 

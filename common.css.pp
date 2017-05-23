@@ -28,8 +28,12 @@ SOFTWARE.}
 ◊(define fuchsia "#cc0066")
 ◊(define mint-green "#00cc66")
 ◊(define orange "#ff6600")
-◊(define regular-link-color orange)
+◊(define regular-link-color fuchsia)
 ◊(require (only-in racket/string string-join))
+
+.linenos {
+display: none;
+}
 
 ◊(define fontfacestr #<<HERE
 @font-face {
