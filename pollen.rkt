@@ -26,10 +26,8 @@
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
-         pollen/unstable/pygments
+         (only-in pollen/unstable/pygments highlight)
          racket/file
-         racket/function
-         racket/logging
          racket/match
          racket/string
          scribble/xref
