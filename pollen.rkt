@@ -48,6 +48,50 @@
     decoded))
 (provide root)
 
+;                                          
+;                                          
+;                                          
+;                                          
+;     ;                                    
+;     ;                                    
+;   ;;;;;;      ;;;;;     ;;;; ;    ;;;;;  
+;     ;        ;    ;;   ;    ;;  ;;     ; 
+;     ;              ;  ;      ;  ;        
+;     ;         ;;;;;;  ;      ;  ;;       
+;     ;       ;;     ;  ;      ;   ;;;;;;  
+;     ;       ;      ;  ;      ;        ;; 
+;     ;       ;     ;;  ;      ;         ; 
+;     ;       ;;   ;;;   ;    ;;  ;     ;; 
+;      ;;;     ;;;;; ;    ;;;; ;   ;;;;;   
+;                              ;           
+;                        ;    ;            
+;                         ;;;;             
+;                                          
+
+(define (aside . elements)
+  (txexpr 'span '((class "aside")) elements))
+(provide aside)
+
+(define (capitalize str)
+  (regexp-replace #rx"^." str string-upcase))
+(provide capitalize)
+
+(define (caveat . elements)
+  (txexpr 'p '((class "warning")) elements))
+(provide caveat)
+
+(define (code . elements)
+  (txexpr 'span '((class "code")) elements))
+(provide code)
+
+(define (includecode path #:lang [lang "racket"] #:filename [fn ""])
+  (highlight lang (file->string path #:mode 'text)))
+(provide includecode)
+
+(define (predicate . elements)
+  (apply code elements))
+(provide predicate)
+
 (define (toc #:depth [depth 1]
              #:exceptions [exceptions '(index.html)]
              #:ptree [ptree-fn "index.ptree"]
@@ -62,28 +106,12 @@
 (provide toc)
 
 (define (todo . elements)
-  (txexpr 'span '((class "todonote")) elements))
+  (txexpr 'span '((class "todonote")) (append (list "TODO: ") elements)))
 (provide todo)
-
-(define (aside . elements)
-  (txexpr 'span '((class "aside")) elements))
-(provide aside)
 
 (define (work . elements)
   (txexpr 'span '((class "work")) elements))
 (provide work)
-
-(define (caveat . elements)
-  (txexpr 'p '((class "warning")) elements))
-(provide caveat)
-
-(define (capitalize str)
-  (regexp-replace #rx"^." str string-upcase))
-(provide capitalize)
-
-(define (includecode path #:lang [lang "racket"] #:filename [fn ""])
-  (highlight lang (file->string path #:mode 'text)))
-(provide includecode)
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:

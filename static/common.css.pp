@@ -68,10 +68,18 @@ margin: 0;
 padding: 0;
 }
 
+span.code {
+background-color: #cccccc;
+}
+
 .aside {
 position: absolute;
 right: ◊(/ todo-margin-percentage 2)%;
 width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
+}
+
+.code {
+font-family: 'Fira Mono';
 }
 
 .linenos {
@@ -87,6 +95,12 @@ width: ◊(/ content-margin-percentage 2)%;
 
 .toc {
 padding: 0;
+}
+
+.todonote {
+position: absolute;
+right: ◊(/ todo-margin-percentage 2)%;
+width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
 }
 
 .warning {
@@ -117,5 +131,6 @@ line-height: 150%;
 }
 
 pre {
-font-family: 'Fira Mono';
+border-left: 1px dashed;
+padding-left: 1em;
 }
