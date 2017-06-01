@@ -27,6 +27,7 @@ SOFTWARE.}
 ◊(define todo-margin-percentage 2)
 ◊(define body-text-color "#333333")
 ◊(define aqua "#009999")
+◊(define codefont "Fira Mono")
 ◊(define forest-green "#009933")
 ◊(define fuchsia "#cc0066")
 ◊(define mint-green "#00cc66")
@@ -79,11 +80,16 @@ width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
 }
 
 .code {
-font-family: 'Fira Mono';
+font-family: ◊codefont;
 }
 
 .linenos {
 display: none;
+}
+
+.output {
+font-family: ◊codefont;
+color: ◊fuchsia;
 }
 
 .pageturn {

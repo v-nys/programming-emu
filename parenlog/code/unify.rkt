@@ -10,6 +10,7 @@
 (define (unify se1 se2 env)
   (match* (se1 se2)
     [((? list?) (? list?))
+     #:when (= (length se1) (length se2))
      (foldl (λ (e1 e2 acc) (and acc (unify e1 e2 acc))) env se1 se2)]
     [(x y)
      #:when (unbound-variable? x env)

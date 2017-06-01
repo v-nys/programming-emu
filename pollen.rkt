@@ -84,6 +84,10 @@
   (txexpr 'span '((class "code")) elements))
 (provide code)
 
+(define (output . elements)
+  (txexpr 'div '((class "output")) elements))
+(provide output)
+
 (define (includecode path #:lang [lang "racket"] #:filename [fn ""])
   (highlight lang (file->string path #:mode 'text)))
 (provide includecode)
