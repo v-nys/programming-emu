@@ -2,7 +2,7 @@
 ◊h2{Introduction to Parenlog and Prolog}
 Parenlog is a logic programming language. Logic programming is its own programming paradigm, like object-oriented or functional programming. There was a time when people thought it would become just as widespread as those other paradigms, but the fact is that it did not. Therefore, I won't assume that you have any experience with it. Don't be fooled into thinking that logic programming is not relevant, however. On the one hand, there are large, industrial codebases that rely on logic programming. On the other, "plain old" logic programming has inspired many more specialized programming styles, such as constraint programming. It's worth having in your toolkit, as it can make the right problems far easier to solve.
 
-The mother of all logic programming languages is ◊link{Prolog}. What's very specific to Prolog is that you, as a programmer, encode knowledge much more directly than you would in most languages. And knowledge, unlike your typical imperative instructions, is flexible. It works in several directions, so to speak. Let's say you are given the following bits of information:
+The mother of all logic programming languages is ◊a[#:href "https://en.wikipedia.org/wiki/Prolog"]{Prolog}. What's very specific to Prolog is that you, as a programmer, encode knowledge much more directly than you would in most languages. And knowledge, unlike your typical imperative instructions, is flexible. It works in several directions, so to speak. Let's say you are given the following bits of information:
 
 ◊ol{
  ◊li{If two people like the same thing, they are friends.}
