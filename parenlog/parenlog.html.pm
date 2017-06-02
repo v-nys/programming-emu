@@ -5,11 +5,9 @@
 ◊caveat{The original code and my own reimplementation are LGPL code.}
 
 ◊h3{Table of contents}
-◊toc[#:ptree "parenlog.ptree" #:depth 2 #:exceptions '(parenlog.html) #:ordered? #t]
+◊toc[#:ptree "parenlog.ptree" #:depth 2 #:exceptions '(parenlog.html figures/resolution_without_renaming.svg figures/resolution_without_renaming_with_clash.svg figures/resolution_flow.svg) #:ordered? #t]
 
 ◊;TODO
-◊;Resolution and variable renaming
-◊;Generating answers to a top-level query
 ◊;Interacting with Racket code
 ◊;Standalone language
 ◊;Syntax highlighting
