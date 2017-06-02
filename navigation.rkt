@@ -1,5 +1,9 @@
 #lang racket
-(require pollen/core pollen/pagetree txexpr)
+(require pollen/core
+         pollen/pagetree
+         pollen/setup
+         sugar/coerce
+         txexpr)
 
 (define (ptree->html-list ptree ol?) (ptree->html-list/aux ptree ol? select))
 (define (ptree->html-list/aux ptree ol? select) ; for easy mocking
@@ -9,8 +13,8 @@
    (foldr
     (λ (t acc)
       (if (symbol? t)
-          (cons `(li (a ((href ,(string-append "/" (symbol->string t)))) ,(let ([h2 (select 'h2 t)]) (or h2 t)))) acc)
-          (cons `(li (a ((href ,(string-append "/" (symbol->string (car t))))) ,(let ([h2 (select 'h2 (car t))]) (or h2 (car t))))) (cons `(li ,(ptree->html-list/aux t ol? select)) acc))))
+          (cons `(li (a ((href ,(local-absolute (symbol->string t)))) ,(let ([h2 (select 'h2 t)]) (or h2 t)))) acc)
+          (cons `(li (a ((href ,(local-absolute (symbol->string (car t))))) ,(let ([h2 (select 'h2 (car t))]) (or h2 (car t))))) (cons `(li ,(ptree->html-list/aux t ol? select)) acc))))
     empty
     (cdr ptree))))
 (module+ test
@@ -18,13 +22,13 @@
     (check-equal?
      (ptree->html-list/aux '(pagetree-root (mama (son grandson1 grandson2) (daughter granddaughter1 granddaughter2)) uncle) #t select)
      '(ol ((class "toc"))
-          (li (a ((href "/mama")) mama))
+          (li (a ((href "mama")) mama))
           (li (ol
-               (li (a ((href "/son")) son))
-               (li (ol (li (a ((href "/grandson1")) grandson1)) (li (a ((href "/grandson2")) grandson2))))
-               (li (a ((href "/daughter")) daughter))
-               (li (ol (li (a ((href "/granddaughter1")) granddaughter1)) (li (a ((href "/granddaughter2")) granddaughter2))))))
-          (li (a ((href "/uncle")) uncle))))))
+               (li (a ((href "son")) son))
+               (li (ol (li (a ((href "grandson1")) grandson1)) (li (a ((href "grandson2")) grandson2))))
+               (li (a ((href "daughter")) daughter))
+               (li (ol (li (a ((href "granddaughter1")) granddaughter1)) (li (a ((href "granddaughter2")) granddaughter2))))))
+          (li (a ((href "uncle")) uncle))))))
 (provide ptree->html-list)
 
 (define (prune-tree/depth se depth #:root [subtree-root 'pagetree-root])
@@ -91,3 +95,16 @@
    (splice-out-nodes '(pagetree-root (mama (son grandson1 grandson2) (daughter granddaughter1 granddaughter2)) uncle) '(daughter grandson2 granddaughter1))
    '(pagetree-root (mama (son grandson1) granddaughter2) uncle)))
 (provide splice-out-nodes)
+
+(define (local-absolute href)
+  (define str-href (->string href))
+  (define cd-str (path->string (current-directory)))
+  (define pr-str (path->string (current-project-root)))
+  (define diff-str (string-replace cd-str pr-str ""))
+  (if (equal? diff-str "")
+      str-href
+      (path->string
+       (apply build-path
+              (append (map (λ (_) "..") (explode-path (string->path diff-str)))
+                      (list str-href))))))
+(provide local-absolute)
