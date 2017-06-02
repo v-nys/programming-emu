@@ -117,6 +117,8 @@
   (txexpr 'span '((class "work")) elements))
 (provide work)
 
+(provide local-absolute)
+
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:
 ;; "A thread that has not terminated can be garbage collected if it is unreachable and suspended or if it is unreachable and blocked on only unreachable events through functions such as [...] sync"

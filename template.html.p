@@ -24,15 +24,15 @@ SOFTWARE.}
 <head>
 <meta charset="utf-8">
 <title>◊(select 'h2 doc)</title>
-<link rel="stylesheet" type="text/css" href="/static/common.css" />
+<link rel="stylesheet" type="text/css" href="◊local-absolute{static/common.css}" />
 <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet"> 
 </head>
 <body>
-◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="/◊(previous here)"></a>}
+◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="◊local-absolute[◊(previous here)]"></a>}
 <div id="content">
-<a id="booktitle" href="/index.html"><h1>Programming Emu</h1></a>
+<a id="booktitle" href="◊local-absolute{index.html}"><h1>Programming Emu</h1></a>
 ◊(->html doc #:splice? #t)
 </div>
-◊when/splice[(next here)]{<a class="pageturn" id="pageturn-right" href="/◊(next here)"></a>}
+◊when/splice[(next here)]{<a class="pageturn" id="pageturn-right" href="◊local-absolute[◊(next here)]"></a>}
 </body>
 </html>
