@@ -25,7 +25,8 @@ SOFTWARE.}
 <meta charset="utf-8">
 <title>◊(select 'h2 doc)</title>
 <link rel="stylesheet" type="text/css" href="◊local-absolute{static/common.css}" />
-<link href="https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet">
+◊(->html (select 'headappendix doc))
 </head>
 <body>
 ◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="◊local-absolute[◊(previous here)]"></a>}

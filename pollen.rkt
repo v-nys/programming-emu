@@ -42,7 +42,7 @@
                                   #:txexpr-elements-proc decode-paragraphs
                                   #:inline-txexpr-proc link-to-docs
                                   #:string-proc (compose1 smart-quotes smart-dashes)
-                                  #:exclude-tags '(style script)))])
+                                  #:exclude-tags '(style script headappendix)))])
     (log-emu-debug (format "undecoded root is: ~s\n" (txexpr 'root empty elements)))
     (log-emu-debug (format "decoded root is: ~s\n" decoded))
     decoded))
