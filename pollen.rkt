@@ -37,16 +37,25 @@
 
 (define (root . elements)
   (let ([decoded
-         (txexpr 'root empty
-                 (decode-elements elements
-                                  #:txexpr-elements-proc decode-paragraphs
-                                  #:inline-txexpr-proc link-to-docs
-                                  #:string-proc (compose1 smart-quotes smart-dashes)
-                                  #:exclude-tags '(style script headappendix)))])
-    (log-emu-debug (format "undecoded root is: ~s\n" (txexpr 'root empty elements)))
-    (log-emu-debug (format "decoded root is: ~s\n" decoded))
+         (decode (txexpr 'root '() elements)
+                 #:txexpr-elements-proc decode-paragraphs
+                 #:inline-txexpr-proc link-to-docs
+                 #:string-proc (compose1 smart-quotes smart-dashes)
+                 #:exclude-tags '(style script headappendix)
+                 #:txexpr-proc move-head-appendix)])
+    (log-emu-debug (format "decoded root is: ~s~n" decoded))
     decoded))
 (provide root)
+
+(define (move-head-appendix tx)
+  (cond [(eq? (get-tag tx) 'root)
+         (let-values ([(pruned clippings)
+                       (splitf-txexpr tx (λ (e) (if (txexpr? e) (eq? (get-tag e) 'headappendix) #f)))])
+           (txexpr 'root '()
+                   (if (not (null? clippings))
+                       (append clippings (list (txexpr 'unmoved '() (get-elements pruned))))
+                       (list (txexpr 'unmoved '() (get-elements pruned))))))]
+        [else tx]))
 
 ;                                          
 ;                                          
