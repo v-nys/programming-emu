@@ -93,6 +93,13 @@
   (txexpr 'span '((class "code")) elements))
 (provide code)
 
+(define (glossaryterm  #:canonical [canonical #f] . elements)
+  (txexpr 'a
+          `((class "glossaryterm")
+            (href ,(local-absolute (format "glossary.html#~a" (if canonical canonical (string-append* elements))))))
+          (append elements (list '(sup () "†")))))
+(provide glossaryterm)
+
 (define (output . elements)
   (txexpr 'div '((class "output")) elements))
 (provide output)
@@ -100,6 +107,8 @@
 (define (includecode path #:lang [lang "racket"] #:filename [fn ""])
   (highlight lang (file->string path #:mode 'text)))
 (provide includecode)
+
+(provide local-absolute)
 
 (define (predicate . elements)
   (apply code elements))
@@ -125,8 +134,6 @@
 (define (work . elements)
   (txexpr 'span '((class "work")) elements))
 (provide work)
-
-(provide local-absolute)
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:
