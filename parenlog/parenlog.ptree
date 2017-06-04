@@ -3,7 +3,4 @@
 introduction.html
 predicates_variables_and_unification.html
 resolution.html
-figures/resolution_without_renaming.svg
-figures/resolution_without_renaming_with_clash.svg
-figures/resolution_flow.svg
 }

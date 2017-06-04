@@ -28,10 +28,13 @@
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
+         (only-in pollen/template/html ->html)
          (only-in pollen/unstable/pygments highlight)
+         (only-in racket/contract listof)
          racket/file
          racket/string
-         txexpr)
+         txexpr
+         (only-in uri-old uri-escape))
 
 (provide highlight)
 
@@ -56,6 +59,26 @@
                        (append clippings (list (txexpr 'unmoved '() (get-elements pruned))))
                        (list (txexpr 'unmoved '() (get-elements pruned))))))]
         [else tx]))
+
+(define (post-process tx)
+  (if (eq? (get-tag tx) 'termlabel)
+      (txexpr 'a (get-attrs tx) (cddr (get-elements tx)))
+      tx))
+
+(define (map-txexpr proc tx)
+  (proc
+   (txexpr (get-tag tx)
+           (get-attrs tx)
+           (map (λ (e) (if (txexpr? e) (map-txexpr proc e) e))
+                (get-elements tx)))))
+
+(define (my->html xexpr-or-xexprs)
+  (define (my->html-aux x)
+    (if ((listof txexpr?) x)
+        (map my->html-aux x)
+        (map-txexpr post-process x)))
+  (->html (my->html-aux xexpr-or-xexprs)))
+(provide my->html)
 
 ;                                          
 ;                                          
@@ -93,12 +116,48 @@
   (txexpr 'span '((class "code")) elements))
 (provide code)
 
-(define (glossaryterm  #:canonical [canonical #f] . elements)
-  (txexpr 'a
-          `((class "glossaryterm")
-            (href ,(local-absolute (format "glossary.html#~a" (if canonical canonical (string-append* elements))))))
-          (append elements (list '(sup () "†")))))
+(define (explanation . elements)
+  (txexpr 'span '((class "explanation")) elements))
+(provide explanation)
+
+(define (glossaryterm->paragraph tx)
+  (txexpr 'p `((id ,(car (get-elements tx))))
+          (list (txexpr 'span '((class "glossarytermlabel"))
+                        (list (car (get-elements tx)) ": "))
+                (cadr (get-elements tx)))))
+
+;; TODO could sort alphabetically?
+(define (pn->glossary-paragraphs pn)
+  (let ([maybe-glossaryterms
+         (findf*-txexpr (get-doc pn)
+                        (λ (e) (and (txexpr? e) (eq? (get-tag e) 'termlabel))))])
+    (if maybe-glossaryterms
+        (map glossaryterm->paragraph
+             maybe-glossaryterms) empty)))
+(define (glossary)
+  (txexpr 'div
+          '()
+          (sort
+           (foldr (λ (pn acc) (append (pn->glossary-paragraphs pn) acc)) empty
+                 ;; including these would lead to an infinite loop, because they have a dependency on the glossary
+                 (pagetree->list (splice-out-nodes (get-pagetree "index.ptree") '(index.html glossary.html))))
+           (λ (p1 p2) (string<?(string-downcase (attr-ref p1 'id)) (string-downcase (attr-ref p2 'id)))))))
+(provide glossary)
+
+(define (glossaryterm #:explanation [explanation "TODO: add an explanation"] #:canonical [canonical #f] . elements)
+  (set! canonical (or canonical (string-append* elements)))
+  (txexpr 'termlabel
+          `((href ,(local-absolute (format "glossary.html#~a" canonical)))
+            (class "glossaryterm"))
+          (append (list canonical explanation) elements (list '(sup () "†")))))
 (provide glossaryterm)
+
+(define (glossaryref #:canonical [canonical #f] . elements)
+  (txexpr 'a
+          `((href ,(local-absolute (format "glossary.html#~a" (or canonical (string-append* elements)))))
+            (class "glossaryref"))
+          elements))
+(provide glossaryref)
 
 (define (output . elements)
   (txexpr 'div '((class "output")) elements))
