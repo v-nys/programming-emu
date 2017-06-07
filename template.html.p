@@ -26,13 +26,13 @@ SOFTWARE.}
 <title>◊(select 'h2 doc)</title>
 <link rel="stylesheet" type="text/css" href="/static/common.css" />
 <link href="//fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet">
-◊when/splice[(select 'headappendix doc)]{◊(->html (select* 'headappendix doc))}
+◊when/splice[(select 'headappendix doc)]{◊(my->html (select* 'headappendix doc))}
 </head>
 <body>
 ◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="/◊(previous here)"></a>}
 <div id="content">
 <a id="booktitle" href="/index.html"><h1>Programming Emu</h1></a>
-◊(->html (select* 'unmoved doc))
+◊(my->html (select* 'unmoved doc))
 </div>
 ◊when/splice[(next here)]{<a class="pageturn" id="pageturn-right" href="/◊(next here)"></a>}
 </body>

@@ -30,6 +30,7 @@ SOFTWARE.}
 ◊(define codefont "Fira Mono")
 ◊(define forest-green "#009933")
 ◊(define fuchsia "#cc0066")
+◊(define light-gray "#cccccc")
 ◊(define mint-green "#00cc66")
 ◊(define orange "#ff6600")
 ◊(define regular-link-color aqua)
@@ -70,7 +71,12 @@ padding: 0;
 }
 
 span.code {
-background-color: #cccccc;
+background-color: ◊light-gray;
+}
+
+a.glossaryref {
+border-bottom: thin dotted ◊aqua;
+color: ◊body-text-color;
 }
 
 .aside {
@@ -81,6 +87,10 @@ width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
 
 .code {
 font-family: ◊codefont;
+}
+
+.glossarytermlabel {
+font-weight: bold;
 }
 
 .linenos {
