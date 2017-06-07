@@ -98,8 +98,9 @@
 
 (define (local-absolute href)
   (define str-href (->string href))
-  (define cd-str (path->string (current-directory)))
-  (define pr-str (path->string (current-project-root)))
+  ;; normalize is necessary to deal with trailing slash
+  (define cd-str (path->string (normalize-path (current-directory))))
+  (define pr-str (path->string (normalize-path (current-project-root))))
   (define diff-str (string-replace cd-str pr-str ""))
   (if (equal? diff-str "")
       str-href
@@ -107,4 +108,11 @@
        (apply build-path
               (append (map (λ (_) "..") (explode-path (string->path diff-str)))
                       (list str-href))))))
+(module+ test
+  (parameterize
+      ([current-directory (string->path "/home/vincent/Projects/ProgrammingEmu/book")]
+       [current-project-root (string->path "/home/vincent/Projects/ProgrammingEmu/book")])
+    (check-equal?
+     (local-absolute "glossary.html#term")
+     "glossary.html#term")))
 (provide local-absolute)
