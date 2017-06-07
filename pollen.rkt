@@ -154,7 +154,7 @@
 
 (define (glossaryref #:canonical [canonical #f] . elements)
   (txexpr 'a
-          `((href ,(local-absolute (format "glossary.html#~a" (or canonical (string-append* elements)))))
+          `((href ,(format "/glossary.html#~a" (or canonical (string-append* elements))))
             (class "glossaryref"))
           elements))
 (provide glossaryref)
