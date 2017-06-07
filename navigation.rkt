@@ -13,8 +13,8 @@
    (foldr
     (λ (t acc)
       (if (symbol? t)
-          (cons `(li (a ((href ,(local-absolute (symbol->string t)))) ,(let ([h2 (select 'h2 t)]) (or h2 t)))) acc)
-          (cons `(li (a ((href ,(local-absolute (symbol->string (car t))))) ,(let ([h2 (select 'h2 (car t))]) (or h2 (car t))))) (cons `(li ,(ptree->html-list/aux t ol? select)) acc))))
+          (cons `(li (a ((href ,(string-append "/" (symbol->string t)))) ,(let ([h2 (select 'h2 t)]) (or h2 t)))) acc)
+          (cons `(li (a ((href ,(string-append "/" (symbol->string (car t))))) ,(let ([h2 (select 'h2 (car t))]) (or h2 (car t))))) (cons `(li ,(ptree->html-list/aux t ol? select)) acc))))
     empty
     (cdr ptree))))
 (module+ test
@@ -95,24 +95,3 @@
    (splice-out-nodes '(pagetree-root (mama (son grandson1 grandson2) (daughter granddaughter1 granddaughter2)) uncle) '(daughter grandson2 granddaughter1))
    '(pagetree-root (mama (son grandson1) granddaughter2) uncle)))
 (provide splice-out-nodes)
-
-(define (local-absolute href)
-  (define str-href (->string href))
-  ;; normalize is necessary to deal with trailing slash
-  (define cd-str (path->string (normalize-path (current-directory))))
-  (define pr-str (path->string (normalize-path (current-project-root))))
-  (define diff-str (string-replace cd-str pr-str ""))
-  (if (equal? diff-str "")
-      str-href
-      (path->string
-       (apply build-path
-              (append (map (λ (_) "..") (explode-path (string->path diff-str)))
-                      (list str-href))))))
-(module+ test
-  (parameterize
-      ([current-directory (string->path "/home/vincent/Projects/ProgrammingEmu/book")]
-       [current-project-root (string->path "/home/vincent/Projects/ProgrammingEmu/book")])
-    (check-equal?
-     (local-absolute "glossary.html#term")
-     "glossary.html#term")))
-(provide local-absolute)

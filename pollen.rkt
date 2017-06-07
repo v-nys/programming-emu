@@ -96,7 +96,7 @@
 (define (glossaryterm  #:canonical [canonical #f] . elements)
   (txexpr 'a
           `((class "glossaryterm")
-            (href ,(local-absolute (format "glossary.html#~a" (if canonical canonical (string-append* elements))))))
+            (href ,(format "/glossary.html#~a" (if canonical canonical (string-append* elements)))))
           (append elements (list '(sup () "†")))))
 (provide glossaryterm)
 
@@ -107,8 +107,6 @@
 (define (includecode path #:lang [lang "racket"] #:filename [fn ""])
   (highlight lang (file->string path #:mode 'text)))
 (provide includecode)
-
-(provide local-absolute)
 
 (define (predicate . elements)
   (apply code elements))
