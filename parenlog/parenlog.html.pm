@@ -8,7 +8,6 @@
 ◊toc[#:ptree "parenlog.ptree" #:depth 2 #:exceptions '(parenlog.html) #:ordered? #t]
 
 ◊;TODO
-◊;Comparison of resolution with original
 ◊;Interacting with Racket code
 ◊;Standalone language
 ◊;Syntax highlighting
