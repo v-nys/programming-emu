@@ -1,11 +1,17 @@
 (define (variable? e)
   (and (symbol? e)
        (char-upper-case?
-        (string-ref (symbol->string e) 0))))
+        (string-ref
+         (symbol->string e)
+         0))))
 
 (define (unbound-variable? e env)
   (and (variable? e)
        (not (hash-has-key? env e))))
+
+
+
+
 
 (define (unify se1 se2 env)
   (match* (se1 se2)

@@ -32,6 +32,10 @@
          (only-in pollen/unstable/pygments highlight)
          (only-in racket/contract listof)
          racket/file
+         (only-in racket/function curry)
+         (only-in racket/list add-between append* drop group-by)
+         (only-in racket/match match)
+         (only-in racket/stream stream->list)
          racket/string
          txexpr
          (only-in uri-old uri-escape))
@@ -44,9 +48,9 @@
                  #:txexpr-elements-proc decode-paragraphs
                  #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
-                 #:exclude-tags '(style script headappendix)
+                 #:exclude-tags '(style script headappendix pre)
+                 #:exclude-attrs '((class "ws"))
                  #:txexpr-proc move-head-appendix)])
-    (log-emu-debug (format "decoded root is: ~s~n" decoded))
     decoded))
 (provide root)
 
@@ -116,6 +120,78 @@
   (txexpr 'span '((class "code")) elements))
 (provide code)
 
+(define (notenum->anchor num)
+  (txexpr 'a `((class "listingnote") (note-number ,(number->string num))) (list (number->string num))))
+
+(define (codecmp #:f1 f1 #:lang1 [lang1 "racket"] #:fn1 [fn1 #f] #:f2 f2 #:lang2 [lang2 "racket"] #:fn2 [fn2 #f] #:notes [notes '()])
+  ;; assign numbers like in enumerate in Python - could be in more general library
+  (define (enumerate lst count)
+    (match lst
+      [(list) (list)]
+      [(list-rest h t)
+       (cons (cons count h) (enumerate t (add1 count)))]))
+  ;; auxiliary function for collecting a list of (list of numbered notes for a single line)
+  (define (number-notes-for-line grouped-line-notes line-num acc)
+    (match acc
+      [(cons lol-acc num-acc)
+       (let* ([notes-on-line
+               (cond [(findf (λ (p) (= (car (car p)) line-num)) grouped-line-notes) => (curry map cdr)]
+                     [else empty])]
+              [numbered-notes
+               (enumerate notes-on-line num-acc)])
+         (cons (append lol-acc (list numbered-notes)) (+ (length numbered-notes) num-acc)))]))
+  ;; used to preserve line structure in included code
+  (define (break-code-lines e acc)
+    (match acc
+      [(list-rest curr-line prev-lines)
+       (if (and (string? e) (regexp-match? #rx"\n" e))
+           (let* ([upto (cadr (regexp-match #rx"([^\n]*)\n" e))]
+                  [remainder (regexp-replace (string-append upto "\n") e "")])
+             (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
+           (cons (append curr-line (list e)) prev-lines))]))
+  ;; for converting a numbered note to a paragraph
+  (define (nn->p nn)
+    (match nn
+      [(cons num note)
+       (let ([nns (number->string num)])
+         (txexpr 'p `((class "comparative-listing-note")
+                      (note-number ,nns))
+                 `(,nns ". " ,note)))]))
+  ;; add surrounding tags to preserve whitespace if necessary
+  (define (preserve se)
+    (if (string? se)
+        (txexpr 'span '((class "ws")) (list se))
+        se))
+  ;; make sure a list of lines has the right length for comparison
+  (define (extend lines num)
+    (append lines (build-list (- num (length lines)) (λ (_) empty))))
+  ;; finally, the top-level comparison div
+  (let* ([pygmentized1 (includecode f1 #:lang lang1 #:filename (or fn1 f1))]
+         [pygmentized2 (includecode f2 #:lang lang2 #:filename (or fn2 f2))]
+         [pre1 (cadr (findf*-txexpr pygmentized1 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre)))))]
+         [pre2 (cadr (findf*-txexpr pygmentized2 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre)))))]
+         [pre1-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre1)) 1))]
+         [pre2-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre2)) 1))]
+         [grouped-line-notes (sort (group-by car notes) < #:key (compose car car))]
+         [num-lines (max (length pre1-lines) (length pre2-lines))]
+         [line-nums (in-range 1 (add1 num-lines))]
+         [note-elem-groups (car (foldl (curry number-notes-for-line grouped-line-notes) (cons empty 1) (stream->list line-nums)))]
+         [numbered-notes (append* note-elem-groups)])
+    (txexpr 'div '((class "code-comparison"))
+            (cons
+             (txexpr 'div '((class "comparative-listing"))
+                     (for/list ([ll (extend pre1-lines num-lines)]
+                                [rl (extend pre2-lines num-lines)]
+                                [note-grp note-elem-groups])
+                       (txexpr 'div '((class "comparative-line"))
+                               (list
+                                (txexpr 'div '((class "comparative-snippet")) (map preserve ll))
+                                (txexpr 'div '((class "comparative-snippet")) (map preserve rl))
+                                (txexpr 'div '((class "comparative-lising-margin"))
+                                        (add-between (map (compose notenum->anchor car) note-grp) " "))))))
+             (map nn->p numbered-notes)))))
+(provide codecmp)
+
 (define (explanation . elements)
   (txexpr 'span '((class "explanation")) elements))
 (provide explanation)
@@ -139,8 +215,8 @@
           '()
           (sort
            (foldr (λ (pn acc) (append (pn->glossary-paragraphs pn) acc)) empty
-                 ;; including these would lead to an infinite loop, because they have a dependency on the glossary
-                 (pagetree->list (splice-out-nodes (get-pagetree "index.ptree") '(index.html glossary.html))))
+                  ;; including these would lead to an infinite loop, because they have a dependency on the glossary
+                  (pagetree->list (splice-out-nodes (get-pagetree "index.ptree") '(index.html glossary.html))))
            (λ (p1 p2) (string<?(string-downcase (attr-ref p1 'id)) (string-downcase (attr-ref p2 'id)))))))
 (provide glossary)
 

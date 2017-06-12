@@ -17,8 +17,6 @@
   (cond [(and (eq? (get-tag tx) 'span)
               (attrs-have-key? (get-attrs tx) 'class)
               (member (attr-ref tx 'class) '("k" "nb")))
-         (log-emu-debug (format "export argument is: ~s" (string-join (get-elements tx) "")))
-         (log-emu-debug (format "remaining arguments are: ~s" (cdr (get-elements tx))))
          (docs 'racket (string-join (get-elements tx) ""))]
         [else tx]))
 (provide link-to-docs)

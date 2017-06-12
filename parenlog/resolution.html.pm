@@ -23,6 +23,9 @@ What gives? A scoping issue, that's what. Our query is ◊code{likes(athena,X)} 
 We can write code to rename all variables in a rule (represented as an S-expression list) right now, so that they are ◊glossaryterm[#:explanation ◊explanation{in logic programming, indicates that a variable does not currently occur in any existing construct}]{fresh}. I suggest you give it a try. If you're lost, here's how I did it:
 ◊includecode["code/rename-variables.rkt" #:lang "racket"]
 
+◊codecmp[#:f1 "code/rename-variables.rkt" #:f2 "code/unify-jay.rkt" #:notes '()]
+
+
 Jay McCarthy's approach is very different, so this is definitely not the only way to go about it. I'll contrast the two approaches when enough of the bigger picture has emerged.
 
 To implement resolution with backtracking, we need a mechanism which allows us to produce an answer to the first predicate in a query, hold off and later produce more answers when backtracking. Racket has a very suitable mechanism for this: ◊a[#:href "http://docs.racket-lang.org/reference/Generators.html"]{generators}. You can think of a generator as similar to a function, in that it can be called and produces a value, but different in that it has state. If you call a generator a second time, it'll pick up from where it left off and produce a second (possibly different) value. In Racket, you can keep calling any generator, but some will reach a point where they just keep producing ◊a[#:href "http://docs.racket-lang.org/reference/void.html"]{#<void>}.

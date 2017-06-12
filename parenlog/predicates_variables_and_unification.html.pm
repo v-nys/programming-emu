@@ -18,12 +18,11 @@ Here's a suggested function signature:
 Here are some ◊note{tests} for a function with said signature. I would advise you to read these first, as they can clarify some of the expected behavior. There's one case in which shared variables occur on the left-hand side and on the right-hand side. That's something we'll typically avoid, but it still makes for a useful test case.
 ◊includecode["code/unify-tests.rkt" #:lang "racket"]
 
-Try to come up with code that gets those tests to pass. If you get stuck, have a look at professor McCarthy's code below or my own, then try again from memory.
+Try to come up with code that gets those tests to pass. If you get stuck, have a look at the code below, focus on understanding and remembering the general structure, then try again from memory.
 
-Here's my code:
-◊includecode["code/unify.rkt" #:lang "racket"]
+Here's my code (on the left) and Jay's code (on the right).
+◊codecmp[#:f1 "code/unify.rkt" #:f2 "code/unify-jay.rkt"]
 
-Finally, here's Jay McCarthy's code.
-◊includecode["code/unify-jay.rkt" #:lang "racket"]
+Conceptually, both snippets do the same things, but there are a few differences. ◊exercise{Name the differences and see whether either snippet contains any improvements over your own code.} ◊exercise{Modify your own code to incorporate any improvements.}
 
 Next stop: resolution!

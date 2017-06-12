@@ -1,25 +1,25 @@
 #lang pollen
 ◊;{MIT License
 
-Copyright (c) 2017 Vincent Nys
+ Copyright (c) 2017 Vincent Nys
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.}
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.}
 ◊(require (only-in racket/string string-join))
 ◊;; i.e. percentage of page to left and right (combined) of content which is blank
 ◊(define content-margin-percentage 32)
@@ -28,9 +28,12 @@ SOFTWARE.}
 ◊(define body-text-color "#333333")
 ◊(define aqua "#009999")
 ◊(define codefont "Fira Mono")
+◊(define code-line-height "1.25em")
+◊(define code-pt-size "10pt")
 ◊(define forest-green "#009933")
 ◊(define fuchsia "#cc0066")
 ◊(define light-gray "#cccccc")
+◊(define very-light-gray "#eeeeee")
 ◊(define mint-green "#00cc66")
 ◊(define orange "#ff6600")
 ◊(define regular-link-color aqua)
@@ -54,12 +57,26 @@ left: 0px;
 right: 0px;
 }
 
+.comparative-line:nth-child(odd) .comparative-snippet{
+background-color: ◊very-light-gray;
+}
+
 ul.toc li {
 list-style-type: none;
 }
 
+.comparative-snippet:first-child {
+padding-left: 0;
+border-right: 1em solid white;
+}
+
 .pageturn:hover {
 background-color: #eeeeee33;
+}
+
+.comparative-snippet pre {
+margin-bottom: 0;
+margin-top: 0;
 }
 
 .toc li {
@@ -89,6 +106,27 @@ width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
 font-family: ◊codefont;
 }
 
+.comparative-line {
+display: table-row;
+width: 100%;
+}
+
+.comparative-listing {
+display: table;
+}
+
+.comparative-listing-margin {
+display: table-cell;
+padding-left: .5em;
+}
+
+.comparative-snippet {
+display: table-cell;
+font-family: ◊codefont;
+font-size: ◊code-pt-size;
+height: ◊code-line-height;
+}
+
 .glossarytermlabel {
 font-weight: bold;
 }
@@ -106,7 +144,7 @@ color: ◊fuchsia;
 position: fixed;
 height: 100%;
 top: 0%;
-width: ◊(/ content-margin-percentage 2)%;
+width: ◊(/ content-margin-percentage 4)%;
 }
 
 .toc {
@@ -125,6 +163,10 @@ font-weight: bold;
 
 .work {
 font-style: italic;
+}
+
+.ws {
+white-space: pre;
 }
 
 ◊;; selectors are organized by points first, then alphabetically
@@ -148,5 +190,6 @@ line-height: 150%;
 
 pre {
 border-left: 1px dashed;
+font-size: ◊code-pt-size;
 padding-left: 1em;
 }
