@@ -26,6 +26,8 @@ SOFTWARE.}
 <title>◊(select 'h2 doc)</title>
 <link rel="stylesheet" type="text/css" href="/static/common.css" />
 <link href="//fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet">
+<script src="/static/jquery.js"></script>
+<script src="/static/hide-listing-notes.js"></script>
 ◊when/splice[(select 'headappendix doc)]{◊(my->html (select* 'headappendix doc))}
 </head>
 <body>

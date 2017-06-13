@@ -3,6 +3,7 @@ compiled
 *~
 *.css
 *.html
+*.js
 *.svg
 *.sw*
 *#1#

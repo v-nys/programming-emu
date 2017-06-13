@@ -2,11 +2,6 @@
 ◊h2{Comparing to the original}
 Now that we've got basic Prolog-like functionality, let's see how our implementation of resolution measures up to that of an expert Racket programmer. We'll start by locating the "analogs" to the code we've already written to get a foothold. That way, the bits which are very different will at least show up in a familiar context. I won't go into every surface detail that's different between the two implementations, so here's a simple reference for the straightforward bits:
 
-◊table{
-       ◊tr{
-  ◊td{answer-query}◊td{model-env-generator}
- }
-}
 
 We've already compared ◊code{variable?}, ◊code{unbound-variable?}, ◊code{bound-variable?} and ◊code{unify}, so those are fine.
 
@@ -14,7 +9,6 @@ The next function I introduced was ◊code{extract-vars}, which takes an S-expre
 
 ◊alert{If you're digging into Jay's actual codebase, you'll encounter a function named ◊code{extract-vars}. That actually serves a different purpose, which we'll cover later on.}
 
-So, for convenience, here's a table
 
 ◊;M.O. variable? staat in stx.rkt omdat het bij Jay effectief op syntax werkt -> bespreek dit en unbound-variable? iets later.
 
