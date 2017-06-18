@@ -49,7 +49,7 @@
                  #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
                  #:exclude-tags '(style script headappendix pre)
-                 #:exclude-attrs '((class "ws"))
+                 #:exclude-attrs '((class "ws") (class "code") (class "code"))
                  #:txexpr-proc move-head-appendix)])
     decoded))
 (provide root)
@@ -202,7 +202,6 @@
                         (list (car (get-elements tx)) ": "))
                 (cadr (get-elements tx)))))
 
-;; TODO could sort alphabetically?
 (define (pn->glossary-paragraphs pn)
   (let ([maybe-glossaryterms
          (findf*-txexpr (get-doc pn)
@@ -210,6 +209,9 @@
     (if maybe-glossaryterms
         (map glossaryterm->paragraph
              maybe-glossaryterms) empty)))
+
+(define (popquiz . elements) "!!! TODO !!! implement pop quiz")
+
 (define (glossary)
   (txexpr 'div
           '()

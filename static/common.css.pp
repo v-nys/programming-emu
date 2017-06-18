@@ -36,6 +36,7 @@
 ◊(define very-light-gray "#eeeeee")
 ◊(define mint-green "#00cc66")
 ◊(define orange "#ff6600")
+◊(define white "#ffffff")
 ◊(define regular-link-color aqua)
 
 ◊;; organizing principle: by specificity, then alphabetically, with space followed by @#.:
@@ -57,12 +58,25 @@ left: 0px;
 right: 0px;
 }
 
+table.counterparts td:first-child {
+border-right: 1px dashed;
+padding-right: 1em;
+}
+
+table.counterparts td:last-child {
+padding-left: 1em;
+}
+
 .comparative-line:nth-child(odd) .comparative-snippet{
 background-color: ◊very-light-gray;
 }
 
 ul.toc li {
 list-style-type: none;
+}
+
+td span.code {
+background-color: ◊white;
 }
 
 .comparative-snippet:first-child {
