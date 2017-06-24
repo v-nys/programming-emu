@@ -241,7 +241,7 @@
   (txexpr 'div '((class "output")) elements))
 (provide output)
 
-(define (includecode path #:lang [lang "racket"] #:filename [fn ""])
+(define (includecode path #:lang [lang "racket"] #:filename [fn ""] #:added-lines [added (list)])
   (highlight lang (file->string path #:mode 'text)))
 (provide includecode)
 
