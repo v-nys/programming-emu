@@ -1,0 +1,4 @@
+flowchart HTML5-tags van HTML5Doctor downloaden -> er zijn tags die ik kan gebruiken en nog niet ken
+cite tag ipv work
+voor glossaries: dl (definition list), dt (definition term) en dd (definition description) tags
+navigation bar: nav tag
