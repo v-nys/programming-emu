@@ -241,9 +241,12 @@
   (txexpr 'div '((class "output")) elements))
 (provide output)
 
-(define (includecode path #:lang [lang "racket"] #:filename [fn ""] #:added-lines [added (list)])
+(define (includecode path #:lang [lang "racket"] #:filename [fn ""] #:added-lines [added (list)] #:notes [notes (list)])
   (highlight lang (file->string path #:mode 'text)))
 (provide includecode)
+
+(define (codenote #:number [number 1] . elements)
+  (txexpr 'div empty elements))
 
 (define (predicate . elements)
   (apply code elements))
