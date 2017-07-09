@@ -1,18 +1,37 @@
 #lang pollen
 ◊(require file/convertible pict racket/math)
-◊(define pict
+◊(define query-pict
+   (text "answer query"))
+◊(define empty?-pict
+   (text "empty?"))
+◊(define apply-rule-pict
+   (text "apply rule"))
+◊(define answer-pict
+   (text "yield answer"))
+◊(define blocks
    (vc-append
-    (text "top")
-    (hc-append
-     (text "n" null 12 (/ pi 2))
-     (arrow 10 (/ pi 2))
-     (arrow 10 (- (/ pi 2)))
-     (text "1" null 12 (- (/ pi 2))))
-    (text "answer query")
-    (hc-append
-     (text "3,5,...,n-1" null 12 (/ pi 2))
-     (arrow 10 (/ pi 2))
-     (arrow 10 (- (/ pi 2)))
-     (text "2,4,...n-2" null 12 (- (/ pi 2))))
-    (text "apply rule")))
-◊(bytes->string/utf-8 (convert pict 'svg-bytes))
+    query-pict
+    (vline 1 20)
+    (vc-append 20
+               empty?-pict
+               (hc-append 60
+                          answer-pict
+                          apply-rule-pict))))
+◊(define lines
+   (pin-arrow-line
+    5
+    (pin-arrow-line
+     5
+     (pin-arrow-line
+      5 blocks
+      apply-rule-pict ct-find
+      query-pict rc-find
+      #:start-angle (/ pi 2)
+      #:end-angle pi)
+     empty?-pict cb-find
+     apply-rule-pict ct-find
+     #:label (text "no"))
+    empty?-pict cb-find
+    answer-pict ct-find
+    #:label (text "yes")))
+◊(bytes->string/utf-8 (convert lines 'svg-bytes))

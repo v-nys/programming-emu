@@ -141,6 +141,10 @@ font-size: ◊code-pt-size;
 height: ◊code-line-height;
 }
 
+.exercise {
+font-weight: bold;
+}
+
 .glossarytermlabel {
 font-weight: bold;
 }

@@ -120,6 +120,10 @@
   (txexpr 'span '((class "code")) elements))
 (provide code)
 
+(define (exercise . elements)
+  (txexpr 'p `((class "exercise")) (cons "Exercise: " elements)))
+(provide exercise)
+
 (define (notenum->anchor num)
   (txexpr 'a `((class "listingnote") (note-number ,(number->string num))) (list (number->string num))))
 
@@ -241,12 +245,19 @@
   (txexpr 'div '((class "output")) elements))
 (provide output)
 
-(define (includecode path #:lang [lang "racket"] #:filename [fn ""] #:added-lines [added (list)] #:notes [notes (list)])
+(define (includecode path #:lang [lang "racket"] #:filename [fn ""] #:added-lines [added (list)] #:notelinenumbers [notes (list)])
   (highlight lang (file->string path #:mode 'text)))
 (provide includecode)
 
-(define (codenote #:number [number 1] . elements)
-  (txexpr 'div empty elements))
+(define (codenote . elements)
+  (define (codenoteidx number)
+    (txexpr 'codenoteidx empty (list "1")))
+  (define (codenotecontents elements)
+    (txexpr 'codenotecontents empty elements))
+  (txexpr 'codenote empty
+          (cons (codenoteidx 999)
+                (list (codenotecontents elements)))))
+(provide codenote)
 
 (define (predicate . elements)
   (apply code elements))
