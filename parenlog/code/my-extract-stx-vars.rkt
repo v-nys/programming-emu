@@ -8,6 +8,8 @@
            => (curry append-map extract-aux)]
           [else empty]))
   (remove-duplicates
-   (append (extract-aux stx1) (append-map extract-aux stxs))
+   (append
+    (extract-aux stx1)
+    (append-map extract-aux stxs))
    eq?
    #:key syntax->datum))

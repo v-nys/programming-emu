@@ -1,4 +1,3 @@
-#lang racket
 (λ (at th env)
      (define X (gensym (quote X)))
      (define Y (gensym (quote Y)))

@@ -104,6 +104,10 @@
 ;                         ;;;;             
 ;                                          
 
+(define (answer . elements)
+  (txexpr 'span '((class "answer")) (append '("Answer: ") elements)))
+(provide answer)
+
 (define (aside . elements)
   (txexpr 'span '((class "aside")) elements))
 (provide aside)
@@ -214,7 +218,9 @@
         (map glossaryterm->paragraph
              maybe-glossaryterms) empty)))
 
-(define (popquiz . elements) "!!! TODO !!! implement pop quiz")
+(define (popquiz . elements)
+  (txexpr 'span '((class "popquiz")) (append '("Pop quiz: ") elements)))
+(provide popquiz)
 
 (define (glossary)
   (txexpr 'div
