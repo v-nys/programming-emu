@@ -49,7 +49,7 @@
                  #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
                  #:exclude-tags '(style script headappendix pre)
-                 #:exclude-attrs '((class "ws") (class "code") (class "code"))
+                 #:exclude-attrs '((class "ws") (class "code"))
                  #:txexpr-proc move-head-appendix)])
     decoded))
 (provide root)
@@ -131,10 +131,16 @@
 (define (notenum->anchor num)
   (txexpr 'a `((class "listingnote") (note-number ,(number->string num))) (list (number->string num))))
 
-(define (cmpnote/1 #:ref ref #:line line . elements) "test")
+(define (cmpnote/1 #:ref ref #:line line . elements)
+  (txexpr 'div '((class "code-note-container"))
+          (list (txexpr 'note-nb '((class "note-number")) '("1"))
+                (txexpr 'aside '() elements))))
 (provide cmpnote/1)
 
-(define (cmpnote/2 #:ref ref #:line line . elements) "test")
+(define (cmpnote/2 #:ref ref #:line line . elements)
+  (txexpr 'div '((class "code-note-container"))
+          (list (txexpr 'note-nb '() '("2"))
+                (txexpr 'aside '() elements))))
 (provide cmpnote/2)
 
 (define (codecmp
@@ -313,6 +319,6 @@
 (module setup racket/base
   (provide (all-defined-out))
   (require pollen/setup)
-  (define block-tags (cons 'toc default-block-tags))
+  (define block-tags (append '(toc note-nb) default-block-tags))
   ;; cache is disabled to keep TOC up to date
   (define render-cache-active #f))
