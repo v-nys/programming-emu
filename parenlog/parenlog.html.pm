@@ -6,10 +6,3 @@
 
 ◊h3{Table of contents}
 ◊toc[#:ptree "parenlog.ptree" #:depth 2 #:exceptions '(parenlog.html) #:ordered? #t]
-
-◊;TODO
-◊;Standalone language
-◊;Syntax highlighting
-◊;Final thoughts
-◊;Complete listing
-◊;License

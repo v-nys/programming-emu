@@ -8,9 +8,9 @@ Jay's version of ◊code{compile-rule}, however, is quite different from what we
 
 ◊codecmp[#:f1 "code/my-compile-rule.rkt" #:f2 "code/compile-rule-jay.rkt" #:notes `((4 . ,◊note{Jay's ◊code{extract-vars} (not to be confused with our own, which maps to ◊code{variables-in}) is a normal function, used at compile time. Very vaguely, it also extracts variables, but not from a quoted S-expression. More specifically, it extracts ◊em{Racket} syntax for ◊em{Prolog} variables from unquoted S-expressions. So, in something like ◊code{(compile-rule (human X) (mortal X))}, the pattern ◊code{(var ...)} will match the identifier ◊code{X}, because the associated symbol is valid notation for a Prolog variable.}) (5 . ,◊note{This clause transforms syntax for ◊em{Racket} variable symbols into quoted symbols, but only if those symbols are not valid representations of Prolog variables. In other words, ◊code{rewrite-se} would replace the syntax objects ◊code{#'human} and ◊code{#'mortal} with syntax ◊code{#''human} and ◊code{#''mortal}, but it would leave ◊code{#'X} intact. So take the expression "sans vars" with a grain of salt.}) (6 . ,◊note{This does the same, but for S-expressions in the body rather than in the head.}) (11 . ,◊note{This is important. Variables following the Prolog naming conventions are not quoted by ◊code{rewrite-se}, but are instead bound to unique symbols generated at runtime. If you don't see how this line works, we'll discuss it further down.}) (18 . ,◊note{The extra parameter ◊code{yield} to ◊code{reyield} is here for historical reasons. You do not need it.}))]
 
-◊exercise{Replace your existing version of ◊code{compile-rule} with a macro alternative and make it work. To do that, you'll need to implement the two missing auxiliary functions yourself.}
-You can use the following tests for ◊code{extract-vars} (which we'll call ◊code{extract-stx-vars} to avoid a naming conflict with code from before):
+◊exercise{Replace your existing version of ◊code{compile-rule} with a macro alternative and make it work. To do that, you'll need to implement the two missing auxiliary functions yourself. You'll come back to the runtime approach a bit further down the line, so I recommend creating a separate branch in your version control system at this point.}
 
+You can use the following tests for ◊code{extract-vars} (which we'll call ◊code{extract-stx-vars} to avoid a naming conflict with code from before):
 ◊includecode["code/extract-stx-vars-tests.rkt" #:lang "racket"]
 
 These tests require ◊code{◊a[#:href "http://docs.racket-lang.org/syntax/macro-testing.html?q=phase1-eval#%28form._%28%28lib._syntax%2Fmacro-testing..rkt%29._phase1-eval%29%29"]{phase1-eval}} because you'll have to define ◊code{extract-stx-vars} so that it's usable at compile time. Otherwise, ◊code{compile-rule} won't be able to make use of it.
@@ -18,7 +18,7 @@ These tests require ◊code{◊a[#:href "http://docs.racket-lang.org/syntax/macr
 ◊exercise{If you're not familiar with ◊code{◊a[#:href "http://docs.racket-lang.org/syntax/macro-testing.html?q=phase1-eval#%28form._%28%28lib._syntax%2Fmacro-testing..rkt%29._phase1-eval%29%29"]{phase1-eval}}, see what happens when you omit it and try to explain the effect.}
 
 Here's my implementation, juxtaposed with Jay's:
-◊codecmp[#:f1 "code/my-extract-stx-vars.rkt" #:f2 "code/extract-stx-vars-jay.rkt" #:notes `((8 . ,◊note{I use ◊code{append-map} while Jay uses ◊code{map}. Either works, because I keep the intermediate lists of variables flat, whereas Jay flattens the resulting structure in the top-level call.}))]
+◊codecmp[#:f1 "code/my-extract-stx-vars.rkt" #:f2 "code/extract-stx-vars-jay.rkt" #:notes `((8 . ,◊note{I use ◊code{append-map} while Jay uses ◊code{map}. Either works, because I keep the intermediate lists of variables flat, whereas Jay flattens the resulting structure in the top-level call.}) (14 . ,◊note{This is where Jay flattens the resulting data structure.}))]
 
 You can use these tests for ◊code{rewrite-se}:
 
@@ -27,7 +27,7 @@ You can use these tests for ◊code{rewrite-se}:
 Again, my implementation and Jay's:
 ◊codecmp[#:f1 "code/my-rewrite-se.rkt" #:f2 "code/rewrite-se-jay.rkt"]
 
-Ah, I should learn to make use of ◊code{quasisyntax} as well :-)
+Ah, I should get into the habit of using ◊code{quasisyntax} as well :-)
 
 At this point you might be wondering if the syntax-based approach is worth it. For now, it doesn't seem necessary. But the point is to pick up new ideas, so we'll add the same extensions to both approaches. There's just one thing we still need to do...
 

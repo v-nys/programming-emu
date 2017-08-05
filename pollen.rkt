@@ -131,6 +131,7 @@
 (define (notenum->anchor num)
   (txexpr 'a `((class "listingnote") (note-number ,(number->string num))) (list (number->string num))))
 
+;; TODO phase out notes
 (define (codecmp #:f1 f1 #:lang1 [lang1 "racket"] #:fn1 [fn1 #f] #:f2 f2 #:lang2 [lang2 "racket"] #:fn2 [fn2 #f] #:notes [notes '()])
   ;; assign numbers like in enumerate in Python - could be in more general library
   (define (enumerate lst count)
