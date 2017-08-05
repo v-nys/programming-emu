@@ -38,6 +38,10 @@
 ◊(define orange "#ff6600")
 ◊(define white "#ffffff")
 ◊(define regular-link-color aqua)
+◊(define cmp-aqua "#009999")
+◊(define cmp-aqua-transparent "rgba(0,144,144,0.2)")
+◊(define cmp-orange "orange")
+◊(define cmp-orange-transparent "rgba(244,167,66,0.2)")
 
 ◊;; organizing principle: by specificity, then alphabetically, with space followed by @#.:
 #booktitle {
@@ -65,6 +69,20 @@ padding-right: 1em;
 
 table.counterparts td:last-child {
 padding-left: 1em;
+}
+
+.cmp .code-table {
+border-collapse: collapse;
+display: inline-block;
+font-family: ◊codefont;
+line-height: 1.5;
+width: 50%;
+}
+
+.cmp {
+width: calc(100% + 200px);
+position: relative;
+right: 100px;
 }
 
 .comparative-line:nth-child(odd) .comparative-snippet{
@@ -101,13 +119,37 @@ margin: 0;
 padding: 0;
 }
 
-span.code {
-background-color: ◊light-gray;
-}
-
 a.glossaryref {
 border-bottom: thin dotted ◊aqua;
 color: ◊body-text-color;
+}
+
+aside.cmp-1 {
+display: inline-block;
+border-left: 2px solid ◊cmp-aqua;
+background-color: ◊cmp-aqua-transparent;
+vertical-align: middle;
+margin-bottom: 0px;
+}
+
+aside.cmp-2 {
+display: inline-block;
+border-left: 2px solid ◊cmp-orange;
+background-color: ◊cmp-orange-transparent;
+vertical-align: middle;
+margin-bottom: 0px;
+}
+
+note-nb.cmp-1 {
+color: ◊cmp-aqua;
+}
+
+note-nb.cmp-2 {
+color: ◊cmp-orange;
+}
+
+span.code {
+background-color: ◊light-gray;
 }
 
 .aside {
@@ -118,6 +160,12 @@ width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
 
 .code {
 font-family: ◊codefont;
+}
+
+.code-note-container {
+width: calc(100% + 6em);
+position: relative;
+right: 1em;
 }
 
 .comparative-line {
@@ -193,6 +241,10 @@ color: ◊regular-link-color;
 text-decoration: none;
 }
 
+aside {
+padding-left: .5em;
+}
+
 body {
 font-family: 'Fira Sans';
 color: ◊body-text-color;
@@ -204,6 +256,9 @@ font-family: 'Fira Sans';
 
 note-nb {
 display: inline;
+vertical-align: middle;
+height: 100%;
+padding-right: .5em;
 }
 
 p {

@@ -133,14 +133,14 @@
 
 (define (cmpnote/1 #:ref ref #:line line . elements)
   (txexpr 'div '((class "code-note-container"))
-          (list (txexpr 'note-nb '((class "note-number")) '("1"))
-                (txexpr 'aside '() elements))))
+          (list (txexpr 'note-nb '((class "cmp-1")) '("1"))
+                (txexpr 'aside '((class "cmp-1")) elements))))
 (provide cmpnote/1)
 
 (define (cmpnote/2 #:ref ref #:line line . elements)
   (txexpr 'div '((class "code-note-container"))
-          (list (txexpr 'note-nb '() '("2"))
-                (txexpr 'aside '() elements))))
+          (list (txexpr 'note-nb '((class "cmp-2")) '("2"))
+                (txexpr 'aside '((class "cmp-2")) elements))))
 (provide cmpnote/2)
 
 (define (codecmp
@@ -154,72 +154,105 @@
          #:new/2 [new/2 empty]
          #:notes [notes '()] ; TODO phase out
          #:label label)
-  ;; assign numbers like in enumerate in Python - could be in more general library
-  (define (enumerate lst count)
-    (match lst
-      [(list) (list)]
-      [(list-rest h t)
-       (cons (cons count h) (enumerate t (add1 count)))]))
-  ;; auxiliary function for collecting a list of (list of numbered notes for a single line)
-  (define (number-notes-for-line grouped-line-notes line-num acc)
-    (match acc
-      [(cons lol-acc num-acc)
-       (let* ([notes-on-line
-               (cond [(findf (λ (p) (= (car (car p)) line-num)) grouped-line-notes) => (curry map cdr)]
-                     [else empty])]
-              [numbered-notes
-               (enumerate notes-on-line num-acc)])
-         (cons (append lol-acc (list numbered-notes)) (+ (length numbered-notes) num-acc)))]))
-  ;; used to preserve line structure in included code
-  (define (break-code-lines e acc)
-    (match acc
-      [(list-rest curr-line prev-lines)
-       (if (and (string? e) (regexp-match? #rx"\n" e))
-           (let* ([upto (cadr (regexp-match #rx"([^\n]*)\n" e))]
-                  [remainder (regexp-replace (string-append upto "\n") e "")])
-             (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
-           (cons (append curr-line (list e)) prev-lines))]))
-  ;; for converting a numbered note to a paragraph
-  (define (nn->p nn)
-    (match nn
-      [(cons num note)
-       (let ([nns (number->string num)])
-         (txexpr 'p `((class "comparative-listing-note")
-                      (note-number ,nns))
-                 `(,nns ". " ,note)))]))
-  ;; add surrounding tags to preserve whitespace if necessary
-  (define (preserve se)
-    (if (string? se)
-        (txexpr 'span '((class "ws")) (list se))
-        se))
-  ;; make sure a list of lines has the right length for comparison
-  (define (extend lines num)
-    (append lines (build-list (- num (length lines)) (λ (_) empty))))
-  ;; finally, the top-level comparison div
-  (let* ([pygmentized1 (includecode f1 #:lang lang1 #:filename (or fn1 f1))]
-         [pygmentized2 (includecode f2 #:lang lang2 #:filename (or fn2 f2))]
-         [pre1 (cadr (findf*-txexpr pygmentized1 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre)))))]
-         [pre2 (cadr (findf*-txexpr pygmentized2 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre)))))]
-         [pre1-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre1)) 1))]
-         [pre2-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre2)) 1))]
-         [grouped-line-notes (sort (group-by car notes) < #:key (compose car car))]
-         [num-lines (max (length pre1-lines) (length pre2-lines))]
-         [line-nums (in-range 1 (add1 num-lines))]
-         [note-elem-groups (car (foldl (curry number-notes-for-line grouped-line-notes) (cons empty 1) (stream->list line-nums)))]
-         [numbered-notes (append* note-elem-groups)])
-    (txexpr 'div '((class "code-comparison"))
-            (cons
-             (txexpr 'div '((class "comparative-listing"))
-                     (for/list ([ll (extend pre1-lines num-lines)]
-                                [rl (extend pre2-lines num-lines)]
-                                [note-grp note-elem-groups])
-                       (txexpr 'div '((class "comparative-line"))
-                               (list
-                                (txexpr 'div '((class "comparative-snippet")) (map preserve ll))
-                                (txexpr 'div '((class "comparative-snippet")) (map preserve rl))
-                                (txexpr 'div '((class "comparative-lising-margin"))
-                                        (add-between (map (compose notenum->anchor car) note-grp) " "))))))
-             (map nn->p numbered-notes)))))
+;  ;; assign numbers like in enumerate in Python - could be in more general library
+;  (define (enumerate lst count)
+;    (match lst
+;      [(list) (list)]
+;      [(list-rest h t)
+;       (cons (cons count h) (enumerate t (add1 count)))]))
+;  ;; auxiliary function for collecting a list of (list of numbered notes for a single line)
+;  (define (number-notes-for-line grouped-line-notes line-num acc)
+;    (match acc
+;      [(cons lol-acc num-acc)
+;       (let* ([notes-on-line
+;               (cond [(findf (λ (p) (= (car (car p)) line-num)) grouped-line-notes) => (curry map cdr)]
+;                     [else empty])]
+;              [numbered-notes
+;               (enumerate notes-on-line num-acc)])
+;         (cons (append lol-acc (list numbered-notes)) (+ (length numbered-notes) num-acc)))]))
+;  ;; used to preserve line structure in included code
+;  (define (break-code-lines e acc)
+;    (match acc
+;      [(list-rest curr-line prev-lines)
+;       (if (and (string? e) (regexp-match? #rx"\n" e))
+;           (let* ([upto (cadr (regexp-match #rx"([^\n]*)\n" e))]
+;                  [remainder (regexp-replace (string-append upto "\n") e "")])
+;             (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
+;           (cons (append curr-line (list e)) prev-lines))]))
+;  ;; for converting a numbered note to a paragraph
+;  (define (nn->p nn)
+;    (match nn
+;      [(cons num note)
+;       (let ([nns (number->string num)])
+;         (txexpr 'p `((class "comparative-listing-note")
+;                      (note-number ,nns))
+;                 `(,nns ". " ,note)))]))
+;  ;; add surrounding tags to preserve whitespace if necessary
+;  (define (preserve se)
+;    (if (string? se)
+;        (txexpr 'span '((class "ws")) (list se))
+;        se))
+;  ;; make sure a list of lines has the right length for comparison
+;  (define (extend lines num)
+;    (append lines (build-list (- num (length lines)) (λ (_) empty))))
+;  ;; finally, the top-level comparison div
+;  (let* ([pygmentized1 (includecode f1 #:lang lang1 #:filename (or fn1 f1))]
+;         [pygmentized2 (includecode f2 #:lang lang2 #:filename (or fn2 f2))]
+;         [pre1 (cadr (findf*-txexpr pygmentized1 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre)))))]
+;         [pre2 (cadr (findf*-txexpr pygmentized2 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre)))))]
+;         [pre1-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre1)) 1))]
+;         [pre2-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre2)) 1))]
+;         [grouped-line-notes (sort (group-by car notes) < #:key (compose car car))]
+;         [num-lines (max (length pre1-lines) (length pre2-lines))]
+;         [line-nums (in-range 1 (add1 num-lines))]
+;         [note-elem-groups (car (foldl (curry number-notes-for-line grouped-line-notes) (cons empty 1) (stream->list line-nums)))]
+;         [numbered-notes (append* note-elem-groups)])
+;    (txexpr 'div '((class "code-comparison"))
+;            (cons
+;             (txexpr 'div '((class "comparative-listing"))
+;                     (for/list ([ll (extend pre1-lines num-lines)]
+;                                [rl (extend pre2-lines num-lines)]
+;                                [note-grp note-elem-groups])
+;                       (txexpr 'div '((class "comparative-line"))
+;                               (list
+;                                (txexpr 'div '((class "comparative-snippet")) (map preserve ll))
+;                                (txexpr 'div '((class "comparative-snippet")) (map preserve rl))
+;                                (txexpr 'div '((class "comparative-lising-margin"))
+;                                        (add-between (map (compose notenum->anchor car) note-grp) " "))))))
+;             (map nn->p numbered-notes))))
+  (define (code-trsify f lang new class) (list))
+  (define (code-theadify fn class)
+    (txexpr
+     'thead
+     '()
+     (list (txexpr
+            'tr
+            '()
+            (list
+             (txexpr
+              'td
+              (list fn)
+              empty)
+             (txexpr
+              'td
+              (list
+               (txexpr
+                'i
+                '((class "fa" "fa-files-o")
+                  (aria-hidden "true"))
+                empty))
+              empty))))))
+  (define (code-tablify f lang fn new class)
+    (txexpr
+     'table
+     `((class ,(format "code-table ~a" class)))
+     (if fn
+         (cons (code-theadify fn class)
+               (code-trsify f lang new class))
+         (code-trsify f lang new class))))
+  (define table1 (code-tablify f1 lang1 fn1 new/1 "cmp-1"))
+  (define table2 (code-tablify f2 lang2 fn2 new/2 "cmp-2"))
+  (txexpr 'div '((class "cmp")) (list table1 table2)))
 (provide codecmp)
 
 (define (explanation . elements)
