@@ -117,7 +117,7 @@
                     (list
                      (txexpr
                       'div
-                      `((class ,(format "listingnote number-circle ~a" (if cmp-1? "left-number-circle" "right-number-circle")))
+                      `((class ,(format "listingnote active-number-circle number-circle ~a" (if cmp-1? "left-number-circle" "right-number-circle")))
                         (target-note ,(attr-ref note 'id)))
                       (list (number->string no)))))))
   (let-values

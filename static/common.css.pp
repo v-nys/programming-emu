@@ -238,7 +238,7 @@ font-weight: bold;
 background: gray;
 }
 
-.left-number-circle {
+.active-number-circle.left-number-circle {
 background: ◊cmp-aqua;
 }
 
@@ -259,7 +259,7 @@ font-size: 11px;
 display: inline-block;
 }
 
-.right-number-circle {
+.active-number-circle.right-number-circle {
 background: ◊cmp-orange;
 }
 
