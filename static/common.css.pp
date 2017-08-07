@@ -234,8 +234,33 @@ font-weight: bold;
 font-weight: bold;
 }
 
+.inactive-number-circle {
+background: gray;
+}
+
+.left-number-circle {
+background: ◊cmp-aqua;
+}
+
 .linenos {
 display: none;
+}
+
+.number-circle {
+border-radius: 50%;
+width: 15px;
+height: 15px;
+padding: 2px;
+border: 1px solid white;
+color: white;
+text-align: center;
+font-family: ◊codefont;
+font-size: 11px;
+display: inline-block;
+}
+
+.right-number-circle {
+background: ◊cmp-orange;
 }
 
 .output {

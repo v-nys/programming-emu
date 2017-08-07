@@ -114,7 +114,11 @@
     (txexpr 'td
             (get-attrs note-cell)
             (append (get-elements note-cell)
-                    (list (number->string no)))))
+                    (list
+                     (txexpr
+                      'div
+                      `((class ,(format "number-circle ~a" (if cmp-1? "left-number-circle" "right-number-circle"))))
+                      (list (number->string no)))))))
   (let-values
       ([(replaced _)
         (splitf-txexpr
@@ -139,7 +143,6 @@
   (define numbered (map number-note notes/no))
   (cons inserted numbered))
 
-;; TODO test this and all auxiliary functions
 (define (codecmp-generator/notes txexprs)
   (define groups
     (reverse
@@ -283,8 +286,7 @@
          #:f2 f2
          #:lang2 [lang2 "racket"]
          #:fn2 [fn2 #f]
-         #:new/2 [new/2 empty]
-         #:notes [notes '()])
+         #:new/2 [new/2 empty])
 
   ;; used to preserve line structure in included code
   (define (break-code-lines e acc)
