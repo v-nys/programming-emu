@@ -40,7 +40,7 @@
 ◊(define regular-link-color aqua)
 ◊(define cmp-aqua "#009999")
 ◊(define cmp-aqua-transparent "rgba(0,144,144,0.2)")
-◊(define cmp-orange "orange")
+◊(define cmp-orange "#ff7a00")
 ◊(define cmp-orange-transparent "rgba(244,167,66,0.2)")
 
 ◊;; organizing principle: by specificity, then alphabetically, with space followed by @#.:
@@ -85,6 +85,31 @@ position: relative;
 right: 100px;
 }
 
+.code-table.cmp-1 tbody tr:nth-child(odd) td:nth-child(2),
+.code-table.cmp-2 tbody tr:nth-child(odd) td:nth-child(1){
+background-color: ◊very-light-gray;
+}
+
+.code-table.cmp-1 thead td:nth-child(2),
+.code-table.cmp-1 thead td:nth-child(3){
+background-color: ◊cmp-aqua-transparent;
+color: ◊cmp-aqua;
+}
+
+.code-table.cmp-2 thead td:nth-child(1),
+.code-table.cmp-2 thead td:nth-child(2){
+background-color: ◊cmp-orange-transparent;
+color: ◊cmp-orange;
+}
+
+.cmp-2 a {
+color: ◊cmp-orange;
+}
+
+.code-note-margin {
+width: 100px;
+}
+
 .comparative-line:nth-child(odd) .comparative-snippet{
 background-color: ◊very-light-gray;
 }
@@ -97,9 +122,17 @@ td span.code {
 background-color: ◊white;
 }
 
+.code-table td {
+height: 1.5em;
+}
+
 .comparative-snippet:first-child {
 padding-left: 0;
 border-right: 1em solid white;
+}
+
+.listing-line-content {
+width: 100%;
 }
 
 .pageturn:hover {
@@ -150,6 +183,10 @@ color: ◊cmp-orange;
 
 span.code {
 background-color: ◊light-gray;
+}
+
+.added-line {
+border: 1px dashed;
 }
 
 .aside {
