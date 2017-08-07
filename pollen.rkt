@@ -117,7 +117,8 @@
                     (list
                      (txexpr
                       'div
-                      `((class ,(format "number-circle ~a" (if cmp-1? "left-number-circle" "right-number-circle"))))
+                      `((class ,(format "listingnote number-circle ~a" (if cmp-1? "left-number-circle" "right-number-circle")))
+                        (target-note ,(attr-ref note 'id)))
                       (list (number->string no)))))))
   (let-values
       ([(replaced _)
@@ -257,9 +258,6 @@
 (define (exercise . elements)
   (txexpr 'p `((class "exercise")) (cons "Exercise: " elements)))
 (provide exercise)
-
-(define (notenum->anchor num)
-  (txexpr 'a `((class "listingnote") (note-number ,(number->string num))) (list (number->string num))))
 
 (define (cmpnote/1 #:line line . elements)
   (txexpr 'div `((class "code-note-container cmp-1") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
