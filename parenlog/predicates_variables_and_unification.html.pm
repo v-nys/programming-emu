@@ -21,7 +21,7 @@ Here are some ◊note{tests} for a function with said signature. I would advise 
 Try to come up with code that gets those tests to pass. If you get stuck, have a look at the code below, focus on understanding and remembering the general structure, then try again from memory.
 
 Here's my code (on the left) and Jay's code (on the right).
-◊codecmp[#:f1 "code/unify.rkt" #:f2 "code/unify-jay.rkt" #:new/1 '(2 7 8 9) #:new/2 '(3 4 5)]
+◊codecmp[#:f1 "code/unify.rkt" #:f2 "code/unify-jay.rkt"]
 ◊;would be very cool if I didn't have to supply the refs, but that can wait
 ◊cmpnote/1[#:line 3]{A note about my code}
 ◊cmpnote/2[#:line 5]{A note about Jay's code}

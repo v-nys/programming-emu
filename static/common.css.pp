@@ -102,6 +102,22 @@ background-color: ◊cmp-orange-transparent;
 color: ◊cmp-orange;
 }
 
+.cmp-1 tr:first-child .listing-line-content{
+border-top: 1px solid ◊cmp-aqua;
+}
+
+.cmp-1 tr:last-child .listing-line-content {
+border-bottom: 1px solid ◊cmp-aqua;
+}
+
+.cmp-2 tr:first-child .listing-line-content{
+border-top: 1px solid ◊cmp-orange;
+}
+
+.cmp-2 tr:last-child .listing-line-content {
+border-bottom: 1px solid ◊cmp-orange;
+}
+
 .cmp-2 a {
 color: ◊cmp-orange;
 }
@@ -185,8 +201,14 @@ span.code {
 background-color: ◊light-gray;
 }
 
-.added-line {
-border: 1px dashed;
+.cmp-1 .added-line {
+border-left: 1px dashed ◊cmp-aqua;
+border-right: 1px dashed ◊cmp-aqua;
+}
+
+.cmp-2 .added-line {
+border-left: 1px dashed ◊cmp-orange;
+border-right: 1px dashed ◊cmp-orange;
 }
 
 .aside {
@@ -230,12 +252,28 @@ height: ◊code-line-height;
 font-weight: bold;
 }
 
+.cmp-1 .first-added-line {
+border-top: 1px dashed ◊cmp-aqua;
+}
+
+.cmp-2 .first-added-line {
+border-top: 1px dashed ◊cmp-orange;
+}
+
 .glossarytermlabel {
 font-weight: bold;
 }
 
 .inactive-number-circle {
 background: gray;
+}
+
+.cmp-1 .last-added-line {
+border-bottom: 1px dashed ◊cmp-aqua;
+}
+
+.cmp-2 .last-added-line {
+border-bottom: 1px dashed ◊cmp-orange;
 }
 
 .active-number-circle.left-number-circle {
@@ -317,10 +355,12 @@ font-family: 'Fira Sans';
 }
 
 note-nb {
-display: inline;
+display: inline-block;
 vertical-align: middle;
 height: 100%;
 padding-right: .5em;
+width: 6em;
+text-align: right;
 }
 
 p {

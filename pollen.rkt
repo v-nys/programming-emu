@@ -189,7 +189,7 @@
 (define (txexpr-proc tx)
   (define result
     ((compose move-head-appendix postprocess-codecmp-notes)
-   tx))
+     tx))
   result)
 
 (define (post-process tx)
@@ -308,6 +308,31 @@
 
   (define (code-trowify line/no new left?)
     (define op (if left? identity reverse))
+    (define (group-adjacent-lines e acc)
+      (match acc
+        [(cons groups newest)
+         #:when (not (= (add1 newest) e))
+         (cons
+          (cons (list e) groups)
+          e)]
+        [(cons groups 0)
+         (cons
+          '((1))
+          e)]
+        [(cons groups newest)
+         (cons
+          (cons
+           (append
+            (first groups)
+            (list e))
+           (cdr groups))
+          e)]))
+    (define new-groups
+      (car (foldl group-adjacent-lines (cons '() 0) (sort new <))))
+    (define (first-in-group? e)
+      (ormap (λ (g) (= (first g) e)) new-groups))
+    (define (last-in-group? e)
+      (ormap (λ (g) (= (last g) e)) new-groups))
     (txexpr
      'tr
      '()
@@ -321,7 +346,13 @@
        (txexpr
         'td
         `((colspan "2")
-          (class ,(format "listing-line-content~a" (if (member (car line/no) new) " added-line" ""))))
+          (class
+              ,(string-append
+                "listing-line-content"
+                (if (member (car line/no) new) " added-line" "")
+                (if (first-in-group? (car line/no)) " first-added-line" "")
+                (if (last-in-group? (car line/no)) " last-added-line" "")))
+          (line-no ,(number->string (car line/no))))
         (map preserve (cdr line/no)))))))
   (define (code-tbodify lines new left? num-lines)
     (txexpr
