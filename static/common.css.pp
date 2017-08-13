@@ -124,6 +124,7 @@ color: ◊cmp-orange;
 
 .code-note-margin {
 min-width: 100px;
+padding: 0px;
 }
 
 .code-note-margin.cmp-1 {
@@ -183,6 +184,11 @@ border-left: 2px solid ◊cmp-aqua;
 background-color: ◊cmp-aqua-transparent;
 vertical-align: middle;
 margin-bottom: 0px;
+/* own width = entire div, without note width, note padding, own border, own padding*/
+width: calc(100% - (5.5em + 2px) - 8px - 2px - 8px);
+padding-top: .25em;
+padding-bottom: .25em;
+margin: .5em 0 .5em 0;
 }
 
 aside.cmp-2 {
@@ -191,6 +197,11 @@ border-left: 2px solid ◊cmp-orange;
 background-color: ◊cmp-orange-transparent;
 vertical-align: middle;
 margin-bottom: 0px;
+/* own width = entire div, without note width, note padding, own border, own padding*/
+width: calc(100% - (5.5em + 2px) - 8px - 2px - 8px);
+padding-top: .25em;
+padding-bottom: .25em;
+margin: .5em 0 .5em 0;
 }
 
 note-nb.cmp-1 {
@@ -228,7 +239,7 @@ font-family: ◊codefont;
 .code-note-container {
 width: calc(100% + 6em);
 position: relative;
-right: 1em;
+right: calc(6em + 2px);
 }
 
 .comparative-line {
@@ -347,6 +358,8 @@ text-decoration: none;
 
 aside {
 padding-left: .5em;
+background-color: ◊light-gray;
+border-left: 2px solid gray;
 }
 
 body {
@@ -363,7 +376,7 @@ display: inline-block;
 vertical-align: middle;
 height: 100%;
 padding-right: .5em;
-width: 6em;
+width: calc(5.5em + 2px);
 text-align: right;
 }
 

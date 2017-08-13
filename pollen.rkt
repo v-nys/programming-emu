@@ -239,10 +239,6 @@
   (txexpr 'span '((class "answer")) (append '("Answer: ") elements)))
 (provide answer)
 
-(define (aside . elements)
-  (txexpr 'span '((class "aside")) elements))
-(provide aside)
-
 (define (capitalize str)
   (regexp-replace #rx"^." str string-upcase))
 (provide capitalize)
