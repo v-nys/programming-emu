@@ -248,7 +248,7 @@
 (provide caveat)
 
 (define (code . elements)
-  (txexpr 'span '((class "code")) elements))
+  (txexpr 'inline-code '() elements))
 (provide code)
 
 (define (exercise . elements)
@@ -257,12 +257,12 @@
 
 (define (cmpnote/1 #:line line . elements)
   (txexpr 'div `((class "code-note-container cmp-1") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-          (list (txexpr 'aside '((class "cmp-1")) elements))))
+          (list (txexpr 'aside '((class "cmp-n cmp-1")) elements))))
 (provide cmpnote/1)
 
 (define (cmpnote/2 #:line line . elements)
   (txexpr 'div `((class "code-note-container cmp-2") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-          (list (txexpr 'aside '((class "cmp-2")) elements))))
+          (list (txexpr 'aside '((class "cmp-n cmp-2")) elements))))
 (provide cmpnote/2)
 
 ;; assign numbers like in enumerate in Python - could be in more general library
@@ -399,7 +399,8 @@
      (if fn
          (list (code-theadify fn left?) (code-tbodify lines new left? num-lines))
          (list (code-tbodify lines new left? num-lines)))))
-  
+
+  ; TODO replace this with highlight
   (define pyg1 (includecode f1 #:lang lang1 #:filename (or fn1 f1)))
   (define pyg2 (includecode f2 #:lang lang2 #:filename (or fn2 f2)))
   

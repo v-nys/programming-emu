@@ -24,9 +24,25 @@ SOFTWARE.}
 <head>
 <meta charset="utf-8">
 <title>◊(select 'h2 doc)</title>
+<!-- itcss generic layer (controlling general rendering by browser) -->
+<link rel="stylesheet" type="text/css" href="/static/generic.normalize.css" />
+<!-- itcss base layer (unclassed elements) -->
+<!-- could still add more, like lists, etc. -->
+<link rel="stylesheet" type="text/css" href="/static/base.links.css" />
+<link rel="stylesheet" type="text/css" href="/static/base.inputs.css" />
+<link rel="stylesheet" type="text/css" href="/static/base.inline-text-elements.css" />
+<link rel="stylesheet" type="text/css" href="/static/base.textual-structure.css" />
+<!-- objects layer (could be generic) -->
+<link rel="stylesheet" type="text/css" href="/static/objects.breadcrumbs.css" />
+<link rel="stylesheet" type="text/css" href="/static/objects.codeblocks.css" />
+<!-- components layer (very specific to Programming Emu) -->
+<!-- wins layer (very specific and breaks existing rules) -->
+<!-- only have one file for now because there shouldn't be too many exceptions -->
+<link rel="stylesheet" type="text/css" href="/static/wins.css" />
+<!-- stuff I still need to port -->
 <link rel="stylesheet" type="text/css" href="/static/common.css" />
-<link rel="stylesheet" type="text/css" href="/static/normalize.css" />
 <link href="//fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet">
+
 <script src="/static/jquery.js"></script>
 <script src="/static/hide-listing-notes.js"></script>
 ◊when/splice[(select 'headappendix doc)]{◊(my->html (select* 'headappendix doc))}

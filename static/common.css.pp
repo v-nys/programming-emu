@@ -20,33 +20,62 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.}
+◊;{Trying to reorganize according to the approach in https://thomasbyttebier.be/blog/less-css-mess
+
+simple guidelines
+=================
+
+- define Racket variables before the first place where they are used, but group constants of the same kind (e.g. colors)
+- always use hyphens instead of underscores or camel casing
+- alphabetic order is always the tie-breaker when other criteria are exhausted
+- 2 spaces for indentation between {} --- if indentation comes up anywhere else in CSS code
+- comments are always on separate lines
+- comments are at most 80 columns
+- name values using Pollen as a preprocessor wherever they have any meaning
+- put multiple selectors on multiple lines
+- use shorthand hex values
+- always prefer double quotes
+- quote attribute values in selectors
+- avoid specifying units for 0-values
+- for slight variations in multiple related declarations,
+breaking the aforementioned whitespace rules to improve readability is okay
+- for comma-separated values, line breaking to improve readability is okay
+- avoid excessive selector nesting - ID's, custom elements, etc. are clear
+- namespace CSS
+
+itcss
+=====
+- generic layer
+- base styles (unclassed elements)
+- objects layer (repeating visual patterns that can go in a *reusable* independent snippet)
+- components layer (specific visual elements, should be possible to copy-paste anywhere on the site)
+- trumps (essentially like inline CSS, put together in thematically ordered files (e.g. w.r.t. alignment, visibility,...))
+
+namespaced CSS
+==============
+prefixes g, b, o, c and t
+
+BEM
+===
+.block for complete objects/components, .block__element for descendants, .block--modifier for states
+
+documentation for front-end
+===========================
+TODO: put in the book itself or use Scribble
+}
+
 ◊(require (only-in racket/string string-join))
 ◊;; i.e. percentage of page to left and right (combined) of content which is blank
 ◊(define content-margin-percentage 32)
 ◊;; i.e. percentage of page immediately to left and right (combined) of todo notes which is blank
 ◊(define todo-margin-percentage 2)
-◊(define body-text-color "#333333")
-◊(define aqua "#009999")
-◊(define codefont "Fira Mono")
-◊(define code-line-height "1.25em")
-◊(define code-pt-size "10pt")
-◊(define forest-green "#009933")
-◊(define fuchsia "#cc0066")
-◊(define light-gray "#cccccc")
-◊(define very-light-gray "#eeeeee")
-◊(define mint-green "#00cc66")
-◊(define orange "#ff6600")
-◊(define white "#ffffff")
-◊(define regular-link-color aqua)
-◊(define cmp-aqua "#009999")
-◊(define cmp-aqua-transparent "rgba(0,144,144,0.2)")
-◊(define cmp-orange "#ff7a00")
-◊(define cmp-orange-transparent "rgba(244,167,66,0.2)")
+◊(define body-text-color "#333")
+◊(require "fonts.rkt" "palette.rkt")
 
-◊;; organizing principle: by specificity, then alphabetically, with space followed by @#.:
-#booktitle {
-color: ◊body-text-color;
-}
+◊(define cmp-aqua aqua)
+◊(define cmp-aqua-transparent "rgba(0,144,144,0.2)")
+◊(define cmp-orange "#ff7700")
+◊(define cmp-orange-transparent "rgba(244,167,66,0.2)")
 
 #content {
 margin-left: auto;
@@ -55,34 +84,11 @@ width: ◊(- 100 content-margin-percentage)%;
 }
 
 #pageturn-left {
-left: 0px;
+left: 0;
 }
 
 #pageturn-right {
-right: 0px;
-}
-
-table.counterparts td:first-child {
-border-right: 1px dashed;
-padding-right: 1em;
-}
-
-table.counterparts td:last-child {
-padding-left: 1em;
-}
-
-.cmp .code-table {
-border-collapse: collapse;
-display: inline-block;
-font-family: ◊codefont;
-line-height: 1.5;
-width: 50%;
-}
-
-.cmp {
-width: calc(100% + 200px);
-position: relative;
-right: 100px;
+right: 0;
 }
 
 .code-table.cmp-1 tbody tr:nth-child(odd) td:nth-child(2),
@@ -118,17 +124,40 @@ border-top: 1px solid ◊cmp-orange;
 border-bottom: 1px solid ◊cmp-orange;
 }
 
+table.counterparts td:first-child {
+border-right: 1px dashed;
+padding-right: 1em;
+}
+
+table.counterparts td:last-child {
+padding-left: 1em;
+}
+
+.cmp .code-table {
+border-collapse: collapse;
+display: inline-block;
+font-family: ◊code-font;
+line-height: 1.5;
+width: 50%;
+}
+
+.code-note-margin.cmp-1 {
+text-align: right;
+}
+
 .cmp-2 a {
 color: ◊cmp-orange;
+}
+
+.cmp {
+width: calc(100% + 200px);
+position: relative;
+right: 100px;
 }
 
 .code-note-margin {
 min-width: 100px;
 padding: 0px;
-}
-
-.code-note-margin.cmp-1 {
-text-align: right;
 }
 
 .comparative-line:nth-child(odd) .comparative-snippet{
@@ -178,10 +207,8 @@ border-bottom: thin dotted ◊aqua;
 color: ◊body-text-color;
 }
 
-aside.cmp-1 {
+aside.cmp-n {
 display: inline-block;
-border-left: 2px solid ◊cmp-aqua;
-background-color: ◊cmp-aqua-transparent;
 vertical-align: middle;
 margin-bottom: 0px;
 /* own width = entire div, without note width, note padding, own border, own padding*/
@@ -191,17 +218,14 @@ padding-bottom: .25em;
 margin: .5em 0 .5em 0;
 }
 
+aside.cmp-1 {
+border-left: 2px solid ◊cmp-aqua;
+background-color: ◊cmp-aqua-transparent;
+}
+
 aside.cmp-2 {
-display: inline-block;
 border-left: 2px solid ◊cmp-orange;
 background-color: ◊cmp-orange-transparent;
-vertical-align: middle;
-margin-bottom: 0px;
-/* own width = entire div, without note width, note padding, own border, own padding*/
-width: calc(100% - (5.5em + 2px) - 8px - 2px - 8px);
-padding-top: .25em;
-padding-bottom: .25em;
-margin: .5em 0 .5em 0;
 }
 
 note-nb.cmp-1 {
@@ -210,10 +234,6 @@ color: ◊cmp-aqua;
 
 note-nb.cmp-2 {
 color: ◊cmp-orange;
-}
-
-span.code {
-background-color: ◊light-gray;
 }
 
 .cmp-1 .added-line {
@@ -226,14 +246,8 @@ border-left: 1px dashed ◊cmp-orange;
 border-right: 1px dashed ◊cmp-orange;
 }
 
-.aside {
-position: absolute;
-right: ◊(/ todo-margin-percentage 2)%;
-width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
-}
-
 .code {
-font-family: ◊codefont;
+font-family: ◊code-font;
 }
 
 .code-note-container {
@@ -258,7 +272,7 @@ padding-left: .5em;
 
 .comparative-snippet {
 display: table-cell;
-font-family: ◊codefont;
+font-family: ◊code-font;
 font-size: ◊code-pt-size;
 height: ◊code-line-height;
 }
@@ -307,7 +321,7 @@ padding: 2px;
 border: 1px solid white;
 color: white;
 text-align: center;
-font-family: ◊codefont;
+font-family: ◊code-font;
 font-size: 11px;
 display: inline-block;
 }
@@ -317,7 +331,7 @@ background: ◊cmp-orange;
 }
 
 .output {
-font-family: ◊codefont;
+font-family: ◊code-font;
 color: ◊fuchsia;
 }
 
@@ -350,25 +364,10 @@ font-style: italic;
 white-space: pre;
 }
 
-◊;; selectors are organized by points first, then alphabetically
-a {
-color: ◊regular-link-color;
-text-decoration: none;
-}
-
 aside {
 padding-left: .5em;
 background-color: ◊light-gray;
 border-left: 2px solid gray;
-}
-
-body {
-font-family: 'Fira Sans';
-color: ◊body-text-color;
-}
-
-h1, h2, h3, h4, h5, h6 {
-font-family: 'Fira Sans';
 }
 
 note-nb {
