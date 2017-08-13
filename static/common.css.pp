@@ -123,7 +123,11 @@ color: ◊cmp-orange;
 }
 
 .code-note-margin {
-width: 100px;
+min-width: 100px;
+}
+
+.code-note-margin.cmp-1 {
+text-align: right;
 }
 
 .comparative-line:nth-child(odd) .comparative-snippet{

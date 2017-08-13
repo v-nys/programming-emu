@@ -24,6 +24,7 @@ Here's my code (on the left) and Jay's code (on the right).
 ◊codecmp[#:f1 "code/unify.rkt" #:f2 "code/unify-jay.rkt"]
 ◊;would be very cool if I didn't have to supply the refs, but that can wait
 ◊cmpnote/1[#:line 3]{A note about my code}
+◊cmpnote/1[#:line 3]{Another note about my code}
 ◊cmpnote/2[#:line 5]{A note about Jay's code}
 
 Conceptually, both snippets do the same things, but there are a few differences. ◊exercise{Name the differences and see whether either snippet contains any improvements over your own code.} ◊exercise{Modify your own code to incorporate any improvements.}
