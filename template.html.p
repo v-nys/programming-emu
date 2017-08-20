@@ -30,7 +30,7 @@ SOFTWARE.}
 <!-- could still add more, like lists, etc. -->
 <link rel="stylesheet" type="text/css" href="/static/base.links.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.inputs.css" />
-<link rel="stylesheet" type="text/css" href="/static/base.inline-text-elements.css" />
+<link rel="stylesheet" type="text/css" href="/static/base.non-structural-text-elements.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.textual-structure.css" />
 <!-- objects layer (could be generic) -->
 <link rel="stylesheet" type="text/css" href="/static/objects.breadcrumbs.css" />
@@ -49,7 +49,7 @@ SOFTWARE.}
 </head>
 <body>
 ◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="/◊(previous here)"></a>}
-<div id="content">
+<div class="content">
 <nav id="header6"><a href="#" style="color: #333333"><i class="fa fa-home"></i></a> » <a href="#">Projects</a> » <a href="#">ProjectName</a> » <a href="#">Section</a></nav>
 ◊(my->html (select* 'unmoved doc))
 </div>

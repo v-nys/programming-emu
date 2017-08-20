@@ -243,12 +243,8 @@
   (regexp-replace #rx"^." str string-upcase))
 (provide capitalize)
 
-(define (caveat . elements)
-  (txexpr 'p '((class "warning")) elements))
-(provide caveat)
-
 (define (code . elements)
-  (txexpr 'inline-code '() elements))
+  (txexpr 'code '() elements))
 (provide code)
 
 (define (exercise . elements)
@@ -501,12 +497,8 @@
 (provide toc)
 
 (define (todo . elements)
-  (txexpr 'span '((class "todonote")) (append (list "TODO: ") elements)))
+  (txexpr 'todonote '() (append (list "TODO: ") elements)))
 (provide todo)
-
-(define (work . elements)
-  (txexpr 'span '((class "work")) elements))
-(provide work)
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:
@@ -515,6 +507,6 @@
 (module setup racket/base
   (provide (all-defined-out))
   (require pollen/setup)
-  (define block-tags (append '(toc note-nb) default-block-tags))
+  (define block-tags (append '(toc note-nb img) default-block-tags))
   ;; cache is disabled to keep TOC up to date
   (define render-cache-active #f))

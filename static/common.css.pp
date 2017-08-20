@@ -68,7 +68,6 @@ TODO: put in the book itself or use Scribble
 ◊;; i.e. percentage of page to left and right (combined) of content which is blank
 ◊(define content-margin-percentage 32)
 ◊;; i.e. percentage of page immediately to left and right (combined) of todo notes which is blank
-◊(define todo-margin-percentage 2)
 ◊(define body-text-color "#333")
 ◊(require "fonts.rkt" "palette.rkt")
 
@@ -77,7 +76,7 @@ TODO: put in the book itself or use Scribble
 ◊(define cmp-orange "#ff7700")
 ◊(define cmp-orange-transparent "rgba(244,167,66,0.2)")
 
-#content {
+.content {
 margin-left: auto;
 margin-right: auto;
 width: ◊(- 100 content-margin-percentage)%;
@@ -213,8 +212,6 @@ vertical-align: middle;
 margin-bottom: 0px;
 /* own width = entire div, without note width, note padding, own border, own padding*/
 width: calc(100% - (5.5em + 2px) - 8px - 2px - 8px);
-padding-top: .25em;
-padding-bottom: .25em;
 margin: .5em 0 .5em 0;
 }
 
@@ -346,28 +343,8 @@ width: ◊(/ content-margin-percentage 4)%;
 padding: 0;
 }
 
-.todonote {
-position: absolute;
-right: ◊(/ todo-margin-percentage 2)%;
-width: ◊(- (/ content-margin-percentage 2) todo-margin-percentage)%;
-}
-
-.warning {
-font-weight: bold;
-}
-
-.work {
-font-style: italic;
-}
-
 .ws {
 white-space: pre;
-}
-
-aside {
-padding-left: .5em;
-background-color: ◊light-gray;
-border-left: 2px solid gray;
 }
 
 note-nb {
@@ -377,10 +354,6 @@ height: 100%;
 padding-right: .5em;
 width: calc(5.5em + 2px);
 text-align: right;
-}
-
-p {
-line-height: 150%;
 }
 
 pre {
