@@ -64,9 +64,8 @@ documentation for front-end
 TODO: put in the book itself or use Scribble
 }
 
-◊(require (only-in racket/string string-join))
+◊(require (only-in racket/string string-join) "base-textual-structure-params.rkt")
 ◊;; i.e. percentage of page to left and right (combined) of content which is blank
-◊(define content-margin-percentage 32)
 ◊;; i.e. percentage of page immediately to left and right (combined) of todo notes which is blank
 ◊(define body-text-color "#333")
 ◊(require "fonts.rkt" "palette.rkt")
@@ -75,12 +74,6 @@ TODO: put in the book itself or use Scribble
 ◊(define cmp-aqua-transparent "rgba(0,144,144,0.2)")
 ◊(define cmp-orange "#ff7700")
 ◊(define cmp-orange-transparent "rgba(244,167,66,0.2)")
-
-.content {
-margin-left: auto;
-margin-right: auto;
-width: ◊(- 100 content-margin-percentage)%;
-}
 
 #pageturn-left {
 left: 0;

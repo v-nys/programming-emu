@@ -1,5 +1,5 @@
 #lang pollen
-◊(require "fonts.rkt" "palette.rkt")
+◊(require "base-textual-structure-params.rkt" "fonts.rkt" "palette.rkt")
 
 body {
 color: ◊body-text-color;
@@ -27,4 +27,11 @@ padding-bottom: .5em;
 
 p {
 line-height: 150%;
+}
+
+content {
+display: block;
+margin-left: auto;
+margin-right: auto;
+width: ◊(- 100 content-margin-percentage)%;
 }
