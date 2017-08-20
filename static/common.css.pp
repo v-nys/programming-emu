@@ -136,7 +136,7 @@ padding-left: 1em;
 .cmp .code-table {
 border-collapse: collapse;
 display: inline-block;
-font-family: ◊code-font;
+font-family: ◊code-font-family;
 line-height: 1.5;
 width: 50%;
 }
@@ -247,7 +247,7 @@ border-right: 1px dashed ◊cmp-orange;
 }
 
 .code {
-font-family: ◊code-font;
+font-family: ◊code-font-family;
 }
 
 .code-note-container {
@@ -272,7 +272,7 @@ padding-left: .5em;
 
 .comparative-snippet {
 display: table-cell;
-font-family: ◊code-font;
+font-family: ◊code-font-family;
 font-size: ◊code-pt-size;
 height: ◊code-line-height;
 }
@@ -321,7 +321,7 @@ padding: 2px;
 border: 1px solid white;
 color: white;
 text-align: center;
-font-family: ◊code-font;
+font-family: ◊code-font-family;
 font-size: 11px;
 display: inline-block;
 }
@@ -331,7 +331,7 @@ background: ◊cmp-orange;
 }
 
 .output {
-font-family: ◊code-font;
+font-family: ◊code-font-family;
 color: ◊fuchsia;
 }
 

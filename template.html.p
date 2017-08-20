@@ -50,7 +50,7 @@ SOFTWARE.}
 <body>
 ◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="/◊(previous here)"></a>}
 <div id="content">
-<a id="booktitle" href="/index.html"><h1>Programming Emu</h1></a>
+<nav id="header6"><a href="#" style="color: #333333"><i class="fa fa-home"></i></a> » <a href="#">Projects</a> » <a href="#">ProjectName</a> » <a href="#">Section</a></nav>
 ◊(my->html (select* 'unmoved doc))
 </div>
 ◊when/splice[(next here)]{<a class="pageturn" id="pageturn-right" href="/◊(next here)"></a>}
