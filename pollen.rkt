@@ -49,8 +49,8 @@
                  #:txexpr-elements-proc decode-paragraphs
                  #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
-                 #:exclude-tags '(style script headappendix pre)
-                 #:exclude-attrs '((class "ws") (class "code"))
+                 #:exclude-tags '(style script headappendix pre code)
+                 #:exclude-attrs '((class "ws"))
                  #:txexpr-proc txexpr-proc)])
     decoded))
 (provide root)
@@ -243,12 +243,8 @@
   (regexp-replace #rx"^." str string-upcase))
 (provide capitalize)
 
-(define (code . elements)
-  (txexpr 'code '() elements))
-(provide code)
-
 (define (exercise . elements)
-  (txexpr 'p `((class "exercise")) (cons "Exercise: " elements)))
+  (txexpr 'exercise '() (cons "Exercise: " elements)))
 (provide exercise)
 
 (define (cmpnote/1 #:line line . elements)
@@ -461,10 +457,6 @@
           elements))
 (provide glossaryref)
 
-(define (output . elements)
-  (txexpr 'div '((class "output")) elements))
-(provide output)
-
 (define (includecode path #:lang [lang "racket"] #:filename [fn ""] #:added-lines [added (list)] #:notelinenumbers [notes (list)])
   (highlight lang (file->string path #:mode 'text)))
 (provide includecode)
@@ -480,7 +472,7 @@
 (provide codenote)
 
 (define (predicate . elements)
-  (apply code elements))
+  (txexpr 'code '() elements))
 (provide predicate)
 
 (define (toc #:depth [depth 1]

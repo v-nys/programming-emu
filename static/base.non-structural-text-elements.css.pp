@@ -4,9 +4,11 @@
           "base-non-structural-text-elements-params.rkt"
           "base-textual-structure-params.rkt")
 
-inline-code {
+code {
 background-color: ◊very-light-gray;
 font-family: ◊code-font-family;
+border-radius: 3px;
+border: 1px solid ◊light-gray;
 }
 
 work {

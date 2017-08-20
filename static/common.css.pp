@@ -65,9 +65,7 @@ TODO: put in the book itself or use Scribble
 }
 
 ◊(require (only-in racket/string string-join) "base-textual-structure-params.rkt")
-◊;; i.e. percentage of page to left and right (combined) of content which is blank
-◊;; i.e. percentage of page immediately to left and right (combined) of todo notes which is blank
-◊(define body-text-color "#333")
+
 ◊(require "fonts.rkt" "palette.rkt")
 
 ◊(define cmp-aqua aqua)
@@ -236,10 +234,6 @@ border-left: 1px dashed ◊cmp-orange;
 border-right: 1px dashed ◊cmp-orange;
 }
 
-.code {
-font-family: ◊code-font-family;
-}
-
 .code-note-container {
 width: calc(100% + 6em);
 position: relative;
@@ -265,10 +259,6 @@ display: table-cell;
 font-family: ◊code-font-family;
 font-size: ◊code-pt-size;
 height: ◊code-line-height;
-}
-
-.exercise {
-font-weight: bold;
 }
 
 .cmp-1 .first-added-line {
@@ -320,11 +310,6 @@ display: inline-block;
 background: ◊cmp-orange;
 }
 
-.output {
-font-family: ◊code-font-family;
-color: ◊fuchsia;
-}
-
 .pageturn {
 position: fixed;
 height: 100%;
@@ -347,10 +332,4 @@ height: 100%;
 padding-right: .5em;
 width: calc(5.5em + 2px);
 text-align: right;
-}
-
-pre {
-border-left: 1px dashed;
-font-size: ◊code-pt-size;
-padding-left: 1em;
 }
