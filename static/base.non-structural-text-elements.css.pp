@@ -15,10 +15,6 @@ work {
 font-style: italic;
 }
 
-warning {
-font-weight: bold;
-}
-
 todonote {
 position: absolute;
 right: ◊(/ todo-margin-percentage 2)%;

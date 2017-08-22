@@ -73,13 +73,7 @@ TODO: put in the book itself or use Scribble
 ◊(define cmp-orange "#ff7700")
 ◊(define cmp-orange-transparent "rgba(244,167,66,0.2)")
 
-#pageturn-left {
-left: 0;
-}
 
-#pageturn-right {
-right: 0;
-}
 
 .code-table.cmp-1 tbody tr:nth-child(odd) td:nth-child(2),
 .code-table.cmp-2 tbody tr:nth-child(odd) td:nth-child(1){
@@ -173,10 +167,6 @@ border-right: 1em solid white;
 
 .listing-line-content {
 width: 100%;
-}
-
-.pageturn:hover {
-background-color: #eeeeee33;
 }
 
 .comparative-snippet pre {
@@ -308,13 +298,6 @@ display: inline-block;
 
 .active-number-circle.right-number-circle {
 background: ◊cmp-orange;
-}
-
-.pageturn {
-position: fixed;
-height: 100%;
-top: 0%;
-width: ◊(/ content-margin-percentage 4)%;
 }
 
 .toc {

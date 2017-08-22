@@ -28,35 +28,39 @@ SOFTWARE.}
 <link rel="stylesheet" type="text/css" href="/static/generic.normalize.css" />
 <!-- itcss base layer (unclassed elements) -->
 <!-- could still add more, like lists, etc. -->
-<link rel="stylesheet" type="text/css" href="/static/base.links.css" />
+<link rel="stylesheet" type="text/css" href="/static/base.code.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.inputs.css" />
+<link rel="stylesheet" type="text/css" href="/static/base.links.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.non-structural-text-elements.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.textual-structure.css" />
-<!-- objects layer (could be generic) -->
-<link rel="stylesheet" type="text/css" href="/static/objects.breadcrumbs.css" />
-<link rel="stylesheet" type="text/css" href="/static/objects.codeblocks.css" />
-<!-- components layer (very specific to Programming Emu) -->
+<!-- components layer -->
+<link rel="stylesheet" type="text/css" href="/static/components.pagination.css" />
 <!-- wins layer (very specific and breaks existing rules) -->
 <!-- only have one file for now because there shouldn't be too many exceptions -->
-<link rel="stylesheet" type="text/css" href="/static/wins.css" />
+<link rel="stylesheet" type="text/css" href="/static/wins.show-hide.css" />
 <!-- stuff I still need to port -->
 <link rel="stylesheet" type="text/css" href="/static/common.css" />
 <link href="//fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet">
 
 <script src="/static/jquery.js"></script>
 <script src="/static/hide-listing-notes.js"></script>
+<script src="/static/highlight-pageturns.js"></script>
+<script src="/static/hide-js-warning.js"></script>
+
 ◊when/splice[(select 'headappendix doc)]{◊(my->html (select* 'headappendix doc))}
 </head>
 <body>
-◊when/splice[(previous here)]{<a class="pageturn" id="pageturn-left" href="/◊(previous here)"></a>}
+◊when/splice[(previous here)]{<a class="c-pageturn c-pageturn-left" href="/◊(previous here)"><img id="pageturn-left-img" class="c-pageturn-img" src="/images/turn-left-light.svg"></a>}
 <content>
-  <nav id="header6">
-    <a href="#" style="color: #333333"><i class="fa fa-home"></i></a> »
-    <a href="#">Projects</a> »
-    <a href="#">ProjectName</a> »
-    <a href="#">Section</a></nav>
+<p class="u-screen-size-p"><warning class="u-screen-size-p__warning">The current version of this book is not optimized for your screen resolution and/or zoom level. You may experience graphical glitches.</warning></p>
+<p id="js-warning-p" class="u-js-p"><warning class="u-js-p__warning">It does not look like JavaScript is enabled on your system. While you can read the book without JavaScript, there are a lot of quality of life improvements that rely on Javascript, so I recommend turning it on.</warning></p>
+<nav id="header6">
+<a href="#" style="color: #333333"><i class="fa fa-home"></i></a> »
+<a href="#">Projects</a> »
+<a href="#">ProjectName</a> »
+<a href="#">Section</a></nav>
 ◊(my->html (select* 'unmoved doc))
 </content>
-◊when/splice[(next here)]{<a class="pageturn" id="pageturn-right" href="/◊(next here)"></a>}
+◊when/splice[(next here)]{<a class="c-pageturn c-pageturn-right" href="/◊(next here)"><img id="pageturn-right-img" class="c-pageturn-img c-pageturn-right__img" src="/images/turn-left-light.svg"></a>}
 </body>
 </html>

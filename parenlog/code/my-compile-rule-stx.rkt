@@ -2,7 +2,8 @@
   (syntax-case stx ()
     [(_ H B ...)
      (with-syntax
-         ([(VAR ...) (extract-stx-vars #'H (syntax->list #'(B ...)))]
+         ([(VAR ...)
+           (extract-stx-vars #'H (syntax->list #'(B ...)))]
           [RWH (rewrite-se #'H)]
           [(RWB ...)
            (map rewrite-se
@@ -15,5 +16,9 @@
             ()
             (let ([unified-env (unify at RWH env)])
               (when unified-env
-                (reyield (answer-query (list RWB ...) th unified-env)))
+                (reyield
+                 (answer-query
+                  (list RWB ...)
+                  th
+                  unified-env)))
               (yield 'done))))))]))

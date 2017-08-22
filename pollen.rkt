@@ -499,6 +499,6 @@
 (module setup racket/base
   (provide (all-defined-out))
   (require pollen/setup)
-  (define block-tags (append '(toc note-nb img) default-block-tags))
+  (define block-tags (append '(img exercise note-nb toc) default-block-tags))
   ;; cache is disabled to keep TOC up to date
   (define render-cache-active #f))

@@ -3,10 +3,10 @@
 
 aside {
 padding-left: .5em;
-background-color: ◊light-gray;
+background-color: ◊very-light-gray;
 border-left: 2px solid gray;
-padding-top: .5em;
-padding-bottom: .5em;
+padding-top: .25em;
+padding-bottom: .25em;
 }
 
 body {
@@ -22,7 +22,9 @@ width: ◊(- 100 content-margin-percentage)%;
 }
 
 exercise {
+display: block;
 font-weight: bold;
+line-height: 150%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -36,6 +38,7 @@ color: ◊fuchsia;
 }
 
 p {
+/* could use a class for all blocks of text? */
 line-height: 150%;
 }
 
@@ -43,4 +46,14 @@ pre {
 border-left: 1px dashed;
 font-size: ◊code-pt-size;
 padding-left: 1em;
+}
+
+warning {
+display: block;
+font-weight: bold;
+line-height: 150%;
+border: 1px solid red;
+background-color: pink;
+border-radius: 5px;
+padding: .5em;
 }
