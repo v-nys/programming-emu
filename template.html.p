@@ -24,6 +24,8 @@ SOFTWARE.}
 <head>
 <meta charset="utf-8">
 <title>◊(select 'h2 doc)</title>
+<!-- libraries -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- itcss generic layer (controlling general rendering by browser) -->
 <link rel="stylesheet" type="text/css" href="/static/generic.normalize.css" />
 <!-- itcss base layer (unclassed elements) -->
@@ -34,9 +36,10 @@ SOFTWARE.}
 <link rel="stylesheet" type="text/css" href="/static/base.non-structural-text-elements.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.textual-structure.css" />
 <!-- components layer -->
+<link rel="stylesheet" type="text/css" href="/static/header6.css" />
 <link rel="stylesheet" type="text/css" href="/static/components.pagination.css" />
 <!-- wins layer (very specific and breaks existing rules) -->
-<!-- only have one file for now because there shouldn't be too many exceptions -->
+<link rel="stylesheet" type="text/css" href="/static/wins.image-placement.css" />
 <link rel="stylesheet" type="text/css" href="/static/wins.show-hide.css" />
 <!-- stuff I still need to port -->
 <link rel="stylesheet" type="text/css" href="/static/common.css" />

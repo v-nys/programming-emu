@@ -2,10 +2,11 @@
 (require "palette.rkt")
 
 (define body-text-color dark-charcoal)
+(define body-text-size "1.7em")
 
 (define code-font-family "Fira Mono")
 (define code-line-height "1.25em")
-(define code-pt-size "10pt")
+(define code-pt-size "17pt")
 
 (define general-content-font "Gentium")
 

@@ -7,6 +7,7 @@ background-color: ◊very-light-gray;
 border-left: 2px solid gray;
 padding-top: .25em;
 padding-bottom: .25em;
+font-size: ◊body-text-size;
 }
 
 body {
@@ -32,14 +33,28 @@ font-family: ◊header-font-family;
 font-variant: ◊header-font-variant;
 }
 
+h1 {
+font-size: 30pt;
+}
+
+h2 {
+font-size: 25pt;
+}
+
+h3 {
+font-size: 20pt;
+}
+
 output {
 font-family: ◊code-font-family;
+font-size: ◊code-pt-size;
 color: ◊fuchsia;
 }
 
 p {
 /* could use a class for all blocks of text? */
 line-height: 150%;
+font-size: ◊body-text-size;
 }
 
 pre {

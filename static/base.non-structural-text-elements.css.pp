@@ -9,6 +9,7 @@ background-color: ◊very-light-gray;
 font-family: ◊code-font-family;
 border-radius: 3px;
 border: 1px solid ◊light-gray;
+font-size: ◊code-pt-size;
 }
 
 work {
