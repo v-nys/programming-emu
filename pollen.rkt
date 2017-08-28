@@ -438,7 +438,7 @@
           (sort
            (foldr (λ (pn acc) (append (pn->glossary-paragraphs pn) acc)) empty
                   ;; including these would lead to an infinite loop, because they have a dependency on the glossary
-                  (pagetree->list (splice-out-nodes (get-pagetree (build-path (current-project-root) "index.ptree")) '(index.html coda/glossary.html))))
+                  (pagetree->list (splice-out-nodes (get-pagetree (build-path (current-project-root) "index.ptree")) '(index.html glossary.html))))
            (λ (p1 p2) (string<?(string-downcase (attr-ref p1 'id)) (string-downcase (attr-ref p2 'id)))))))
 (provide glossary)
 
