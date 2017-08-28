@@ -1,0 +1,3 @@
+#lang pollen
+◊(for/list ([fn (cadr (dynamic-require "projects/parenlog/parenlog.ptree" 'doc))])
+   (string->symbol (string-append "parenlog/" (symbol->string fn))))

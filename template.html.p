@@ -53,6 +53,7 @@ SOFTWARE.}
 ◊when/splice[(select 'headappendix doc)]{◊(my->html (select* 'headappendix doc))}
 </head>
 <body>
+<!--The current page is ◊|here|.-->
 ◊when/splice[(previous here)]{<a class="c-pageturn c-pageturn-left" href="/◊(previous here)"><img id="pageturn-left-img" class="c-pageturn-img" src="/images/turn-left-light.svg"></a>}
 <content>
 <p class="u-screen-size-p"><warning class="u-screen-size-p__warning">The current version of this book is not optimized for your screen resolution and/or zoom level. You may experience graphical glitches.</warning></p>

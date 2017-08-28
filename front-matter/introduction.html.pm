@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.}
 ◊h2{Introduction}
-◊img[#:class "u-emu-svg" #:id "emu-svg" #:src "images/emu.svg"]
+◊img[#:class "u-emu-svg" #:id "emu-svg" #:src "/images/emu.svg"]
 I'm a poor ◊a[#:href "http://www.racket-lang.org"]{Racket} programmer. If you give me an end-to-end task, I can probably write code that accomplishes it, but said code may be orders of magnitude longer and slower than it needs to be. I can figure out what I need to do at compile time and what I need to do at runtime, but often through trial and error. I only have ◊a[#:href "https://github.com/v-nys/cclp"]{one moderately large Racket codebase} and I'm extremely embarrassed to point you to it. Those are the facts, so what to do?
 
 It's well established that acquiring a skill requires ◊a[#:href "http://expertenough.com/1423/deliberate-practice"]{deliberate practice}. If you want to learn how to do something general (like writing decent Racket code), it's important to have specific goals, to make a conscious effort to learn from mistakes and to seek out feedback. Enter ◊work{Programming Emu}, a project-based book in which I try to reverse engineer interesting Racket projects.
