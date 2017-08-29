@@ -6,7 +6,6 @@
          txexpr)
 (define docs-class "docs")
 (define (docs module-path export . xs-in)
-  (log-emu-debug (format "export is: ~s\n" export))
   (define xref (load-collections-xref))
   (define linkname (if (null? xs-in) (list export) xs-in))
   (define tag (xref-binding->definition-tag xref (list module-path (->symbol export)) #f))

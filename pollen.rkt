@@ -23,6 +23,7 @@
 (require "doc-linking.rkt"
          "logging.rkt"
          "navigation.rkt"
+         anaphoric
          pollen/core
          pollen/decode
          pollen/misc/tutorial
@@ -34,8 +35,8 @@
          racket/file
          (only-in racket/function curry identity)
          racket/generator
-         (only-in racket/list add-between append* drop first flatten group-by last)
-         (only-in racket/match match)
+         (only-in racket/list add-between append* drop drop-right first flatten group-by last)
+         (only-in racket/match match match-lambda)
          (only-in racket/stream stream->list)
          racket/string
          txexpr
@@ -481,17 +482,59 @@
              #:ordered? [ol? #f])
   (log-emu-info "generating TOC")
   (let ([ptree (get-pagetree ptree-fn)]
-        [prefix (string-replace (path->string (current-directory)) (path->string (current-project-root)) "")])
+        [prefix
+         (string-replace
+          (path->string (current-directory))
+          (path->string (current-project-root))
+          "")])
     (ptree->html-list
      (map-elements
-      (λ (e) (if (symbol? e) (string->symbol (string-append prefix (symbol->string e))) e))
-      (splice-out-nodes (prune-tree/depth ptree depth) exceptions))
+      (λ (e)
+        (if
+         (symbol? e)
+         (string->symbol
+          (string-append
+           prefix
+           (symbol->string e)))
+         e))
+      (splice-out-nodes
+       (prune-tree/depth ptree depth)
+       exceptions))
      ol?)))
 (provide toc)
+
+;; getting the top-level pagetree is straightforward, but how can I get the current page's pagenode from a function?
 
 (define (todo . elements)
   (txexpr 'todonote '() (append (list "TODO: ") elements)))
 (provide todo)
+
+(define (navbar loc)
+  (define (trail lst)
+    (aif (parent (first lst))
+         (trail (cons it lst))
+         lst))
+  (define pairs
+    (map
+     (λ (e)
+       (cons e (select 'h2 e)))
+     (trail (list loc))))
+  (if (> (length pairs) 1)
+      (txexpr
+       'nav
+       '((id "header6"))
+       (add-between
+        (cons
+         (txexpr 'a `((class "fa fa-home") (href ,(format "/~a" (caar pairs)))))
+         (map
+          (match-lambda
+            [(cons node-sym title-str)
+             (txexpr 'a `((href ,(format "/~a" node-sym))) (list title-str))])
+          (drop-right (cdr pairs) 1)))
+        " » "))
+      ""))
+
+(provide navbar)
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:
