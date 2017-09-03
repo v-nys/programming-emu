@@ -248,6 +248,11 @@
   (txexpr 'exercise '() (cons "Exercise: " elements)))
 (provide exercise)
 
+(define (codenote #:line line . elements)
+  (txexpr 'div `((class "code-note-container") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
+          (list (txexpr 'aside '((class "cmp-n")) elements))))
+(provide codenote)
+
 (define (cmpnote/1 #:line line . elements)
   (txexpr 'div `((class "code-note-container cmp-1") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
           (list (txexpr 'aside '((class "cmp-n cmp-1")) elements))))
@@ -472,16 +477,6 @@
    lang
    (file->string path #:mode 'text)))
 (provide includecode)
-
-(define (codenote . elements)
-  (define (codenoteidx number)
-    (txexpr 'codenoteidx empty (list "1")))
-  (define (codenotecontents elements)
-    (txexpr 'codenotecontents empty elements))
-  (txexpr 'codenote empty
-          (cons (codenoteidx 999)
-                (list (codenotecontents elements)))))
-(provide codenote)
 
 (define (predicate . elements)
   (txexpr 'code '() elements))
