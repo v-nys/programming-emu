@@ -265,6 +265,124 @@
     [(list-rest h t)
      (cons (cons count h) (enumerate t (add1 count)))]))
 
+;; used to preserve line structure in included code
+(define (break-code-lines e acc)
+  (match acc
+    [(list-rest curr-line prev-lines)
+     (if (and (string? e) (regexp-match? #rx"\n" e))
+         (let* ([upto (cadr (regexp-match #rx"([^\n]*)\n" e))]
+                [remainder (regexp-replace (string-append upto "\n") e "")])
+           (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
+         (cons (append curr-line (list e)) prev-lines))]))
+
+;; add surrounding tags to preserve whitespace if necessary
+(define (preserve se)
+  (if (string? se)
+      (txexpr 'span '((class "ws")) (list se))
+      se))
+
+;; make sure a list of lines has the right length for comparison
+(define (extend lines num)
+  (append lines (build-list (- num (length lines)) (λ (_) empty))))
+
+(define (code-trowify line/no new left?)
+  (define op (if left? identity reverse))
+  (define (group-adjacent-lines e acc)
+    (match acc
+      [(cons groups newest)
+       #:when (not (= (add1 newest) e))
+       (cons
+        (cons (list e) groups)
+        e)]
+      [(cons groups 0)
+       (cons
+        '((1))
+        e)]
+      [(cons groups newest)
+       (cons
+        (cons
+         (append
+          (first groups)
+          (list e))
+         (cdr groups))
+        e)]))
+  (define new-groups
+    (car (foldl group-adjacent-lines (cons '() 0) (sort new <))))
+  (define (first-in-group? e)
+    (ormap (λ (g) (= (first g) e)) new-groups))
+  (define (last-in-group? e)
+    (ormap (λ (g) (= (last g) e)) new-groups))
+  (txexpr
+   'tr
+   '()
+   (op
+    (list
+     (txexpr
+      'td
+      `((class ,(string-join (list "code-note-margin" (if left? "cmp-1" "cmp-2"))))
+        (line-no ,(number->string (car line/no))))
+      '())
+     (txexpr
+      'td
+      `((colspan "2")
+        (class
+            ,(string-append
+              "listing-line-content"
+              (if (member (car line/no) new) " added-line" "")
+              (if (first-in-group? (car line/no)) " first-added-line" "")
+              (if (last-in-group? (car line/no)) " last-added-line" "")))
+        (line-no ,(number->string (car line/no))))
+      (map preserve (cdr line/no)))))))
+(define (code-tbodify lines new left? num-lines)
+  (txexpr
+   'tbody
+   '()
+   (map
+    (λ (l) (code-trowify l new left?))
+    (enumerate (extend lines num-lines) 1))))
+(define (code-theadify fn left?)
+  (txexpr
+   'thead
+   `((class ,(if left? "cmp-1" "cmp-2")))
+   (list (txexpr
+          'tr
+          '()
+          (list
+           (if left?
+               (txexpr
+                'td
+                `((class "code-note-margin")
+                  (id ,(symbol->string (gensym 'margin-cell-))))
+                (list ""))
+               "")
+           (txexpr
+            'td
+            '()
+            (list fn))
+           (txexpr
+            'td
+            '()
+            (list
+             (txexpr
+              'i
+              '((class "fa fa-files-o")
+                (aria-hidden "true"))
+              empty)))
+           (if (not left?)
+               (txexpr
+                'td
+                `((class "code-note-margin")
+                  (id ,(symbol->string (gensym 'margin-cell-))))
+                (list ""))
+               ""))))))
+(define (code-tablify lines lang fn new left? num-lines)
+  (txexpr
+   'table
+   `((class ,(format "code-table ~a" (if left? "cmp-1" "cmp-2"))))
+   (if fn
+       (list (code-theadify fn left?) (code-tbodify lines new left? num-lines))
+       (list (code-tbodify lines new left? num-lines)))))
+
 (define (codecmp
          #:f1 f1 ; the location of the source code
          #:lang1 [lang1 "racket"]
@@ -274,124 +392,6 @@
          #:lang2 [lang2 "racket"]
          #:fn2 [fn2 #f]
          #:new/2 [new/2 empty])
-
-  ;; used to preserve line structure in included code
-  (define (break-code-lines e acc)
-    (match acc
-      [(list-rest curr-line prev-lines)
-       (if (and (string? e) (regexp-match? #rx"\n" e))
-           (let* ([upto (cadr (regexp-match #rx"([^\n]*)\n" e))]
-                  [remainder (regexp-replace (string-append upto "\n") e "")])
-             (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
-           (cons (append curr-line (list e)) prev-lines))]))
-
-  ;; add surrounding tags to preserve whitespace if necessary
-  (define (preserve se)
-    (if (string? se)
-        (txexpr 'span '((class "ws")) (list se))
-        se))
-
-  ;; make sure a list of lines has the right length for comparison
-  (define (extend lines num)
-    (append lines (build-list (- num (length lines)) (λ (_) empty))))
-
-  (define (code-trowify line/no new left?)
-    (define op (if left? identity reverse))
-    (define (group-adjacent-lines e acc)
-      (match acc
-        [(cons groups newest)
-         #:when (not (= (add1 newest) e))
-         (cons
-          (cons (list e) groups)
-          e)]
-        [(cons groups 0)
-         (cons
-          '((1))
-          e)]
-        [(cons groups newest)
-         (cons
-          (cons
-           (append
-            (first groups)
-            (list e))
-           (cdr groups))
-          e)]))
-    (define new-groups
-      (car (foldl group-adjacent-lines (cons '() 0) (sort new <))))
-    (define (first-in-group? e)
-      (ormap (λ (g) (= (first g) e)) new-groups))
-    (define (last-in-group? e)
-      (ormap (λ (g) (= (last g) e)) new-groups))
-    (txexpr
-     'tr
-     '()
-     (op
-      (list
-       (txexpr
-        'td
-        `((class ,(string-join (list "code-note-margin" (if left? "cmp-1" "cmp-2"))))
-          (line-no ,(number->string (car line/no))))
-        '())
-       (txexpr
-        'td
-        `((colspan "2")
-          (class
-              ,(string-append
-                "listing-line-content"
-                (if (member (car line/no) new) " added-line" "")
-                (if (first-in-group? (car line/no)) " first-added-line" "")
-                (if (last-in-group? (car line/no)) " last-added-line" "")))
-          (line-no ,(number->string (car line/no))))
-        (map preserve (cdr line/no)))))))
-  (define (code-tbodify lines new left? num-lines)
-    (txexpr
-     'tbody
-     '()
-     (map
-      (λ (l) (code-trowify l new left?))
-      (enumerate (extend lines num-lines) 1))))
-  (define (code-theadify fn left?)
-    (txexpr
-     'thead
-     `((class ,(if left? "cmp-1" "cmp-2")))
-     (list (txexpr
-            'tr
-            '()
-            (list
-             (if left?
-                 (txexpr
-                  'td
-                  `((class "code-note-margin")
-                    (id ,(symbol->string (gensym 'margin-cell-))))
-                  (list ""))
-                 "")
-             (txexpr
-              'td
-              '()
-              (list fn))
-             (txexpr
-              'td
-              '()
-              (list
-               (txexpr
-                'i
-                '((class "fa fa-files-o")
-                  (aria-hidden "true"))
-                empty)))
-             (if (not left?)
-                 (txexpr
-                  'td
-                  `((class "code-note-margin")
-                    (id ,(symbol->string (gensym 'margin-cell-))))
-                  (list ""))
-                 ""))))))
-  (define (code-tablify lines lang fn new left? num-lines)
-    (txexpr
-     'table
-     `((class ,(format "code-table ~a" (if left? "cmp-1" "cmp-2"))))
-     (if fn
-         (list (code-theadify fn left?) (code-tbodify lines new left? num-lines))
-         (list (code-tbodify lines new left? num-lines)))))
 
   ; TODO replace this with highlight
   (define pyg1 (includecode f1 #:lang lang1 #:filename (or fn1 f1)))
@@ -410,6 +410,15 @@
   
   (txexpr 'div '((class "cmp")) (list table1 table2)))
 (provide codecmp)
+
+(define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty])
+  (define pyg (includecode f #:lang lang #:filename (or fn f)))
+  (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
+  (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
+  (define num-lines (length pre-lines))
+  (define table (code-tablify pre-lines lang fn new #t num-lines))
+  (txexpr 'div '((class "cmp")) (list table)))
+(provide newincludecode)
 
 (define (explanation . elements)
   (txexpr 'span '((class "explanation")) elements))
@@ -459,7 +468,9 @@
 (provide glossaryref)
 
 (define (includecode path #:lang [lang "racket"] #:filename [fn ""] #:added-lines [added (list)] #:notelinenumbers [notes (list)])
-  (highlight lang (file->string path #:mode 'text)))
+  (highlight
+   lang
+   (file->string path #:mode 'text)))
 (provide includecode)
 
 (define (codenote . elements)

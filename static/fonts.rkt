@@ -8,7 +8,7 @@
 (define code-line-height "1.25em")
 (define code-pt-size "17pt")
 
-(define general-content-font "Gentium")
+(define general-content-font "Gentium Basic")
 
 (define header-font-family "ChunkFive")
 (define header-font-variant "small-caps")

@@ -24,15 +24,18 @@ SOFTWARE.}
 <head>
 <meta charset="utf-8">
 <title>◊(select 'h2 doc)</title>
+
 <!-- libraries -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- itcss generic layer (controlling general rendering by browser) -->
 <link rel="stylesheet" type="text/css" href="/static/generic.normalize.css" />
+<link rel="stylesheet" type="text/css" href="/static/generic.font-specifications.css" />
 <!-- itcss base layer (unclassed elements) -->
 <!-- could still add more, like lists, etc. -->
 <link rel="stylesheet" type="text/css" href="/static/base.code.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.inputs.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.links.css" />
+<link rel="stylesheet" type="text/css" href="/static/base.lists.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.non-structural-text-elements.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.textual-structure.css" />
 <!-- components layer -->
@@ -44,7 +47,7 @@ SOFTWARE.}
 <!-- stuff I still need to port -->
 <link rel="stylesheet" type="text/css" href="/static/common.css" />
 <link href="//fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css?family=Gentium+Basic" rel="stylesheet"> 
 <script src="/static/jquery.js"></script>
 <script src="/static/hide-listing-notes.js"></script>
 <script src="/static/highlight-pageturns.js"></script>

@@ -1,6 +1,11 @@
 #lang pollen
 ◊(require "base-textual-structure-params.rkt" "fonts.rkt" "palette.rkt")
 
+@font-face {
+font-family: 'ChunkFive';
+src: url("/static/fonts/Chunkfive.woff");
+}
+
 aside {
 padding-left: .5em;
 background-color: ◊very-light-gray;
@@ -26,11 +31,14 @@ exercise {
 display: block;
 font-weight: bold;
 line-height: 150%;
+font-size: ◊body-text-size;
 }
 
 h1, h2, h3, h4, h5, h6 {
 font-family: ◊header-font-family;
 font-variant: ◊header-font-variant;
+font-weight: normal;
+font-style: normal;
 }
 
 h1 {

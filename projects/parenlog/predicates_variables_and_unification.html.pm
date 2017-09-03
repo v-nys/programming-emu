@@ -14,7 +14,7 @@ Here's a suggested function signature:
 ◊highlight['racket]{;; S-expression -> S-expression -> environment -> (or/c environment #f)}
 
 Here are some ◊note{tests} for a function with said signature. I would advise you to read these first, as they can clarify some of the expected behavior. There's one case in which shared variables occur on the left-hand side and on the right-hand side. That's something we'll typically avoid, but it still makes for a useful test case.
-◊includecode["code/unify-tests.rkt" #:lang "racket"]
+◊newincludecode["code/unify-tests.rkt" #:lang "racket"]
 
 Try to come up with code that gets those tests to pass. If you get stuck, have a look at the code below, focus on understanding and remembering the general structure, then try again from memory.
 
