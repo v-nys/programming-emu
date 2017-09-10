@@ -30,23 +30,22 @@
   (match lst
     [(list) (list)]
     [(list-rest h t)
-     (cons (cons count h) (enumerate t (add1 count)))]))
+     (cons
+      (cons count h)
+      (enumerate t (add1 count)))]))
 
-(define (insert-note note/no cmp)
-  (define no (car note/no))
-  (define note (cdr note/no))
+(define (insert-note note/no ann-c)
+  (match-define (cons no note) note/no)
   (define note-line (string->number (attr-ref note 'line)))
   (define cmp-1? (member "cmp-1" (string-split (attr-ref note 'class))))
   (define tbodies
     (findf*-txexpr
-     cmp
+     ann-c
      (λ (e)
        (and (txexpr? e)
             (eq? (get-tag e) 'tbody)))))
   (define tbody
-    (if cmp-1?
-        (first tbodies)
-        (last tbodies)))
+    (first tbodies))
   (define trow
     (list-ref
      (findf*-txexpr
@@ -69,29 +68,25 @@
                     (list
                      (txexpr
                       'div
-                      `((class ,(format "listingnote active-number-circle number-circle ~a" (if cmp-1? "left-number-circle" "right-number-circle")))
+                      `((class ,(format "listingnote active-number-circle number-circle ~a" "left-number-circle"))
                         (target-note ,(attr-ref note 'id)))
                       (list (number->string no)))))))
   (let-values
       ([(replaced _)
         (splitf-txexpr
-         cmp
+         ann-c
          (λ (e)
            (and (txexpr? e)
                 (equal?
                  (attr-ref e 'line-no #f)
                  (number->string note-line))
-                (if cmp-1?
-                    (string-contains? (attr-ref e 'class) "cmp-1")
-                    (string-contains? (attr-ref e 'class) "cmp-2"))))
+                (string-contains? (attr-ref e 'class) "code-note-margin")))
          (λ (_) new-cell))])
     replaced))
 
 (define (number-note note/no)
   (define no (car note/no))
   (define note (cdr note/no))
-  (define cmp-1? (member "cmp-1" (string-split (attr-ref note 'class))))
-  (define cmp-2? (member "cmp-2" (string-split (attr-ref note 'class))))
   (define note-elements (get-elements note))
   (txexpr
    (get-tag note)
@@ -99,16 +94,16 @@
    (cons
     (txexpr
      'note-nb
-     `((class ,(cond [cmp-1? "cmp-1"] [cmp-2? "cmp-2"] [else ""])))
+     empty
      (list (number->string no)))
     note-elements)))
 
 ;; edit both the comparison (inserting note numbers in margin)
 ;; and the notes themselves (inserting numbers as elements)
-(define (process-cmp/notes group)
-  (define cmp (car group))
+(define (process-annotated-code group)
+  (define ann-c (car group))
   (define notes/no (enumerate (cdr group) 1))
-  (define inserted (foldl insert-note cmp notes/no))
+  (define inserted (foldl insert-note ann-c notes/no))
   (define numbered (map number-note notes/no))
   (cons inserted numbered))
 
@@ -119,13 +114,9 @@
    (list (txexpr 'aside '() elements))))
 
 (define (cmpnote/2 #:line line . elements)
-;  (txexpr 'div `((class "code-note-container cmp-2") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-;          (list (txexpr 'aside '((class "cmp-n cmp-2")) elements)))
   (txexpr 'dummy empty empty))
 
 (define (cmpnote/1 #:line line . elements)
-;  (txexpr 'div `((class "code-note-container cmp-1") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-;          (list (txexpr 'aside '((class "cmp-n cmp-1")) elements)))
   (txexpr 'dummy empty empty))
 
 ;; used to preserve line structure in included code
@@ -138,8 +129,7 @@
            (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
          (cons (append curr-line (list e)) prev-lines))]))
 
-(define (code-trowify line/no new left?)
-  (define op (if left? identity reverse))
+(define (code-trowify line/no new)
   (define (group-adjacent-lines e acc)
     (match acc
       [(cons groups newest)
@@ -168,8 +158,7 @@
   (txexpr
    'tr
    '()
-   (op
-    (list
+   (list
      (txexpr
       'td
       `((class "code-note-margin")
@@ -185,15 +174,15 @@
               (if (first-in-group? (car line/no)) " first-added-line" "")
               (if (last-in-group? (car line/no)) " last-added-line" "")))
         (line-no ,(number->string (car line/no))))
-      (map preserve (cdr line/no)))))))
-(define (code-tbodify lines new left? num-lines)
+      (map preserve (cdr line/no))))))
+(define (code-tbodify lines new num-lines)
   (txexpr
    'tbody
    '()
    (map
-    (λ (l) (code-trowify l new left?))
+    (λ (l) (code-trowify l new))
     (enumerate (extend lines num-lines) 1))))
-(define (code-theadify fn left?)
+(define (code-theadify fn)
   (txexpr
    'thead
    `()
@@ -201,13 +190,11 @@
           'tr
           '()
           (list
-           (if left?
-               (txexpr
+           (txexpr
                 'td
                 `((class "code-note-margin")
                   (id ,(symbol->string (gensym 'margin-cell-))))
                 (list ""))
-               "")
            (txexpr
             'td
             '()
@@ -221,27 +208,20 @@
               '((class "fa fa-files-o")
                 (aria-hidden "true"))
               empty)))
-           (if (not left?)
-               (txexpr
-                'td
-                `((class "code-note-margin")
-                  (id ,(symbol->string (gensym 'margin-cell-))))
-                (list ""))
-               ""))))))
-(define (code-tablify lines lang fn new left? num-lines)
+           "")))))
+(define (code-tablify lines lang fn new num-lines)
   (txexpr
    'table
    `((class "code-table"))
    (if fn
-       (list (code-theadify fn left?) (code-tbodify lines new left? num-lines))
-       (list (code-tbodify lines new left? num-lines)))))
+       (list (code-theadify fn) (code-tbodify lines new num-lines))
+       (list (code-tbodify lines new num-lines)))))
 
 ;; add surrounding tags to preserve whitespace if necessary
 (define (preserve se)
   (if (string? se)
       (txexpr 'span '((class "ws")) (list se))
       se))
-
 
 ;; make sure a list of lines has the right length for comparison
 (define (extend lines num)
@@ -256,28 +236,9 @@
          #:lang2 [lang2 "racket"]
          #:fn2 [fn2 #f]
          #:new/2 [new/2 empty])
+  (txexpr 'dummy empty empty))
 
-  (txexpr 'dummy empty empty)
-
-  ; TODO replace this with highlight
-;  (define pyg1 (includecode f1 #:lang lang1 #:filename (or fn1 f1)))
-;  (define pyg2 (includecode f2 #:lang lang2 #:filename (or fn2 f2)))
-;  
-;  (define pre1 (cadr (findf*-txexpr pyg1 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
-;  (define pre2 (cadr (findf*-txexpr pyg2 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
-;
-;  (define pre1-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre1)) 1)))
-;  (define pre2-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre2)) 1)))
-;
-;  (define num-lines (max (length pre1-lines) (length pre2-lines)))
-;  
-;  (define table1 (code-tablify pre1-lines lang1 fn1 new/1 #t num-lines))
-;  (define table2 (code-tablify pre2-lines lang2 fn2 new/2 #f num-lines))
-;  
-;  (txexpr 'div '((class "cmp")) (list table1 table2))
-  )
-
-(define (codecmp-generator/notes txexprs)
+(define (annotated-code-generator txexprs)
   ;; this works by grouping a comparison (or standalone bit of code) with the following elements
   ;; those are assumed to be notes
   (define groups
@@ -285,21 +246,20 @@
      (foldl
       (λ (e acc)
         (let ([class-attr-values (string-split (attr-ref e 'class ""))])
-          (if (or
-               (member "cmp" class-attr-values)
-               (member "annotated-code" class-attr-values))
+          (if (member "annotated-code" class-attr-values)
               (cons (list e) acc)
               (cons (append (car acc) (list e)) (cdr acc)))))
       empty
       txexprs)))
-  (define processed-groups (map process-cmp/notes groups))
+  (define processed-groups (map process-annotated-code groups))
   (generator
    ()
    (for ([grp processed-groups])
      (for ([grp-elem grp])
        (yield grp-elem)))))
 
-(define (postprocess-codecmp-notes tx)
+(define (postprocess-notes tx)
+  ;; note: would be cleaner not to use placeholder tag, but will leave as is because comparison is not assumed
   (if (eq? (get-tag tx) 'root)
       (let*-values
           ([(temp clippings)
@@ -310,11 +270,10 @@
                     (let ([class-attr-values (string-split (attr-ref e 'class ""))])
                       (or
                        (member "annotated-code" class-attr-values)
-                       (member "cmp" class-attr-values)
                        (member "code-note-container" class-attr-values)))))
              (λ (e) (txexpr 'placeholder '() '())))]
            [(clippings-generator)
-            (codecmp-generator/notes clippings)])
+            (annotated-code-generator clippings)])
         (let-values ([(replaced _)
                       (splitf-txexpr
                        temp
@@ -338,7 +297,7 @@
   (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
   (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
   (define num-lines (length pre-lines))
-  (define table (code-tablify pre-lines lang fn new #t num-lines))
+  (define table (code-tablify pre-lines lang fn new num-lines))
   (txexpr 'div '((class "annotated-code")) (list table)))
 
 (provide (all-defined-out))

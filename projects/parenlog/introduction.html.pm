@@ -1,6 +1,6 @@
 #lang pollen
 ◊h2{Introduction to Parenlog and Prolog}
-Parenlog is a logic programming language. Logic programming is its own programming paradigm, like object-oriented or functional programming. There was a time when people thought it would become just as widespread as those other paradigms, but the fact is that it did not. Therefore, I won't assume that you have any experience with it. Don't be fooled into thinking that logic programming is not relevant, however. There are ◊a[#:href "https://www.cs.nmsu.edu/ALP/2010/06/25-years-of-applications-of-logic-programming-in-italy/"]{lots of industrial codebases} that rely on logic programming. There are also ◊a[#:href "http://www.constraintsolving.com/"]{many applications for constraint programming}, which descends from and often extends logic programming. And it's pretty fun, to boot. In short, logic programming is worth having in your toolkit.
+Parenlog is a logic programming language. Logic programming is its own programming paradigm, like object-oriented or functional programming. There was a time when people thought it would become just as widespread as those other paradigms, but the fact is that it did not. Therefore, I won't assume that you have any experience with it. Don't be fooled into thinking that logic programming is not relevant, however. There are ◊a[#:href "https://www.cs.nmsu.edu/ALP/2010/06/25-years-of-applications-of-logic-programming-in-italy/"]{lots of industrial codebases} that rely on logic programming. There are also ◊a[#:href "http://www.constraintsolving.com/"]{many applications for constraint programming}, which is descended from and often extends logic programming. And it's pretty fun, to boot. In short, logic programming is worth having in your toolkit.
 
 The mother of all logic programming languages is ◊a[#:href "https://en.wikipedia.org/wiki/Prolog"]{Prolog}. What's unusual about Prolog is that you, as a programmer, encode knowledge much more directly than you would in most languages. And knowledge, unlike your typical imperative instructions, is flexible. It works in several directions, so to speak. Let's say you are given the following bits of information:
 
@@ -12,11 +12,7 @@ The mother of all logic programming languages is ◊a[#:href "https://en.wikiped
 
 You'll agree that Ares and Athena are friends. So will Prolog. And if you are asked to name a pair of friends, you would say "Ares and Athena". Now, you could pretty easily encode computations that tell you this into more or less any language, but in Prolog there's nothing to encode other than the knowledge. And that takes the following, simple form:
 
-◊newincludecode["code/theory_part_one.pl" #:lang "prolog"]◊codenote[#:line 2]{Testing, testing. Should be a numbered circle in the margin...}
-
-◊newincludecode["code/unify.rkt" #:lang "racket"]
-◊;codenote[#:line 2]{Testing whether doc linking works.}
-
+◊newincludecode["code/theory_part_one.pl" #:lang "prolog"]
 Let's step it up. Suppose we have the following knowledge in addition to what we already had.
 
 ◊ol['((start "4"))]{
@@ -44,7 +40,7 @@ With the terminology out of the way, let's look at what happens when you run a s
 
 Prolog will answer these queries by providing a ◊glossaryterm[#:explanation "in logic programming, an assignment of terms to variables"]{substitution} for your query: an assignment of ◊glossaryref[#:canonical "term"]{terms} to input variables. For the three individuals who like math, you might get:
 
-◊highlight['prolog]{
+◊output{
 X = eratosthenes,
 Y = pythagoras,
 Z = athena
@@ -52,7 +48,7 @@ Z = athena
 
 However, that won't be the only answer you'll get, nor will it be the first. The first answer you'll get may be a little confusing:
 
-◊highlight['prolog]{
+◊output{
 X = eratosthenes,
 Y = eratosthenes,
 Z = eratosthenes

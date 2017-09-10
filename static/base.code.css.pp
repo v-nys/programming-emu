@@ -15,6 +15,16 @@ height: 100%;
 text-align: right;
 }
 
+.listingnote{
+margin-right: .25em;
+}
+
+.code-note-margin {
+display: flex;
+justify-content: flex-end;
+align-items: center;
+}
+
 .code-note-container {
 margin-bottom: .25em;
 }
@@ -230,7 +240,6 @@ border-radius: 50%;
 width: 15px;
 height: 15px;
 padding: 2px;
-border: 1px solid white;
 color: white;
 text-align: center;
 font-family: ◊code-font-family;

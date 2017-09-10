@@ -62,7 +62,7 @@
 
 (define (txexpr-proc tx)
   (define result
-    ((compose move-head-appendix postprocess-codecmp-notes)
+    ((compose move-head-appendix postprocess-notes)
      tx))
   result)
 
@@ -166,14 +166,14 @@
 (define (glossaryterm #:explanation [explanation "TODO: add an explanation"] #:canonical [canonical #f] . elements)
   (set! canonical (or canonical (string-append* elements)))
   (txexpr 'termlabel
-          `((href ,(format "/glossary.html#~a" canonical))
+          `((href ,(format "/coda/glossary.html#~a" canonical))
             (class "glossaryterm"))
           (append (list canonical explanation) elements (list '(sup () "†")))))
 (provide glossaryterm)
 
 (define (glossaryref #:canonical [canonical #f] . elements)
   (txexpr 'a
-          `((href ,(format "/glossary.html#~a" (or canonical (string-append* elements))))
+          `((href ,(format "/coda/glossary.html#~a" (or canonical (string-append* elements))))
             (class "glossaryref"))
           elements))
 (provide glossaryref)
