@@ -17,7 +17,7 @@ Jay's version of ◊code{compile-rule}, however, is quite different from what we
 ◊exercise{Replace your existing version of ◊code{compile-rule} with a macro alternative and make it work. To do that, you'll need to implement the two missing auxiliary functions yourself. You'll come back to the runtime approach a bit further down the line, so I recommend creating a separate branch in your version control system at this point.}
 
 You can use the following tests for ◊code{extract-vars} (which we'll call ◊code{extract-stx-vars} to avoid a naming conflict with code from before):
-◊includecode["code/extract-stx-vars-tests.rkt" #:lang "racket"]
+◊newincludecode["code/extract-stx-vars-tests.rkt" #:lang "racket"]
 
 These tests require ◊code{◊a[#:href "http://docs.racket-lang.org/syntax/macro-testing.html?q=phase1-eval#%28form._%28%28lib._syntax%2Fmacro-testing..rkt%29._phase1-eval%29%29"]{phase1-eval}} because you'll have to define ◊code{extract-stx-vars} so that it's usable at compile time. Otherwise, ◊code{compile-rule} won't be able to make use of it.
 
@@ -30,7 +30,7 @@ Here's my implementation, juxtaposed with Jay's:
 
 You can use these tests for ◊code{rewrite-se}:
 
-◊includecode["code/rewrite-se-tests.rkt" #:lang "racket"]
+◊newincludecode["code/rewrite-se-tests.rkt" #:lang "racket"]
 
 Again, my implementation and Jay's:
 ◊codecmp[#:f1 "code/my-rewrite-se.rkt" #:f2 "code/rewrite-se-jay.rkt"]
@@ -42,10 +42,10 @@ At this point you might be wondering if the syntax-based approach is worth it. F
 ◊exercise{Rewrite ◊code{compile-rule} from scratch, as a macro. If you are still unsure about how the variables with Prolog syntax are instantiated, read the paragraphs after the tests first.}
 
 Here are some updated tests:
-◊includecode["code/compile-rule-tests.rkt" #:lang "racket"]
+◊newincludecode["code/compile-rule-tests.rkt" #:lang "racket"]
 
 Here's the trick to assigning symbols to variables represented with Prolog syntax. Because only non-Prolog identifiers are quoted by ◊code{rewrite-se}, Prolog variables in a compiled rule would be unbound identifiers at runtime. That's not allowed, so those identifiers should be bound. Because the rest of our code still relies on variables being represented as symbols starting with a capital letter, the unbound identifiers have to be bound to such symbols. What's more, every identifier which is unique ◊em{inside that rule} has to be bound to a symbol which cannot occur in any conjunction to which the rule is applied. An easy way to guarantee that is to generate an uninterned symbol, i.e. a symbol which has not yet been created anywhere in the program. The function ◊code{◊a[#:href "http://docs.racket-lang.org/reference/symbols.html#(def._((quote._~23~25kernel)._gensym))"]{gensym}} does just that and it takes an optional prefix, which helps with readability. Here's what I get from the macro expander for one the rules we used before:
-◊includecode["code/compile-rule-expansion.rkt"]
+◊newincludecode["code/compile-rule-expansion.rkt"]
 ◊exercise{Now write the macro. If you have to look at the original, that's fine, but don't just memorize. Reprocess the notes, understand how the original works and then start from scratch.}
 
 ◊popquiz{The identifiers corresponding to Prolog variables have to be bound. We bind them at runtime using ◊code{gensym}. Could we also use ◊code{gensym} for this at compile time? Why?}

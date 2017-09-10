@@ -2,7 +2,7 @@
 ◊h2{Variables, predicates and unification}
 Our first step will be to implement a crucial mechanism known as ◊glossaryterm[#:explanation ◊explanation{mechanism by which a ◊glossaryref{unifier} for two ◊glossaryref[#:canonical "term"]{terms} is found}]{unification}, which operates on terms. But to understand and implement unification, we need to understand logic variables.
 ◊h3{Logic variables vs. Racket variables}
-Variables in a logic programming language are different from variables in Racket (and most languages). They are more like unknowns in mathematics: they represent one, immutable value, but that value may not yet be known where the variable is used. Consider again our theory from before: ◊includecode["code/theory.pl" #:lang "prolog"]
+Variables in a logic programming language are different from variables in Racket (and most languages). They are more like unknowns in mathematics: they represent one, immutable value, but that value may not yet be known where the variable is used. Consider again our theory from before: ◊newincludecode["code/theory.pl" #:lang "prolog"]
 
 In Prolog, we could write the query ◊code{likes(X,math)} and learn that the query is successful for ◊code{X} equal to ◊code{eratosthenes}, but we could not write a query like ◊code{likes(X,math), X = ares}. Or rather, we could, but Prolog will not yield a single answer. Once a value has been assigned to a variable, it cannot be changed until after Prolog has produced an answer or has failed to do so. At that point, it will be as if said variable was never assigned in the first place.
 

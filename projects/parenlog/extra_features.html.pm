@@ -4,18 +4,18 @@ In this section, we'll add some extra features to our extremely simple Prolog-li
 ◊h3{Predicate functions}
 Imagine you are writing a Parenlog program and you need a predicate which is defined as a function in Racket. For instance, equality of values, with the same semantics as ◊code{eq?}. Writing clauses expressing the equality relation just feels redundant in that case. It is! Or at least, it will be, after we make a change to our little language. We'll add the possibility of escaping to Racket and using existing predicate functions. Here's an example of a rule which does so, lifted from the Parenlog documentation (with slight modifications because we don't have the surface syntax yet).
 
-◊includecode["code/escape-example.rkt"]
+◊newincludecode["code/escape-example.rkt"]
 
 This can be made to work regardless of whether you compile rules using a regular function or a syntax transformation. The general idea is that you can escape to a Racket predicate function call wherever you would write a predicate inside the body of a rule. You can also escape to a boolean literal.
 
 You can use the following tests if you extend the runtime approach:
-◊includecode["code/escape-test-suite.rkt"]
+◊newincludecode["code/escape-test-suite.rkt"]
 
 
 
 And here are corresponding tests for the compile-time approach:
 ◊todo{Make modifications so these tests apply to the compile-time approach!}
-◊includecode["code/escape-test-suite-syntax.rkt"]
+◊newincludecode["code/escape-test-suite-syntax.rkt"]
 
 ◊exercise{Add the extension to both versions of your code. If you need a good place to start, try ◊code{answer-query}.}
 
@@ -29,4 +29,4 @@ Our calls to ◊code{answer-query} so far have given us a generator which produc
 
 This is a pretty straightforward change, so give it a whirl. The following test should have you covered:
 
-◊includecode["code/limit-answers-test.rkt"]
+◊newincludecode["code/limit-answers-test.rkt"]
