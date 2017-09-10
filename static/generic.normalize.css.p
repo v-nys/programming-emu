@@ -15,6 +15,14 @@ html {
   -webkit-text-size-adjust: 100%; /* 2 */
 }
 
+/**
+ * Vincent: Use standard font size throughout the document.
+ */
+
+html {
+  font-size: 22pt;
+}
+
 /* Sections
    ========================================================================== */
 

@@ -70,6 +70,7 @@
   (define no (car note/no))
   (define note (cdr note/no))
   (define cmp-1? (member "cmp-1" (string-split (attr-ref note 'class))))
+  (define cmp-2? (member "cmp-2" (string-split (attr-ref note 'class))))
   (define note-elements (get-elements note))
   (txexpr
    (get-tag note)
@@ -77,7 +78,7 @@
    (cons
     (txexpr
      'note-nb
-     `((class ,(if cmp-1? "cmp-1" "cmp-2")))
+     `((class ,(cond [cmp-1? "cmp-1"] [cmp-2? "cmp-2"] [else ""])))
      (list (number->string no)))
     note-elements)))
 
@@ -146,12 +147,16 @@
   (cons inserted numbered))
 
 (define (codecmp-generator/notes txexprs)
+  ;; this works by grouping a comparison (or standalone bit of code) with the following elements
+  ;; those are assumed to be notes
   (define groups
     (reverse
      (foldl
       (λ (e acc)
         (let ([class-attr-values (string-split (attr-ref e 'class ""))])
-          (if (member "cmp" class-attr-values)
+          (if (or
+               (member "cmp" class-attr-values)
+               (member "annotated-code" class-attr-values))
               (cons (list e) acc)
               (cons (append (car acc) (list e)) (cdr acc)))))
       empty
@@ -172,8 +177,10 @@
              (λ (e)
                (and (txexpr? e)
                     (let ([class-attr-values (string-split (attr-ref e 'class ""))])
-                      (or (member "cmp" class-attr-values)
-                          (member "code-note-container" class-attr-values)))))
+                      (or
+                       (member "annotated-code" class-attr-values)
+                       (member "cmp" class-attr-values)
+                       (member "code-note-container" class-attr-values)))))
              (λ (e) (txexpr 'placeholder '() '())))]
            [(clippings-generator)
             (codecmp-generator/notes clippings)])
@@ -249,18 +256,22 @@
 (provide exercise)
 
 (define (codenote #:line line . elements)
-  (txexpr 'div `((class "code-note-container") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-          (list (txexpr 'aside '((class "cmp-n")) elements))))
+  (txexpr
+   'div
+   `((class "code-note-container") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
+   (list (txexpr 'aside '() elements))))
 (provide codenote)
 
 (define (cmpnote/1 #:line line . elements)
-  (txexpr 'div `((class "code-note-container cmp-1") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-          (list (txexpr 'aside '((class "cmp-n cmp-1")) elements))))
+;  (txexpr 'div `((class "code-note-container cmp-1") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
+;          (list (txexpr 'aside '((class "cmp-n cmp-1")) elements)))
+  (txexpr 'dummy empty empty))
 (provide cmpnote/1)
 
 (define (cmpnote/2 #:line line . elements)
-  (txexpr 'div `((class "code-note-container cmp-2") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-          (list (txexpr 'aside '((class "cmp-n cmp-2")) elements))))
+;  (txexpr 'div `((class "code-note-container cmp-2") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
+;          (list (txexpr 'aside '((class "cmp-n cmp-2")) elements)))
+  (txexpr 'dummy empty empty))
 (provide cmpnote/2)
 
 ;; assign numbers like in enumerate in Python - could be in more general library
@@ -324,7 +335,7 @@
     (list
      (txexpr
       'td
-      `((class ,(string-join (list "code-note-margin" (if left? "cmp-1" "cmp-2"))))
+      `((class "code-note-margin")
         (line-no ,(number->string (car line/no))))
       '())
      (txexpr
@@ -348,7 +359,7 @@
 (define (code-theadify fn left?)
   (txexpr
    'thead
-   `((class ,(if left? "cmp-1" "cmp-2")))
+   `()
    (list (txexpr
           'tr
           '()
@@ -383,7 +394,7 @@
 (define (code-tablify lines lang fn new left? num-lines)
   (txexpr
    'table
-   `((class ,(format "code-table ~a" (if left? "cmp-1" "cmp-2"))))
+   `((class "code-table"))
    (if fn
        (list (code-theadify fn left?) (code-tbodify lines new left? num-lines))
        (list (code-tbodify lines new left? num-lines)))))
@@ -398,22 +409,25 @@
          #:fn2 [fn2 #f]
          #:new/2 [new/2 empty])
 
+  (txexpr 'dummy empty empty)
+
   ; TODO replace this with highlight
-  (define pyg1 (includecode f1 #:lang lang1 #:filename (or fn1 f1)))
-  (define pyg2 (includecode f2 #:lang lang2 #:filename (or fn2 f2)))
-  
-  (define pre1 (cadr (findf*-txexpr pyg1 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
-  (define pre2 (cadr (findf*-txexpr pyg2 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
-
-  (define pre1-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre1)) 1)))
-  (define pre2-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre2)) 1)))
-
-  (define num-lines (max (length pre1-lines) (length pre2-lines)))
-  
-  (define table1 (code-tablify pre1-lines lang1 fn1 new/1 #t num-lines))
-  (define table2 (code-tablify pre2-lines lang2 fn2 new/2 #f num-lines))
-  
-  (txexpr 'div '((class "cmp")) (list table1 table2)))
+;  (define pyg1 (includecode f1 #:lang lang1 #:filename (or fn1 f1)))
+;  (define pyg2 (includecode f2 #:lang lang2 #:filename (or fn2 f2)))
+;  
+;  (define pre1 (cadr (findf*-txexpr pyg1 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
+;  (define pre2 (cadr (findf*-txexpr pyg2 (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
+;
+;  (define pre1-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre1)) 1)))
+;  (define pre2-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre2)) 1)))
+;
+;  (define num-lines (max (length pre1-lines) (length pre2-lines)))
+;  
+;  (define table1 (code-tablify pre1-lines lang1 fn1 new/1 #t num-lines))
+;  (define table2 (code-tablify pre2-lines lang2 fn2 new/2 #f num-lines))
+;  
+;  (txexpr 'div '((class "cmp")) (list table1 table2))
+  )
 (provide codecmp)
 
 (define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty])
@@ -422,7 +436,7 @@
   (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
   (define num-lines (length pre-lines))
   (define table (code-tablify pre-lines lang fn new #t num-lines))
-  (txexpr 'div '((class "cmp")) (list table)))
+  (txexpr 'div '((class "annotated-code")) (list table)))
 (provide newincludecode)
 
 (define (explanation . elements)

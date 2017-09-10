@@ -12,8 +12,10 @@ The mother of all logic programming languages is ◊a[#:href "https://en.wikiped
 
 You'll agree that Ares and Athena are friends. So will Prolog. And if you are asked to name a pair of friends, you would say "Ares and Athena". Now, you could pretty easily encode computations that tell you this into more or less any language, but in Prolog there's nothing to encode other than the knowledge. And that takes the following, simple form:
 
-◊newincludecode["code/theory_part_one.pl" #:lang "prolog"]
-◊codenote[#:line 2]{Testing, testing.}
+◊newincludecode["code/theory_part_one.pl" #:lang "prolog"]◊codenote[#:line 2]{Testing, testing. Should be a numbered circle in the margin...}
+
+◊newincludecode["code/unify.rkt" #:lang "racket"]
+◊;codenote[#:line 2]{Testing whether doc linking works.}
 
 Let's step it up. Suppose we have the following knowledge in addition to what we already had.
 

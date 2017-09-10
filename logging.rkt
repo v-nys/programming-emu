@@ -1,8 +1,8 @@
 #lang racket
-(require (only-in control while))
+(require (only-in control while) racket/provide)
 
 (define-logger emu)
-(provide log-emu-debug log-emu-info log-emu-warning log-emu-error log-emu-fatal)
+(provide (matching-identifiers-out #rx"^log-emu-.*" (all-defined-out)))
 
 (define err-receiver (make-log-receiver emu-logger 'debug))
 
