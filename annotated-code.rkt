@@ -23,7 +23,8 @@
 (require
   racket/generator
   (only-in pollen/unstable/pygments highlight)
-  txexpr)
+  txexpr
+  (only-in racket-list-utils/utils map-accumulatel))
 
 ;; assign numbers like in enumerate in Python - could be in more general library
 (define (enumerate lst count)
@@ -159,22 +160,22 @@
    'tr
    '()
    (list
-     (txexpr
-      'td
-      `((class "code-note-margin")
-        (line-no ,(number->string (car line/no))))
-      '())
-     (txexpr
-      'td
-      `((colspan "2")
-        (class
-            ,(string-append
-              "listing-line-content"
-              (if (member (car line/no) new) " added-line" "")
-              (if (first-in-group? (car line/no)) " first-added-line" "")
-              (if (last-in-group? (car line/no)) " last-added-line" "")))
-        (line-no ,(number->string (car line/no))))
-      (map preserve (cdr line/no))))))
+    (txexpr
+     'td
+     `((class "code-note-margin")
+       (line-no ,(number->string (car line/no))))
+     '())
+    (txexpr
+     'td
+     `((colspan "2")
+       (class
+           ,(string-append
+             "listing-line-content"
+             (if (member (car line/no) new) " added-line" "")
+             (if (first-in-group? (car line/no)) " first-added-line" "")
+             (if (last-in-group? (car line/no)) " last-added-line" "")))
+       (line-no ,(number->string (car line/no))))
+     (map preserve (cdr line/no))))))
 (define (code-tbodify lines new num-lines)
   (txexpr
    'tbody
@@ -182,7 +183,7 @@
    (map
     (λ (l) (code-trowify l new))
     (enumerate (extend lines num-lines) 1))))
-(define (code-theadify fn)
+(define (code-theadify fn raw-source)
   (txexpr
    'thead
    `()
@@ -191,31 +192,30 @@
           '()
           (list
            (txexpr
-                'td
-                `((class "code-note-margin")
-                  (id ,(symbol->string (gensym 'margin-cell-))))
-                (list ""))
+            'td
+            `((class "code-note-margin")
+              (id ,(symbol->string (gensym 'margin-cell-))))
+            (list ""))
            (txexpr
             'td
-            '()
-            (list fn))
-           (txexpr
-            'td
-            '()
+            '((class "listing-header")
+              (colspan "2"))
             (list
-             (txexpr
-              'i
-              '((class "fa fa-files-o")
-                (aria-hidden "true"))
-              empty)))
-           "")))))
-(define (code-tablify lines lang fn new num-lines)
+             fn
+             (let ([generated-id (symbol->string (gensym "clipped-code-"))])
+               (txexpr
+                'i
+                `((class "fa fa-files-o")
+                  (aria-hidden "true")
+                  (data-clipboard-action "copy")
+                  (data-clipboard-text ,raw-source)))))))))))
+(define (code-tablify lines lang fn new num-lines raw-source)
   (txexpr
    'table
    `((class "code-table"))
    (if fn
-       (list (code-theadify fn) (code-tbodify lines new num-lines))
-       (list (code-tbodify lines new num-lines)))))
+       (list (code-theadify fn raw-source) (code-tbodify lines new num-lines))
+       (list (code-theadify "" raw-source) (code-tbodify lines new num-lines)))))
 
 ;; add surrounding tags to preserve whitespace if necessary
 (define (preserve se)
@@ -258,6 +258,94 @@
      (for ([grp-elem grp])
        (yield grp-elem)))))
 
+(define (postprocess-comparisons tx)
+  (define (classify-nested-snippet-components prefix nsc)
+    (if
+     (not (txexpr? nsc))
+     nsc
+     (let* ([class-attr (attr-ref nsc 'class "")]
+            [classes (string-split class-attr " ")])
+       (cond
+         [(member "listing-header" classes)
+          (let ([tl (attr-set nsc 'class (string-join (list class-attr (format "~a__.listing-header" prefix)) " "))])
+            (txexpr
+             (get-tag tl)
+             (get-attrs tl)
+             (map
+              (curry classify-nested-snippet-components prefix)
+              (get-elements tl))))]
+         [(member "fa-files-o" classes)
+          (attr-set nsc 'class (string-join (list class-attr (format "~a__.fa-files-o" prefix)) " "))]
+         ;; FIXME why isn't class being applied here?
+         [(member "number-circle" classes)
+          (attr-set nsc 'class (string-join (list class-attr (format "~a__.number-circle" prefix)) " "))]
+         [(eq? (get-tag nsc) 'a)
+          (attr-set nsc 'class (string-join (list class-attr (format "~a__a" prefix)) " "))]
+         [(not (null? (get-elements nsc)))
+          (txexpr
+           (get-tag nsc)
+           (get-attrs nsc)
+           (map
+            (curry classify-nested-snippet-components prefix)
+            (get-elements nsc)))]
+         [else nsc]))))
+  (define (classify-nested-note-components prefix nnc)
+    (if (not (txexpr? nnc))
+        nnc
+        (let ([class-attr (attr-ref nnc 'class "")])
+          (case (get-tag nnc)
+            ['aside (attr-set nnc 'class (string-join (list class-attr (format "~a__aside" prefix)) " "))]
+            ;; FIXME why isn't class being applied here?
+            ['note-nb (attr-set nnc 'class (string-join (list class-attr (format "~a__note-nb" prefix)) " "))]
+            [else nnc]))))
+  (define (number-cmp-component comp cntr)
+    (let* ([class-attr (attr-ref comp 'class "")]
+           [classes (string-split class-attr " ")])
+      (cond
+        [(member "annotated-code" classes)
+         (let* ([new-cntr
+                 (add1 cntr)]
+                [new-class
+                 (format "compared-snippet-~a" new-cntr)]
+                [tl-only
+                 (attr-set
+                  comp
+                  'class
+                  (format
+                   "~a ~a"
+                   class-attr
+                   new-class))])
+           (cons
+            (txexpr
+             (get-tag tl-only)
+             (get-attrs tl-only)
+             (map
+              (curry classify-nested-snippet-components new-class)
+              (get-elements tl-only)))
+            new-cntr))]
+        [(member "code-note-container" classes)
+         (let* ([new-class
+                 (format "snippet-~a-note" cntr)]
+                [tl
+                 (attr-set
+                  comp
+                  'class
+                  (string-join (list class-attr new-class) " "))])
+           (cons
+            (txexpr
+             (get-tag tl)
+             (get-attrs tl)
+             (map (curry classify-nested-note-components new-class) (get-elements tl)))
+            cntr))]
+        [else (cons comp cntr)])))
+  (if (eq? (get-tag tx) 'cmp)
+      (car
+       (map-accumulatel
+        number-cmp-component
+        0
+        (get-elements tx)))
+      tx))
+
 (define (postprocess-notes tx)
   ;; note: would be cleaner not to use placeholder tag, but will leave as is because comparison is not assumed
   (if (eq? (get-tag tx) 'root)
@@ -284,20 +372,24 @@
           replaced))
       tx))
 
+(define postprocess-annotated-code
+  (compose postprocess-comparisons postprocess-notes))
+
 (define (includecode path #:lang [lang "racket"])
   (highlight
    lang
    (file->string path #:mode 'text)))
 
 (define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty])
+  (define raw-source (file->string f #:mode 'text))
   (define pyg
     (highlight
      lang
-     (file->string f #:mode 'text)))
+     raw-source))
   (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
   (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
   (define num-lines (length pre-lines))
-  (define table (code-tablify pre-lines lang fn new num-lines))
+  (define table (code-tablify pre-lines lang fn new num-lines raw-source))
   (txexpr 'div '((class "annotated-code")) (list table)))
 
 (provide (all-defined-out))

@@ -49,6 +49,8 @@ SOFTWARE.}
 <link href="//fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Gentium+Basic" rel="stylesheet"> 
 <script src="/static/jquery.js"></script>
+<script src="/static/clipboard.min.js"></script>
+<script src="/static/copy-to-clipboard.js"></script>
 <script src="/static/hide-listing-notes.js"></script>
 <script src="/static/highlight-pageturns.js"></script>
 <script src="/static/hide-js-warning.js"></script>

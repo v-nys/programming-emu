@@ -62,7 +62,7 @@
 
 (define (txexpr-proc tx)
   (define result
-    ((compose move-head-appendix postprocess-notes)
+    ((compose move-head-appendix postprocess-annotated-code)
      tx))
   result)
 
@@ -253,6 +253,6 @@
 (module setup racket/base
   (provide (all-defined-out))
   (require pollen/setup)
-  (define block-tags (append '(img exercise note-nb toc) default-block-tags))
+  (define block-tags (append '(img exercise note-nb toc cmp) default-block-tags))
   ;; cache is disabled to keep TOC up to date
   (define render-cache-active #f))

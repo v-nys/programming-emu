@@ -19,10 +19,25 @@ text-align: right;
 margin-right: .25em;
 }
 
+.listing-header i {
+padding-left: .25em;
+padding-right: .25em;
+}
+
+.fa-files-o {
+cursor: pointer;
+}
+
 .code-note-margin {
 display: flex;
 justify-content: flex-end;
 align-items: center;
+}
+
+.listing-header {
+background-color: lightgrey;
+border-top: 1px solid grey;
+text-align: right;
 }
 
 .code-note-container {
