@@ -102,6 +102,11 @@ font-weight: bold;
 background: gray;
 }
 
+.code-note-container aside {
+margin-top: 0;
+margin-bottom: 0;
+}
+
 .toc {
 padding: 0;
 }

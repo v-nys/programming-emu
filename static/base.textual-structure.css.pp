@@ -12,6 +12,8 @@ background-color: ◊very-light-gray;
 border-left: 2px solid gray;
 padding-top: .25em;
 padding-bottom: .25em;
+margin-top: 1em;
+margin-bottom: 1em;
 }
 
 body {
