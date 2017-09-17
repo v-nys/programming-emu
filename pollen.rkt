@@ -40,13 +40,15 @@
 
 (define (root . elements)
   (let ([decoded
-         (decode (txexpr 'root '() elements)
+         (decode
+          (decode (txexpr 'root '() elements)
                  #:txexpr-elements-proc decode-paragraphs
                  #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
                  #:exclude-tags '(style script headappendix pre code)
                  #:exclude-attrs '((class "ws"))
-                 #:txexpr-proc txexpr-proc)])
+                 #:txexpr-proc txexpr-proc)
+          #:txexpr-proc postprocess-comparisons)]) ; need two steps of decoding
     decoded))
 (provide root)
 
@@ -62,7 +64,9 @@
 
 (define (txexpr-proc tx)
   (define result
-    ((compose move-head-appendix postprocess-annotated-code)
+    ((compose
+      move-head-appendix
+      postprocess-notes)
      tx))
   result)
 

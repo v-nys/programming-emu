@@ -22,9 +22,11 @@
 #lang racket
 (require
   racket/generator
+  pollen/decode
   (only-in pollen/unstable/pygments highlight)
   txexpr
-  (only-in racket-list-utils/utils map-accumulatel))
+  (only-in racket-list-utils/utils map-accumulatel)
+  "logging.rkt")
 
 ;; assign numbers like in enumerate in Python - could be in more general library
 (define (enumerate lst count)
@@ -267,7 +269,15 @@
             [classes (string-split class-attr " ")])
        (cond
          [(member "listing-header" classes)
-          (let ([tl (attr-set nsc 'class (string-join (list class-attr (format "~a__.listing-header" prefix)) " "))])
+          (let ([tl
+                 (attr-set
+                  nsc
+                  'class
+                  (string-join
+                   (list
+                    class-attr
+                    (format "~a__.listing-header" prefix))
+                   " "))])
             (txexpr
              (get-tag tl)
              (get-attrs tl)
@@ -345,6 +355,7 @@
         0
         (get-elements tx)))
       tx))
+(provide postprocess-comparisons)
 
 (define (postprocess-notes tx)
   ;; note: would be cleaner not to use placeholder tag, but will leave as is because comparison is not assumed
@@ -371,9 +382,7 @@
                        (λ (_) (clippings-generator)))])
           replaced))
       tx))
-
-(define postprocess-annotated-code
-  (compose postprocess-comparisons postprocess-notes))
+(provide postprocess-notes)
 
 (define (includecode path #:lang [lang "racket"])
   (highlight
