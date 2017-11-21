@@ -276,7 +276,7 @@
                   (string-join
                    (list
                     class-attr
-                    (format "~a__.listing-header" prefix))
+                    (format "~a__listing-header-cls" prefix))
                    " "))])
             (txexpr
              (get-tag tl)
@@ -285,10 +285,10 @@
               (curry classify-nested-snippet-components prefix)
               (get-elements tl))))]
          [(member "fa-files-o" classes)
-          (attr-set nsc 'class (string-join (list class-attr (format "~a__.fa-files-o" prefix)) " "))]
+          (attr-set nsc 'class (string-join (list class-attr (format "~a__fa-files-o-cls" prefix)) " "))]
          ;; FIXME why isn't class being applied here?
          [(member "number-circle" classes)
-          (attr-set nsc 'class (string-join (list class-attr (format "~a__.number-circle" prefix)) " "))]
+          (attr-set nsc 'class (string-join (list class-attr (format "~a__number-circle-cls" prefix)) " "))]
          [(eq? (get-tag nsc) 'a)
           (attr-set nsc 'class (string-join (list class-attr (format "~a__a" prefix)) " "))]
          [(not (null? (get-elements nsc)))

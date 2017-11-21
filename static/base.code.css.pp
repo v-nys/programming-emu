@@ -40,6 +40,20 @@ border-top: 1px solid grey;
 text-align: right;
 }
 
+.compared-snippet-1__listing-header-cls {
+background-color: ◊cmp-aqua-transparent;
+color: ◊cmp-aqua;
+border-bottom: 1px solid ◊cmp-aqua;
+border-top: 1px solid ◊cmp-aqua;
+}
+
+.compared-snippet-2__listing-header-cls {
+background-color: ◊cmp-orange-transparent;
+color: ◊cmp-orange;
+border-bottom: 1px solid ◊cmp-orange;
+border-top: 1px solid ◊cmp-orange;
+}
+
 .code-note-container {
 margin-bottom: .25em;
 }
@@ -65,18 +79,6 @@ width: calc(100% - ◊note-nb-width - ◊note-nb-padding-right - ◊aside-paddin
 
 .code-table tbody tr:nth-child(odd) td.listing-line-content{
 background-color: ◊very-light-gray;
-}
-
-.code-table.cmp-1 thead td:nth-child(2),
-.code-table.cmp-1 thead td:nth-child(3){
-background-color: ◊cmp-aqua-transparent;
-color: ◊cmp-aqua;
-}
-
-.code-table.cmp-2 thead td:nth-child(1),
-.code-table.cmp-2 thead td:nth-child(2){
-background-color: ◊cmp-orange-transparent;
-color: ◊cmp-orange;
 }
 
 .code-table tr:first-child .listing-line-content{

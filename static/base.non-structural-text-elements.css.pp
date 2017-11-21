@@ -22,3 +22,8 @@ right: ◊(/ todo-margin-percentage 2)%;
 width: ◊(- (/ content-margin-percentage 2)
            todo-margin-percentage)%;
 }
+
+signature {
+font-family: ◊code-font-family;
+font-size: ◊code-pt-size;
+}
