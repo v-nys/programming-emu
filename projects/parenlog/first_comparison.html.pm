@@ -6,12 +6,13 @@ Most pairs in this table do contain slight implementation differences, but this 
 
 Jay's version of ◊code{compile-rule}, however, is quite different from what we wrote. Specifically, it's written as a macro, rather than as a plain old function.◊aside{If you need an introduction to macros, ◊a[#:href "http://www.greghendershott.com/fear-of-macros/"]{Greg Hendershott's article} is mandatory reading for the aspiring Racketeer.} This has some implications on how variable renaming is implemented. Here is the "skeleton" for a slightly simplified version of Jay's implementation, next to our existing implementation.
 
-◊codecmp[#:f1 "code/my-compile-rule.rkt" #:f2 "code/compile-rule-jay.rkt"]
-◊cmpnote/2[#:line 4]{Jay's ◊code{extract-vars} (not to be confused with our own, which maps to ◊code{variables-in}) is a normal function, used at compile time. Very vaguely, it also extracts variables, but not from a quoted S-expression. More specifically, it extracts ◊em{Racket} syntax for ◊em{Prolog} variables from unquoted S-expressions. So, in something like ◊code{(compile-rule (human X) (mortal X))}, the pattern ◊code{(var ...)} will match the identifier ◊code{X}, because the associated symbol is valid notation for a Prolog variable.}
-◊cmpnote/2[#:line 5]{This clause transforms syntax for ◊em{Racket} variable symbols into quoted symbols, but only if those symbols are not valid representations of Prolog variables. In other words, ◊code{rewrite-se} would replace the syntax objects ◊code{#'human} and ◊code{#'mortal} with syntax ◊code{#''human} and ◊code{#''mortal}, but it would leave ◊code{#'X} intact. So take the expression "sans vars" with a grain of salt.}
-◊cmpnote/2[#:line 6]{This does the same, but for S-expressions in the body rather than in the head.}
-◊cmpnote/2[#:line 11]{This is important. Variables following the Prolog naming conventions are not quoted by ◊code{rewrite-se}, but are instead bound to unique symbols generated at runtime. If you don't see how this line works, we'll discuss it further down.}
-◊cmpnote/2[#:line 18]{The extra parameter ◊code{yield} to ◊code{reyield} is here for historical reasons. You do not need it.}
+◊newincludecode["code/my-compile-rule.rkt"]
+◊newincludecode["code/compile-rule-jay.rkt" #:comparison-index 2]
+◊codenote[#:line 4]{Jay's ◊code{extract-vars} (not to be confused with our own, which maps to ◊code{variables-in}) is a normal function, used at compile time. Very vaguely, it also extracts variables, but not from a quoted S-expression. More specifically, it extracts ◊em{Racket} syntax for ◊em{Prolog} variables from unquoted S-expressions. So, in something like ◊code{(compile-rule (human X) (mortal X))}, the pattern ◊code{(var ...)} will match the identifier ◊code{X}, because the associated symbol is valid notation for a Prolog variable.}
+◊codenote[#:line 5]{This clause transforms syntax for ◊em{Racket} variable symbols into quoted symbols, but only if those symbols are not valid representations of Prolog variables. In other words, ◊code{rewrite-se} would replace the syntax objects ◊code{#'human} and ◊code{#'mortal} with syntax ◊code{#''human} and ◊code{#''mortal}, but it would leave ◊code{#'X} intact. So take the expression "sans vars" with a grain of salt.}
+◊codenote[#:line 6]{This does the same, but for S-expressions in the body rather than in the head.}
+◊codenote[#:line 11]{This is important. Variables following the Prolog naming conventions are not quoted by ◊code{rewrite-se}, but are instead bound to unique symbols generated at runtime. If you don't see how this line works, we'll discuss it further down.}
+◊codenote[#:line 18]{The extra parameter ◊code{yield} to ◊code{reyield} is here for historical reasons. You do not need it.}
 
 
 ◊exercise{Replace your existing version of ◊code{compile-rule} with a macro alternative and make it work. To do that, you'll need to implement the two missing auxiliary functions yourself. You'll come back to the runtime approach a bit further down the line, so I recommend creating a separate branch in your version control system at this point.}
@@ -24,16 +25,18 @@ These tests require ◊code{◊a[#:href "http://docs.racket-lang.org/syntax/macr
 ◊exercise{If you're not familiar with ◊code{◊a[#:href "http://docs.racket-lang.org/syntax/macro-testing.html?q=phase1-eval#%28form._%28%28lib._syntax%2Fmacro-testing..rkt%29._phase1-eval%29%29"]{phase1-eval}}, see what happens when you omit it and try to explain the effect.}
 
 Here's my implementation, juxtaposed with Jay's:
-◊codecmp[#:f1 "code/my-extract-stx-vars.rkt" #:f2 "code/extract-stx-vars-jay.rkt"]
-◊cmpnote/1[#:line 8]{I use ◊code{append-map} while Jay uses ◊code{map}. Either works, because I keep the intermediate lists of variables flat, whereas Jay flattens the resulting structure in the top-level call.}
-◊cmpnote/2[#:line 14]{This is where Jay flattens the resulting data structure, which makes ◊code{map} equally viable.}
+◊newincludecode["code/my-extract-stx-vars.rkt"]
+◊codenote[#:line 8]{I use ◊code{append-map} while Jay uses ◊code{map}. Either works, because I keep the intermediate lists of variables flat, whereas Jay flattens the resulting structure in the top-level call.}
+◊newincludecode["code/extract-stx-vars-jay.rkt" #:comparison-index 2]
+◊codenote[#:line 14]{This is where Jay flattens the resulting data structure, which makes ◊code{map} equally viable.}
 
 You can use these tests for ◊code{rewrite-se}:
 
 ◊newincludecode["code/rewrite-se-tests.rkt" #:lang "racket"]
 
 Again, my implementation and Jay's:
-◊codecmp[#:f1 "code/my-rewrite-se.rkt" #:f2 "code/rewrite-se-jay.rkt"]
+◊newincludecode["code/my-rewrite-se.rkt"]
+◊newincludecode["code/rewrite-se-jay.rkt" #:comparison-index 2]
 
 Ah, I should get into the habit of using ◊code{quasisyntax} as well :-)
 
@@ -52,6 +55,7 @@ Here's the trick to assigning symbols to variables represented with Prolog synta
 ◊answer{No. Doing so would associate the identifiers with symbols, but those symbols would be compiled into the rule. Therefore, multiple applications of the same rule could introduce a naming conflict.}
 
 Here is my version, juxtaposed with the original.
-◊codecmp[#:f1 "code/my-compile-rule-stx.rkt" #:f2 "code/compile-rule-jay.rkt"]
+◊newincludecode["code/my-compile-rule-stx.rkt"]
+◊newincludecode["code/compile-rule-jay.rkt" #:comparison-index 2]
 
 Next, let's see how well each approach lends itself to interaction with Racket.

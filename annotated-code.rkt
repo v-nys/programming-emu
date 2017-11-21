@@ -40,7 +40,6 @@
 (define (insert-note note/no ann-c)
   (match-define (cons no note) note/no)
   (define note-line (string->number (attr-ref note 'line)))
-  (define cmp-1? (member "cmp-1" (string-split (attr-ref note 'class))))
   (define tbodies
     (findf*-txexpr
      ann-c
@@ -115,12 +114,6 @@
    'div
    `((class "code-note-container") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
    (list (txexpr 'aside '() elements))))
-
-(define (cmpnote/2 #:line line . elements)
-  (txexpr 'dummy empty empty))
-
-(define (cmpnote/1 #:line line . elements)
-  (txexpr 'dummy empty empty))
 
 ;; used to preserve line structure in included code
 (define (break-code-lines e acc)
@@ -229,17 +222,6 @@
 (define (extend lines num)
   (append lines (build-list (- num (length lines)) (λ (_) empty))))
 
-(define (codecmp
-         #:f1 f1 ; the location of the source code
-         #:lang1 [lang1 "racket"]
-         #:fn1 [fn1 #f] ; the name that's displayed in the listing
-         #:new/1 [new/1 empty] ; which lines are new
-         #:f2 f2
-         #:lang2 [lang2 "racket"]
-         #:fn2 [fn2 #f]
-         #:new/2 [new/2 empty])
-  (txexpr 'dummy empty empty))
-
 (define (annotated-code-generator txexprs)
   ;; this works by grouping a comparison (or standalone bit of code) with the following elements
   ;; those are assumed to be notes
@@ -259,103 +241,6 @@
    (for ([grp processed-groups])
      (for ([grp-elem grp])
        (yield grp-elem)))))
-
-(define (postprocess-comparisons tx)
-  (define (classify-nested-snippet-components prefix nsc)
-    (if
-     (not (txexpr? nsc))
-     nsc
-     (let* ([class-attr (attr-ref nsc 'class "")]
-            [classes (string-split class-attr " ")])
-       (cond
-         [(member "listing-header" classes)
-          (let ([tl
-                 (attr-set
-                  nsc
-                  'class
-                  (string-join
-                   (list
-                    class-attr
-                    (format "~a__listing-header-cls" prefix))
-                   " "))])
-            (txexpr
-             (get-tag tl)
-             (get-attrs tl)
-             (map
-              (curry classify-nested-snippet-components prefix)
-              (get-elements tl))))]
-         [(member "fa-files-o" classes)
-          (attr-set nsc 'class (string-join (list class-attr (format "~a__fa-files-o-cls" prefix)) " "))]
-         ;; FIXME why isn't class being applied here?
-         [(member "number-circle" classes)
-          (attr-set nsc 'class (string-join (list class-attr (format "~a__number-circle-cls" prefix)) " "))]
-         [(eq? (get-tag nsc) 'a)
-          (attr-set nsc 'class (string-join (list class-attr (format "~a__a" prefix)) " "))]
-         [(not (null? (get-elements nsc)))
-          (txexpr
-           (get-tag nsc)
-           (get-attrs nsc)
-           (map
-            (curry classify-nested-snippet-components prefix)
-            (get-elements nsc)))]
-         [else nsc]))))
-  (define (classify-nested-note-components prefix nnc)
-    (if (not (txexpr? nnc))
-        nnc
-        (let ([class-attr (attr-ref nnc 'class "")])
-          (case (get-tag nnc)
-            ['aside (attr-set nnc 'class (string-join (list class-attr (format "~a__aside" prefix)) " "))]
-            ;; FIXME why isn't class being applied here?
-            ['note-nb (attr-set nnc 'class (string-join (list class-attr (format "~a__note-nb" prefix)) " "))]
-            [else nnc]))))
-  (define (number-cmp-component comp cntr)
-    (let* ([class-attr (attr-ref comp 'class "")]
-           [classes (string-split class-attr " ")])
-      (cond
-        [(member "annotated-code" classes)
-         (let* ([new-cntr
-                 (add1 cntr)]
-                [new-class
-                 (format "compared-snippet-~a" new-cntr)]
-                [tl-only
-                 (attr-set
-                  comp
-                  'class
-                  (format
-                   "~a ~a"
-                   class-attr
-                   new-class))])
-           (cons
-            (txexpr
-             (get-tag tl-only)
-             (get-attrs tl-only)
-             (map
-              (curry classify-nested-snippet-components new-class)
-              (get-elements tl-only)))
-            new-cntr))]
-        [(member "code-note-container" classes)
-         (let* ([new-class
-                 (format "snippet-~a-note" cntr)]
-                [tl
-                 (attr-set
-                  comp
-                  'class
-                  (string-join (list class-attr new-class) " "))])
-           (cons
-            (txexpr
-             (get-tag tl)
-             (get-attrs tl)
-             (map (curry classify-nested-note-components new-class) (get-elements tl)))
-            cntr))]
-        [else (cons comp cntr)])))
-  (if (eq? (get-tag tx) 'cmp)
-      (car
-       (map-accumulatel
-        number-cmp-component
-        0
-        (get-elements tx)))
-      tx))
-(provide postprocess-comparisons)
 
 (define (postprocess-notes tx)
   ;; note: would be cleaner not to use placeholder tag, but will leave as is because comparison is not assumed
@@ -389,7 +274,7 @@
    lang
    (file->string path #:mode 'text)))
 
-(define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty])
+(define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty] #:comparison-index [cmp-idx 1])
   (define raw-source (file->string f #:mode 'text))
   (define pyg
     (highlight
@@ -399,6 +284,6 @@
   (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
   (define num-lines (length pre-lines))
   (define table (code-tablify pre-lines lang fn new num-lines raw-source))
-  (txexpr 'div '((class "annotated-code")) (list table)))
+  (txexpr 'div `((class ,(format "annotated-code cmp-~a" cmp-idx))) (list table)))
 
 (provide (all-defined-out))

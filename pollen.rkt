@@ -40,15 +40,13 @@
 
 (define (root . elements)
   (let ([decoded
-         (decode
-          (decode (txexpr 'root '() elements)
+         (decode (txexpr 'root '() elements)
                  #:txexpr-elements-proc decode-paragraphs
                  #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
                  #:exclude-tags '(style script headappendix pre code)
                  #:exclude-attrs '((class "ws"))
-                 #:txexpr-proc txexpr-proc)
-          #:txexpr-proc postprocess-comparisons)]) ; need two steps of decoding
+                 #:txexpr-proc txexpr-proc)]) ; need two steps of decoding
     decoded))
 (provide root)
 
@@ -126,12 +124,6 @@
 (provide exercise)
 
 (provide codenote)
-
-(provide cmpnote/1) ; TODO: should just use an optional argument to indicate which listing this belongs with
-
-(provide cmpnote/2)
-
-(provide codecmp)
 
 (provide newincludecode)
 
