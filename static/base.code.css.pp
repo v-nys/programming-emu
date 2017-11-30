@@ -35,8 +35,9 @@ align-items: center;
 }
 
 .listing-header {
-background-color: lightgrey;
-border-top: 1px solid grey;
+background-color: ◊cmp-aqua-transparent;
+color: ◊cmp-aqua;
+border-top: 1px solid ◊cmp-aqua;
 text-align: right;
 }
 
