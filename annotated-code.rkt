@@ -26,6 +26,7 @@
   (only-in pollen/unstable/pygments highlight)
   txexpr
   (only-in racket-list-utils/utils map-accumulatel)
+  sugar/coerce
   "logging.rkt")
 
 ;; assign numbers like in enumerate in Python - could be in more general library
@@ -70,7 +71,7 @@
                     (list
                      (txexpr
                       'div
-                      `((class ,(format "listingnote active-number-circle number-circle ~a" "left-number-circle"))
+                      `((class ,(format "listingnote active-number-circle number-circle left-number-circle compared-snippet-~a__listing-header-cls" (attr-ref note 'cmp-idx)))
                         (target-note ,(attr-ref note 'id)))
                       (list (number->string no)))))))
   (let-values
@@ -104,7 +105,10 @@
 ;; and the notes themselves (inserting numbers as elements)
 (define (process-annotated-code group)
   (define ann-c (car group))
-  (define notes/no (enumerate (cdr group) 1))
+  (define cmp-idx (attr-ref ann-c 'cmp-idx))
+  (define (inject-cmp-idx tx)
+    (attr-set tx 'cmp-idx cmp-idx))
+  (define notes/no (enumerate (map inject-cmp-idx (cdr group)) 1))
   (define inserted (foldl insert-note ann-c notes/no))
   (define numbered (map number-note notes/no))
   (cons inserted numbered))
@@ -178,7 +182,7 @@
    (map
     (λ (l) (code-trowify l new))
     (enumerate (extend lines num-lines) 1))))
-(define (code-theadify fn raw-source)
+(define (code-theadify fn raw-source cmp-idx)
   (txexpr
    'thead
    `()
@@ -193,7 +197,7 @@
             (list ""))
            (txexpr
             'td
-            '((class "listing-header")
+            `((class ,(format "listing-header compared-snippet-~a__listing-header-cls" cmp-idx))
               (colspan "2"))
             (list
              fn
@@ -204,13 +208,13 @@
                   (aria-hidden "true")
                   (data-clipboard-action "copy")
                   (data-clipboard-text ,raw-source)))))))))))
-(define (code-tablify lines lang fn new num-lines raw-source)
+(define (code-tablify lines lang fn new num-lines raw-source cmp-idx)
   (txexpr
    'table
    `((class "code-table"))
    (if fn
-       (list (code-theadify fn raw-source) (code-tbodify lines new num-lines))
-       (list (code-theadify "" raw-source) (code-tbodify lines new num-lines)))))
+       (list (code-theadify fn raw-source cmp-idx) (code-tbodify lines new num-lines))
+       (list (code-theadify "" raw-source cmp-idx) (code-tbodify lines new num-lines)))))
 
 ;; add surrounding tags to preserve whitespace if necessary
 (define (preserve se)
@@ -223,8 +227,7 @@
   (append lines (build-list (- num (length lines)) (λ (_) empty))))
 
 (define (annotated-code-generator txexprs)
-  ;; this works by grouping a comparison (or standalone bit of code) with the following elements
-  ;; those are assumed to be notes
+  ;; this works by grouping a code sample with the following notes - these should follow the sample immediately
   (define groups
     (reverse
      (foldl
@@ -269,6 +272,8 @@
       tx))
 (provide postprocess-notes)
 
+;; next q: how to associate comparison number with code note?
+
 (define (includecode path #:lang [lang "racket"])
   (highlight
    lang
@@ -283,7 +288,7 @@
   (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
   (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
   (define num-lines (length pre-lines))
-  (define table (code-tablify pre-lines lang fn new num-lines raw-source))
-  (txexpr 'div `((class ,(format "annotated-code cmp-~a" cmp-idx))) (list table)))
+  (define table (code-tablify pre-lines lang fn new num-lines raw-source cmp-idx))
+  (txexpr 'div `((class ,(format "annotated-code cmp-~a" cmp-idx)) (cmp-idx ,(->string cmp-idx))) (list table)))
 
 (provide (all-defined-out))
