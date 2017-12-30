@@ -25,7 +25,7 @@
   pollen/decode
   (only-in pollen/unstable/pygments highlight)
   txexpr
-  (only-in racket-list-utils/utils map-accumulatel)
+  (only-in list-utils map-accumulatel)
   sugar/coerce
   "logging.rkt")
 

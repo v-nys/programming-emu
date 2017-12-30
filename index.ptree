@@ -1,9 +1,20 @@
 #lang pollen
 ◊index.html{
-◊(for/list ([fn (cdr (dynamic-require "front-matter/front-matter.ptree" 'doc))])
-   (string->symbol (string-append "front-matter/" (symbol->string fn))))
-◊(for/list ([fn (cadr (dynamic-require "projects/projects.ptree" 'doc))])
-   (string->symbol (string-append "projects/" (symbol->string fn))))
-◊(for/list ([fn (cdr (dynamic-require "coda/coda.ptree" 'doc))])
-   (string->symbol (string-append "coda/" (symbol->string fn))))
+ front-matter/introduction.html
+ front-matter/conventions.html
+ ◊projects/parenlog/parenlog.html{
+  projects/parenlog/introduction.html
+  projects/parenlog/predicates_variables_and_unification.html
+  projects/parenlog/resolution.html
+  projects/parenlog/first_comparison.html
+  projects/parenlog/extra_features.html
+  projects/parenlog/embedded.html
+  projects/parenlog/standalone.html
+  projects/parenlog/final_thoughts.html
+  projects/parenlog/listing.html
+ }
+ ◊projects/rash/rash.html{
+  projects/rash/a_simple_pipeline.html
+ }
+ coda/glossary.html
 }
