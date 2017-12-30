@@ -245,7 +245,7 @@ border-bottom: 1px dashed ◊cmp-aqua;
 border-bottom: 1px dashed ◊cmp-orange;
 }
 
-.active-number-circle.left-number-circle {
+.active-number-circle {
 background: ◊cmp-aqua;
 }
 

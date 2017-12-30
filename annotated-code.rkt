@@ -71,7 +71,7 @@
                     (list
                      (txexpr
                       'div
-                      `((class ,(format "listingnote active-number-circle number-circle left-number-circle compared-snippet-~a__listing-header-cls" (attr-ref note 'cmp-idx)))
+                      `((class ,(format "listingnote active-number-circle number-circle compared-snippet-~a__listing-header-cls" (attr-ref note 'cmp-idx)))
                         (target-note ,(attr-ref note 'id)))
                       (list (number->string no)))))))
   (let-values
@@ -272,14 +272,7 @@
       tx))
 (provide postprocess-notes)
 
-;; next q: how to associate comparison number with code note?
-
-(define (includecode path #:lang [lang "racket"])
-  (highlight
-   lang
-   (file->string path #:mode 'text)))
-
-(define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty] #:comparison-index [cmp-idx 1])
+(define (includecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty] #:comparison-index [cmp-idx 1])
   (define raw-source (file->string f #:mode 'text))
   (define pyg
     (highlight
