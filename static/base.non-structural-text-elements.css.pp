@@ -17,10 +17,7 @@ font-style: italic;
 }
 
 todonote {
-position: absolute;
-right: ◊(/ todo-margin-percentage 2)%;
-width: ◊(- (/ content-margin-percentage 2)
-           todo-margin-percentage)%;
+  float:right;
 }
 
 signature {

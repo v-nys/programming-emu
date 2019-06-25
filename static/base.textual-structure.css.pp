@@ -25,7 +25,7 @@ content {
 display: block;
 margin-left: auto;
 margin-right: auto;
-width: ◊(- 100 content-margin-percentage)%;
+max-width: ◊content-max-width;
 }
 
 exercise {

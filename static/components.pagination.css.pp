@@ -4,7 +4,6 @@
 .c-pageturn {
 position: fixed;
 top: 50%;
-width: ◊(/ content-margin-percentage 4)%;
 text-align: center;
 }
 

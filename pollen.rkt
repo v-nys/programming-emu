@@ -139,33 +139,9 @@
   (txexpr 'span '((class "explanation")) elements))
 (provide explanation)
 
-(define (glossaryterm->paragraph tx)
-  (txexpr 'p `((id ,(car (get-elements tx))))
-          (list (txexpr 'span '((class "glossarytermlabel"))
-                        (list (car (get-elements tx)) ": "))
-                (cadr (get-elements tx)))))
-
-(define (pn->glossary-paragraphs pn)
-  (let ([maybe-glossaryterms
-         (findf*-txexpr (get-doc pn)
-                        (λ (e) (and (txexpr? e) (eq? (get-tag e) 'termlabel))))])
-    (if maybe-glossaryterms
-        (map glossaryterm->paragraph
-             maybe-glossaryterms) empty)))
-
 (define (popquiz . elements)
   (txexpr 'span '((class "popquiz")) (append '("Pop quiz: ") elements)))
 (provide popquiz)
-
-(define (glossary)
-  (txexpr 'div
-          '()
-          (sort
-           (foldr (λ (pn acc) (append (pn->glossary-paragraphs pn) acc)) empty
-                  ;; including these would lead to an infinite loop, because they have a dependency on the glossary
-                  (pagetree->list (splice-out-nodes (get-pagetree (build-path (current-project-root) "index.ptree")) '(index.html coda/glossary.html))))
-           (λ (p1 p2) (string<?(string-downcase (attr-ref p1 'id)) (string-downcase (attr-ref p2 'id)))))))
-(provide glossary)
 
 (define (glossaryterm #:explanation [explanation "TODO: add an explanation"] #:canonical [canonical #f] . elements)
   (set! canonical (or canonical (string-append* elements)))
@@ -189,6 +165,14 @@
 (define (predicate . elements)
   (txexpr 'code '() elements))
 (provide predicate)
+
+(define (toc-for-descendants metas)
+  (define here (path->pagenode (hash-ref metas 'here-path)))
+  (define
+    children-here
+    (children here (build-path (current-project-root) "index.ptree")))
+  `(ul () ,@(map (λ (c) `(li () (a ((href ,(string-append "/" (symbol->string c)))) ,(symbol->string c)))) children-here)))
+(provide toc-for-descendants)
 
 (define (toc #:depth [depth 1]
              #:exceptions [exceptions '(index.html)]
@@ -215,7 +199,7 @@
        (prune-tree/depth ptree depth)
        exceptions))
      ol?)))
-(provide toc)
+;(provide toc)
 
 ;; getting the top-level pagetree is straightforward, but how can I get the current page's pagenode from a function?
 
@@ -248,7 +232,7 @@
         " » "))
       ""))
 
-(provide navbar)
+;(provide navbar)
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:

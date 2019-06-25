@@ -1,7 +1,7 @@
 #lang pollen
 ◊(require pollen/unstable/convert)
 ◊h2{Table of contents}
-◊toc[#:depth 2]
+◊(toc-for-descendants metas)
 
 ◊div[#:id "mc_embed_signup"]{
  ◊form[#:action "//telenet.us16.list-manage.com/subscribe/post?u=a12fcdf12f48c319029ffe244&amp;id=d25ea0e7ac" #:class "validate" #:id "mc-embedded-subscribe-form" #:method "post" #:name "mc-embedded-subscribe-form" #:novalidate "novalidate" #:target "_blank"]{

@@ -60,10 +60,9 @@ SOFTWARE.}
 <body>
 ◊when/splice[(previous here)]{<a class="c-pageturn c-pageturn-left" href="/◊(previous here)"><img id="pageturn-left-img" class="c-pageturn-img" src="/images/turn-left-light.svg"></a>}
 <content>
-<p class="u-screen-size-p"><warning class="u-screen-size-p__warning">The current version of this book is not optimized for your screen resolution and/or zoom level. You may experience graphical glitches.</warning></p>
 <p id="js-warning-p" class="u-js-p"><warning class="u-js-p__warning">It does not look like JavaScript is enabled on your system. While you can read the book without JavaScript, there are a lot of quality of life improvements that rely on Javascript, so I recommend turning it on.</warning></p>
 
-◊(->html (navbar here))
+◊;(->html (navbar here))
 
 ◊(my->html (select* 'unmoved doc))
 </content>
