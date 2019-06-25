@@ -58,7 +58,7 @@ SOFTWARE.}
 ◊when/splice[(select 'headappendix doc)]{◊(my->html (select* 'headappendix doc))}
 </head>
 <body>
-◊when/splice[(previous here)]{<a class="c-pageturn c-pageturn-left" href="/◊(previous here)"><img id="pageturn-left-img" class="c-pageturn-img" src="/images/turn-left-light.svg"></a>}
+◊when/splice[(previous here)]{<a class="c-pageturn c-pageturn-left" href="/◊(previous here)"><img id="pageturn-left-img" class="c-pageturn-img" src="/static/images/turn-left-light.svg"></a>}
 <content>
 <p id="js-warning-p" class="u-js-p"><warning class="u-js-p__warning">It does not look like JavaScript is enabled on your system. While you can read the book without JavaScript, there are a lot of quality of life improvements that rely on Javascript, so I recommend turning it on.</warning></p>
 
@@ -66,6 +66,6 @@ SOFTWARE.}
 
 ◊(my->html (select* 'unmoved doc))
 </content>
-◊when/splice[(next here)]{<a class="c-pageturn c-pageturn-right" href="/◊(next here)"><img id="pageturn-right-img" class="c-pageturn-img c-pageturn-right__img" src="/images/turn-left-light.svg"></a>}
+◊when/splice[(next here)]{<a class="c-pageturn c-pageturn-right" href="/◊(next here)"><img id="pageturn-right-img" class="c-pageturn-img c-pageturn-right__img" src="/static/images/turn-left-light.svg"></a>}
 </body>
 </html>

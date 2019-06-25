@@ -1,17 +1,15 @@
 #lang pollen
 ◊; gleaned this from Joel Dueck's the Notepad
-◊(require racket/string)
-◊(define (file-nodes folder extension replacement-extension)
-   (map (λ (str) (string->symbol (format "~a/~a" folder (string-replace str extension replacement-extension))))
-        (filter (λ (str) (string-suffix? str extension))
-                (map path->string (directory-list folder)))))
-
-◊(define p-files `(@ ,@(file-nodes "static" ".p" "")))
-◊(define pp-files `(@ ,@(file-nodes "static" ".pp" "")))
-
-◊p-files
-◊pp-files
-index.html{
+◊;(require racket/string)
+◊;(define (file-nodes folder extension replacement-extension)
+◊;  (map (λ (str) (string->symbol (format "~a/~a" folder (string-replace str extension replacement-extension))))
+◊;       (filter (λ (str) (string-suffix? str extension))
+◊;               (map path->string (directory-list folder)))))
+◊;(define p-files `(@ ,@(file-nodes "static" ".p" "")))
+◊;(define pp-files `(@ ,@(file-nodes "static" ".pp" "")))
+◊;p-files
+◊;pp-files
+◊index.html{
 ◊(for/list ([fn (cdr (dynamic-require "front-matter/front-matter.ptree" 'doc))])
    (string->symbol (string-append "front-matter/" (symbol->string fn))))
 ◊(for/list ([fn (cadr (dynamic-require "projects/projects.ptree" 'doc))])
