@@ -1,6 +1,6 @@
 #lang pollen
 ◊(require pollen/unstable/convert)
-◊h2{Table of contents}
+◊title[metas]{Table of contents}
 ◊(toc-for-descendants metas)
 
 ◊div[#:id "mc_embed_signup"]{

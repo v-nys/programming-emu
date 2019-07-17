@@ -25,6 +25,7 @@
          "logging.rkt"
          "navigation.rkt"
          anaphoric
+         db
          pollen/core
          pollen/decode
          pollen/misc/tutorial
@@ -42,12 +43,12 @@
   (let ([decoded
          (decode
           (decode (txexpr 'root '() elements)
-                 #:txexpr-elements-proc decode-paragraphs
-                 #:inline-txexpr-proc link-to-docs
-                 #:string-proc (compose1 smart-quotes smart-dashes)
-                 #:exclude-tags '(style script headappendix pre code)
-                 #:exclude-attrs '((class "ws"))
-                 #:txexpr-proc txexpr-proc)
+                  #:txexpr-elements-proc decode-paragraphs
+                  #:inline-txexpr-proc link-to-docs
+                  #:string-proc (compose1 smart-quotes smart-dashes)
+                  #:exclude-tags '(style script headappendix pre code)
+                  #:exclude-attrs '((class "ws"))
+                  #:txexpr-proc txexpr-proc)
           #:txexpr-proc postprocess-comparisons)]) ; need two steps of decoding
     decoded))
 (provide root)
@@ -70,28 +71,25 @@
      tx))
   result)
 
-(define (post-process tx)
-  (if (eq? (get-tag tx) 'termlabel)
-      (txexpr 'a (get-attrs tx) (cddr (get-elements tx)))
-      tx))
-
-(define (map-txexpr proc tx)
-  (proc
-   (txexpr (get-tag tx)
-           (get-attrs tx)
-           (map (λ (e)
-                  (if (txexpr? e)
-                      (map-txexpr proc e)
-                      e))
-                (get-elements tx)))))
-
-(define (my->html xexpr-or-xexprs)
-  (define (my->html-aux x)
-    (if ((listof txexpr?) x)
-        (map my->html-aux x)
-        (map-txexpr post-process x)))
-  (->html (my->html-aux xexpr-or-xexprs)))
-(provide my->html)
+;(define (post-process tx) tx)
+;
+;(define (map-txexpr proc tx)
+;  (proc
+;   (txexpr (get-tag tx)
+;           (get-attrs tx)
+;           (map (λ (e)
+;                  (if (txexpr? e)
+;                      (map-txexpr proc e)
+;                      e))
+;                (get-elements tx)))))
+;
+;(define (my->html xexpr-or-xexprs)
+;  (define (my->html-aux x)
+;    (if ((listof txexpr?) x)
+;        (map my->html-aux x)
+;        (map-txexpr post-process x)))
+;  (->html (my->html-aux xexpr-or-xexprs)))
+;(provide my->html)
 
 ;                                          
 ;                                          
@@ -135,20 +133,23 @@
 
 (provide newincludecode)
 
-(define (explanation . elements)
-  (txexpr 'span '((class "explanation")) elements))
-(provide explanation)
-
 (define (popquiz . elements)
   (txexpr 'span '((class "popquiz")) (append '("Pop quiz: ") elements)))
 (provide popquiz)
 
+; FIXME: een lijst van elementen (of quoted expressie) wordt nu opgeslagen als string
+
 (define (glossaryterm #:explanation [explanation "TODO: add an explanation"] #:canonical [canonical #f] . elements)
   (set! canonical (or canonical (string-append* elements)))
+  (define sqlc
+    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read/write))
+  (query-exec sqlc (format "INSERT INTO Glossary(term,explanation) VALUES ('~a','~s')" canonical explanation))
   (txexpr 'termlabel
-          `((href ,(format "/coda/glossary.html#~a" canonical))
+          `((id ,(format "term-~a" canonical))
             (class "glossaryterm"))
-          (append (list canonical explanation) elements (list '(sup () "†")))))
+          ; wat is hier aan de hand?
+          ; hieronder komen de elementen
+          elements))
 (provide glossaryterm)
 
 (define (glossaryref #:canonical [canonical #f] . elements)
@@ -158,6 +159,22 @@
           elements))
 (provide glossaryref)
 
+(define (glossary)
+  (define sqlc
+    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
+  (txexpr
+   'dl
+   '()
+   (for*/list ([(term def) (in-query sqlc "SELECT * FROM Glossary")] [dt? '(#t #f)])
+     (if dt?
+         (txexpr 'dt '() (list term))
+         ;(txexpr 'dd '() (list (read (open-input-string def))))
+         (let ([readdef (read (open-input-string def))])
+           (if (list? readdef)
+               (txexpr 'dd '() readdef)
+               (txexpr 'dd '() (list readdef))))))))
+(provide glossary)
+
 (provide highlight)
 
 (provide includecode)
@@ -166,12 +183,16 @@
   (txexpr 'code '() elements))
 (provide predicate)
 
+; veronderstelt dat pagina's die dit bevatten pas worden gerenderd na hun descendants!
 (define (toc-for-descendants metas)
-  (define here (path->pagenode (hash-ref metas 'here-path)))
+  (define here
+    (path->pagenode (hash-ref metas 'here-path)))
   (define
     children-here
     (children here (build-path (current-project-root) "index.ptree")))
-  `(ul () ,@(map (λ (c) `(li () (a ((href ,(string-append "/" (symbol->string c)))) ,(symbol->string c)))) children-here)))
+  (define sqlc
+    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
+  `(ul () ,@(map (λ (c) `(li () (a ((href ,(string-append "/" (symbol->string c)))) ,(query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a'" (symbol->string c)))))) children-here)))
 (provide toc-for-descendants)
 
 (define (toc #:depth [depth 1]
@@ -207,7 +228,24 @@
   (txexpr 'todonote '() (append (list "TODO: ") elements)))
 (provide todo)
 
+(define (title metas str)
+  (define here
+    (path->pagenode (hash-ref metas 'here-path)))
+  (define sqlc
+    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read/write))
+  (query-exec sqlc (format "INSERT INTO Titles(pagenode,title) VALUES ('~a','~a')" here str))
+  (txexpr 'h1 '() (list str)))
+(provide title)
+
+; FIXME
+; dit veronderstelt dat (de titels van) alle voorouders al gegenereerd zijn
+; anderzijds kunnen de voorouders uitgesteld zijn tot na hun afstammelingen (bv. inhoudstafel pas na inhoud)
+; optie 1: HTML post-processen
+; optie 2: in parallel renderen en blokkeren tot nodige info er is? in template plaatsen kan pas als doc af is.
+; zou moeten gaan: render eerst het mogelijke => eerst titels, dan inhoudstafels, dan navbars => heb een knooppunt nodig... (voordeel is wel dat de Makefile dan niet meer zo strak moet ordenen)
+; zou niet nodig zijn als eerst alle docs werden gegenereerd en dan pas in template werden geplaatst...
 (define (navbar loc)
+  ; creates a trail of page nodes, from root to current node
   (define (trail lst)
     (aif (parent (first lst))
          (trail (cons it lst))
@@ -215,7 +253,7 @@
   (define pairs
     (map
      (λ (e)
-       (cons e (select 'h2 e)))
+       (cons e (select 'h1 e)))
      (trail (list loc))))
   (if (> (length pairs) 1)
       (txexpr
@@ -232,7 +270,7 @@
         " » "))
       ""))
 
-;(provide navbar)
+(provide navbar)
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:

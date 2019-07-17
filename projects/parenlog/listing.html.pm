@@ -1,5 +1,5 @@
 #lang pollen
-◊h2{Complete listings}
+◊title[metas]{Complete listings}
 What's that? What I wrote in the preceding sections is merely a collection of incoherent ramblings? In that case, here's a full source code listing for the final runtime-based implementation of Parenlog.
 
 Here's a full listing for the syntax-based implementation.

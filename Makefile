@@ -10,8 +10,14 @@ publish:
 serve:
 	docker container restart apache_pollen_server
 
-content:
-	find -iname '*.pm' | raco pollen render
+makecache:
+	racket initSQLiteDB.rkt
 
-all: start preprocessor content publish serve
+rmcache:
+	rm -f db.sqlite
+
+content:
+	(find -iname '*.pm' | sed '/^\.\/projects\/parenlog\/parenlog\.html\.pm$$\|^\.\/coda\/glossary\.html\.pm$$\|^\.\/index\.html\.pm$$/d'; echo './projects/parenlog/parenlog.html.pm'; echo './coda/glossary.html.pm'; echo './index.html.pm') | xargs raco pollen render
+
+all: start preprocessor rmcache makecache content publish serve
 	notify-send -i drracket "Build afgewerkt"

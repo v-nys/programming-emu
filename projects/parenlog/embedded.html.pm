@@ -1,5 +1,5 @@
 #lang pollen
-◊h2{Completing the embedded language}
+◊title[metas]{Completing the embedded language}
 So far, we've written models using ◊code{compile-rule} and answered queries using ◊code{answer-query}. That's fine, but it's a little lower-level than we typically want, even if we are using Parenlog as a library.
 
 To wrap up Parenlog as a library, we'll add ◊code{define-model}, ◊code{:-}, ◊code{query-model} and ◊code{model?}, which are described ◊a[#:href "http://docs.racket-lang.org/parenlog/Embedded_Parenlog.html"]{here}.

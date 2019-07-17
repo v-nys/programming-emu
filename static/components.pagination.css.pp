@@ -4,16 +4,16 @@
 .c-pageturn {
 position: fixed;
 top: 50%;
-text-align: center;
 }
 
 .c-pageturn-left {
-transform: translate(50%,-50%);
+transform: translate(-120%,-50%);
+left: calc(50% - 480px);
 }
 
 .c-pageturn-right {
-right: 0;
-transform: translate(-50%,-50%);
+transform: translate(120%,-50%);
+right: calc(50% - 480px);
 }
 
 .c-pageturn-right__img{

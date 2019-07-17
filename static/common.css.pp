@@ -94,7 +94,7 @@ border-bottom: thin dotted ◊aqua;
 color: ◊body-text-color;
 }
 
-.glossarytermlabel {
+.glossaryterm {
 font-weight: bold;
 }
 

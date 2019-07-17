@@ -23,7 +23,7 @@ SOFTWARE.}
 <html>
 <head>
 <meta charset="utf-8">
-<title>◊(select 'h2 doc)</title>
+<title>◊(select 'h1 doc)</title>
 
 <!-- libraries -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -55,16 +55,16 @@ SOFTWARE.}
 <script src="/static/highlight-pageturns.js"></script>
 <script src="/static/hide-js-warning.js"></script>
 
-◊when/splice[(select 'headappendix doc)]{◊(my->html (select* 'headappendix doc))}
+◊when/splice[(select 'headappendix doc)]{◊(->html (select* 'headappendix doc))}
 </head>
 <body>
 ◊when/splice[(previous here)]{<a class="c-pageturn c-pageturn-left" href="/◊(previous here)"><img id="pageturn-left-img" class="c-pageturn-img" src="/static/images/turn-left-light.svg"></a>}
 <content>
 <p id="js-warning-p" class="u-js-p"><warning class="u-js-p__warning">It does not look like JavaScript is enabled on your system. While you can read the book without JavaScript, there are a lot of quality of life improvements that rely on Javascript, so I recommend turning it on.</warning></p>
 
-◊;(->html (navbar here))
+◊(->html (navbar here))
 
-◊(my->html (select* 'unmoved doc))
+◊(->html (select* 'unmoved doc))
 </content>
 ◊when/splice[(next here)]{<a class="c-pageturn c-pageturn-right" href="/◊(next here)"><img id="pageturn-right-img" class="c-pageturn-img c-pageturn-right__img" src="/static/images/turn-left-light.svg"></a>}
 </body>

@@ -1,5 +1,5 @@
 #lang pollen
-◊h2{Comparing to the original}
+◊title[metas]{Comparing to the original}
 We have now produced enough code to draw a meaningful comparison between our own code and Jay's. To help you get a foothold, here's a table containing bits of code we've already written and their counterparts in Jay's code.
 ◊table[#:class "counterparts"]{◊tr{◊th{our code}◊th{Jay's code}}◊tr{◊td{◊code{answer-query q th env}}◊td{◊code{model-env-generator/queries th env q}}}◊tr{◊td{◊code{'done}}◊td{◊code{generator-done}}}◊tr{◊td{◊code{deref v env}}◊td{◊code{env-deref env v}}}◊tr{◊td{◊code{extract-vars}}◊td{◊code{variables-in}}}◊tr{◊td{◊code{reyield}}◊td{◊code{reyield}}}◊tr{◊td{◊code{unify}}◊td{◊code{unify}}}◊tr{◊td{◊code{variable?}}◊td{◊code{variable?}}}◊tr{◊td{◊code{unbound-variable? e env}}◊td{◊code{unbound-variable? env e}}}}
 Most pairs in this table do contain slight implementation differences, but this should still be enough to give you an accurate idea of what the functions and values on the right are for and how they work.

@@ -1,5 +1,5 @@
 #lang pollen
-◊h2{Extra features}
+◊title[metas]{Extra features}
 In this section, we'll add some extra features to our extremely simple Prolog-like language. We'll add these to both versions we've seen so far.
 ◊h3{Predicate functions}
 Imagine you are writing a Parenlog program and you need a predicate which is defined as a function in Racket. For instance, equality of values, with the same semantics as ◊code{eq?}. Writing clauses expressing the equality relation just feels redundant in that case. It is! Or at least, it will be, after we make a change to our little language. We'll add the possibility of escaping to Racket and using existing predicate functions. Here's an example of a rule which does so, lifted from the Parenlog documentation (with slight modifications because we don't have the surface syntax yet).
