@@ -9,11 +9,32 @@
 ◊;(define pp-files `(@ ,@(file-nodes "static" ".pp" "")))
 ◊;p-files
 ◊;pp-files
+◊; DEZE VIER REGELS TERUG INSCHAKELEN VOOR OUDE OPTIE
+◊;index.html{
+◊;(for/list ([fn (cdr (dynamic-require "front-matter/front-matter.ptree" 'doc))])(string->symbol (string-append "front-matter/" (symbol->string fn))))
+◊;(for/list ([fn (cadr (dynamic-require "languages/languages.ptree" 'doc))])(string->symbol (string-append "languages/" (symbol->string fn))))
+◊;(for/list ([fn (cdr (dynamic-require "coda/coda.ptree" 'doc))])(string->symbol (string-append "coda/" (symbol->string fn))))}
+
 ◊index.html{
-◊(for/list ([fn (cdr (dynamic-require "front-matter/front-matter.ptree" 'doc))])
-   (string->symbol (string-append "front-matter/" (symbol->string fn))))
-◊(for/list ([fn (cadr (dynamic-require "projects/projects.ptree" 'doc))])
-   (string->symbol (string-append "projects/" (symbol->string fn))))
-◊(for/list ([fn (cdr (dynamic-require "coda/coda.ptree" 'doc))])
-   (string->symbol (string-append "coda/" (symbol->string fn))))
+  front-matter/introduction.html
+  ◊languages/index.html{
+    ◊languages/Racket/index.html{
+      ◊languages/Racket/Parenlog/parenlog.html{
+        languages/Racket/Parenlog/introduction.html
+        languages/Racket/Parenlog/predicates_variables_and_unification.html
+        languages/Racket/Parenlog/resolution.html
+        languages/Racket/Parenlog/first_comparison.html
+        languages/Racket/Parenlog/extra_features.html
+        languages/Racket/Parenlog/embedded.html
+        languages/Racket/Parenlog/standalone.html
+        languages/Racket/Parenlog/final_thoughts.html
+        languages/Racket/Parenlog/listing.html
+      }
+    }
+    ◊languages/Python/index.html{
+    }
+    ◊languages/C♯/index.html{
+    }
+  }
+  coda/glossary.html
 }

@@ -16,8 +16,11 @@ makecache:
 rmcache:
 	rm -f db.sqlite
 
+# pagenodes with TOC's are removed so their descendants are processed first
+# therefore, they are re-added in a bottom-up manner
+# could use parallel rendering and locking in the future to make this less fragile
 content:
-	(find -iname '*.pm' | sed '/^\.\/projects\/parenlog\/parenlog\.html\.pm$$\|^\.\/coda\/glossary\.html\.pm$$\|^\.\/index\.html\.pm$$/d'; echo './projects/parenlog/parenlog.html.pm'; echo './coda/glossary.html.pm'; echo './index.html.pm') | xargs raco pollen render
+	(find -iname '*.pm' | sed '/^\.\/index\.html\.pm$$/d' | sed '/^\.\/languages\/index\.html\.pm$$/d' | sed '/^\.\/languages\/Racket\/index\.html\.pm$$/d' | sed '/^\.\/languages\/Racket\/Parenlog\/parenlog\.html\.pm$$/d' | sed '/^\.\/coda\/glossary\.html\.pm$$/d'; echo './languages/Racket/Parenlog/parenlog.html.pm'; echo './languages/Racket/index.html.pm'; echo './languages/index.html.pm'; echo './coda/glossary.html.pm'; echo './index.html.pm') | xargs raco pollen render
 
 all: start preprocessor rmcache makecache content publish serve
 	notify-send -i drracket "Build afgewerkt"

@@ -190,9 +190,7 @@
   (define
     children-here
     (children here (build-path (current-project-root) "index.ptree")))
-  (define sqlc
-    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
-  `(ul () ,@(map (λ (c) `(li () (a ((href ,(string-append "/" (symbol->string c)))) ,(query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a'" (symbol->string c)))))) children-here)))
+  `(ul () ,@(map (λ (c) `(li () (a ((href ,(string-append "/" (symbol->string c)))) ,(pagenode->pagetitle c)))) children-here)))
 (provide toc-for-descendants)
 
 (define (toc #:depth [depth 1]
@@ -237,23 +235,42 @@
   (txexpr 'h1 '() (list str)))
 (provide title)
 
+(define (pagenode->pagetitle sym)
+  (define sqlc
+    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
+  (query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a'" (symbol->string sym))))
+
 ; FIXME
 ; dit veronderstelt dat (de titels van) alle voorouders al gegenereerd zijn
 ; anderzijds kunnen de voorouders uitgesteld zijn tot na hun afstammelingen (bv. inhoudstafel pas na inhoud)
-; optie 1: HTML post-processen
-; optie 2: in parallel renderen en blokkeren tot nodige info er is? in template plaatsen kan pas als doc af is.
-; zou moeten gaan: render eerst het mogelijke => eerst titels, dan inhoudstafels, dan navbars => heb een knooppunt nodig... (voordeel is wel dat de Makefile dan niet meer zo strak moet ordenen)
-; zou niet nodig zijn als eerst alle docs werden gegenereerd en dan pas in template werden geplaatst...
+; korte termijnoplossing: conventies
+; lange termijnoplossing: in parallel renderen en blokkeren tot nodige info er is; in template plaatsen kan pas als doc af is.
+; zou moeten gaan: render eerst het mogelijke => eerst titels, dan inhoudstafels, dan navbars,...
+; voordeel is dat ik de Makefile dan niet meer zo strak moet ordenen
 (define (navbar loc)
   ; creates a trail of page nodes, from root to current node
+  ; starts from a list with the current node, prepends most recent remaining ancestor until done
   (define (trail lst)
     (aif (parent (first lst))
          (trail (cons it lst))
          lst))
+  ; transforms trail of pagenodes into trail of pagenodes with displayable representation
+  ; so this is what I should change
+  ; basically, for everything which has "languages"
   (define pairs
     (map
+     ; this is less than ideal
+     ; will have to do until parallel rendering with dependencies is working
      (λ (e)
-       (cons e (select 'h1 e)))
+       (cons e
+             (match e
+               ['index.html "Table of contents"]
+               ['languages/index.html "Languages"]
+               ['languages/C♯/index.html "C♯"]
+               ['languages/Python/index.html "Python"]
+               ['languages/Racket/index.html "Racket"]
+               ['languages/Racket/Parenlog/parenlog.html "Parenlog"]
+               [_ (pagenode->pagetitle e)])))
      (trail (list loc))))
   (if (> (length pairs) 1)
       (txexpr
@@ -261,7 +278,7 @@
        '((id "header6"))
        (add-between
         (cons
-         (txexpr 'a `((class "fa fa-home") (href ,(format "/~a" (caar pairs)))))
+         (txexpr 'a `((class "fa fa-home") (href ,(format "/~a" (caar pairs))))) ; for home symbol
          (map
           (match-lambda
             [(cons node-sym title-str)
@@ -269,7 +286,6 @@
           (drop-right (cdr pairs) 1)))
         " » "))
       ""))
-
 (provide navbar)
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
