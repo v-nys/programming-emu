@@ -31,10 +31,6 @@
         languages/Racket/Parenlog/listing.html
       }
     }
-    ◊languages/Python/index.html{
-    }
-    ◊languages/C♯/index.html{
-    }
   }
   coda/glossary.html
 }

@@ -247,6 +247,7 @@
 ; lange termijnoplossing: in parallel renderen en blokkeren tot nodige info er is; in template plaatsen kan pas als doc af is.
 ; zou moeten gaan: render eerst het mogelijke => eerst titels, dan inhoudstafels, dan navbars,...
 ; voordeel is dat ik de Makefile dan niet meer zo strak moet ordenen
+; kan misschien zonder patchen als decodefunctie checkt of er nog "unmet dependencies" zijn, dan thread.sleep of iets dergelijks oproept...
 (define (navbar loc)
   ; creates a trail of page nodes, from root to current node
   ; starts from a list with the current node, prepends most recent remaining ancestor until done
@@ -266,8 +267,8 @@
              (match e
                ['index.html "Table of contents"]
                ['languages/index.html "Languages"]
-               ['languages/C♯/index.html "C♯"]
-               ['languages/Python/index.html "Python"]
+               ;['languages/C♯/index.html "C♯"]
+               ;['languages/Python/index.html "Python"]
                ['languages/Racket/index.html "Racket"]
                ['languages/Racket/Parenlog/parenlog.html "Parenlog"]
                [_ (pagenode->pagetitle e)])))

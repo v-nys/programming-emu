@@ -357,31 +357,32 @@
       tx))
 (provide postprocess-comparisons)
 
-(define (postprocess-notes tx)
-  ;; note: would be cleaner not to use placeholder tag, but will leave as is because comparison is not assumed
-  (if (eq? (get-tag tx) 'root)
-      (let*-values
-          ([(temp clippings)
-            (splitf-txexpr
-             tx
-             (λ (e)
-               (and (txexpr? e)
-                    (let ([class-attr-values (string-split (attr-ref e 'class ""))])
-                      (or
-                       (member "annotated-code" class-attr-values)
-                       (member "code-note-container" class-attr-values)))))
-             (λ (e) (txexpr 'placeholder '() '())))]
-           [(clippings-generator)
-            (annotated-code-generator clippings)])
-        (let-values ([(replaced _)
-                      (splitf-txexpr
-                       temp
-                       (λ (e)
-                         (and (txexpr? e)
-                              (eq? (get-tag e) 'placeholder)))
-                       (λ (_) (clippings-generator)))])
-          replaced))
-      tx))
+;(define (postprocess-notes tx)
+;  ;; note: would be cleaner not to use placeholder tag, but will leave as is because comparison is not assumed
+;  (if (eq? (get-tag tx) 'root)
+;      (let*-values
+;          ([(temp clippings)
+;            (splitf-txexpr
+;             tx
+;             (λ (e)
+;               (and (txexpr? e)
+;                    (let ([class-attr-values (string-split (attr-ref e 'class ""))])
+;                      (or
+;                       (member "annotated-code" class-attr-values)
+;                       (member "code-note-container" class-attr-values)))))
+;             (λ (e) (txexpr 'placeholder '() '())))]
+;           [(clippings-generator)
+;            (annotated-code-generator clippings)])
+;        (let-values ([(replaced _)
+;                      (splitf-txexpr
+;                       temp
+;                       (λ (e)
+;                         (and (txexpr? e)
+;                              (eq? (get-tag e) 'placeholder)))
+;                       (λ (_) (clippings-generator)))])
+;          replaced))
+;      tx))
+(define postprocess-notes (λ (x) x))
 (provide postprocess-notes)
 
 (define (includecode path #:lang [lang "racket"])
@@ -391,14 +392,15 @@
 
 (define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty])
   (define raw-source (file->string f #:mode 'text))
-  (define pyg
-    (highlight
-     lang
-     raw-source))
-  (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
-  (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
-  (define num-lines (length pre-lines))
-  (define table (code-tablify pre-lines lang fn new num-lines raw-source))
-  (txexpr 'div '((class "annotated-code")) (list table)))
+; TODO: terug opknappen
+;  (define pyg
+;    (highlight
+;     lang
+;     raw-source))
+;  (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
+;  (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
+;  (define num-lines (length pre-lines))
+;  (define table (code-tablify pre-lines lang fn new num-lines raw-source))
+  (txexpr 'div '((class "annotated-code")) (list raw-source)))
 
 (provide (all-defined-out))

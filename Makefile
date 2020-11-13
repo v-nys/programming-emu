@@ -20,7 +20,7 @@ rmcache:
 # therefore, they are re-added in a bottom-up manner
 # could use parallel rendering and locking in the future to make this less fragile
 content:
-	(find -iname '*.pm' | sed '/^\.\/index\.html\.pm$$/d' | sed '/^\.\/languages\/index\.html\.pm$$/d' | sed '/^\.\/languages\/Racket\/index\.html\.pm$$/d' | sed '/^\.\/languages\/Racket\/Parenlog\/parenlog\.html\.pm$$/d' | sed '/^\.\/coda\/glossary\.html\.pm$$/d'; echo './languages/Racket/Parenlog/parenlog.html.pm'; echo './languages/Racket/index.html.pm'; echo './languages/index.html.pm'; echo './coda/glossary.html.pm'; echo './index.html.pm') | xargs raco pollen render
+	(find -iname '*.pm' | sed '/^\.\/index\.html\.pm$$/d' | sed '/^\.\/languages\/index\.html\.pm$$/d' | sed '/^\.\/languages\/Racket\/index\.html\.pm$$/d' | sed '/^\.\/languages\/Racket\/Parenlog\/parenlog\.html\.pm$$/d' | sed '/^\.\/coda\/glossary\.html\.pm$$/d'; echo './languages/Racket/Parenlog/parenlog.html.pm'; echo './languages/Racket/index.html.pm'; echo './languages/index.html.pm'; echo './coda/glossary.html.pm'; echo './index.html.pm') | while read line; do raco pollen render $$line; done
 
 all: start preprocessor rmcache makecache content publish serve
 	notify-send -i drracket "Build afgewerkt"
