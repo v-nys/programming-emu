@@ -2,7 +2,7 @@
 ◊title[metas]{Variables, predicates and unification}
 Our first step will be to implement a crucial mechanism known as ◊glossaryterm[#:explanation "mechanism by which a unifier for two terms is found"]{unification}, which operates on terms. But to understand and implement unification, we need to understand logic variables.
 ◊h3{Logic variables vs. Racket variables}
-Variables in a logic programming language are different from variables in Racket (and most languages). They are more like unknowns in mathematics: they represent one, immutable value, but that value may not yet be known where the variable is used. Consider again our theory from before: ◊newincludecode["code/theory.pl" #:lang "prolog"]
+Variables in a logic programming language are different from variables in Racket (and most languages). They are more like unknowns in mathematics: they represent one, immutable value, but that value may not yet be known where the variable is used. Consider again our theory from before: ◊includecode["code/theory.pl" #:lang "prolog"]
 
 In Prolog, we could write the query ◊code{likes(X,math)} and learn that the query is successful for ◊code{X} equal to ◊code{eratosthenes}, but we could not write a query like ◊code{likes(X,math), X = ares}. Or rather, we could, but Prolog will not yield a single answer. Once a value has been assigned to a variable, it cannot be changed until after Prolog has produced an answer or has failed to do so. At that point, it will be as if said variable was never assigned in the first place.
 
@@ -14,18 +14,13 @@ Here's a suggested function signature: ◊code{;; S-expression -> S-expression -
 
 And here are some tests for a function with said signature. I would advise you to read these first, as they can clarify some of the expected behavior. There's one case in which shared variables occur on the left-hand side and on the right-hand side. That's something we'll typically avoid, but it still makes for a useful test case.
 ◊aside{If you're not familiar with the ◊code{(module+ test ...)} approach to testing in Racket, have a look ◊a[#:href "https://docs.racket-lang.org/guide/Module_Syntax.html"]{here}.}
-◊newincludecode["code/unify-tests.rkt" #:lang "racket" #:fn "core.rkt"]
+◊includecode["code/unify-tests.rkt" #:lang "racket" #:fn "core.rkt"]
 
 Try to come up with code that gets those tests to pass. If you get stuck, have a look at the code below, focus on understanding and remembering the general structure, then try again from memory.
 
-Here's my code.
-◊aside{Whenever contrasting snippets of code are shown, each variant will use a different accent color so you'll be less likely to get them mixed up.}
-◊cmp{
- ◊newincludecode["code/unify.rkt" #:fn "core.rkt"]
- ◊codenote[#:line 1]{Test 1}
-And here's Jay's:◊newincludecode["code/unify-jay.rkt" #:fn "core.rkt"]
- ◊codenote[#:line 1]{Test 2}
-}
+Here's my code:
+◊includecode["code/unify.rkt" #:fn "core.rkt"]
+And here's Jay's:◊includecode["code/unify-jay.rkt" #:fn "core.rkt"]
 
 Conceptually, both snippets do the same things, but there are a few differences. ◊exercise{Name the differences and see whether either snippet contains any improvements over your own code.} ◊exercise{Modify your own code to incorporate any improvements that you see.} ◊exercise{Notify me if you notice any bugs in my code 😁}
 

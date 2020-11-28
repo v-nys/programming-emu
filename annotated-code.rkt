@@ -385,22 +385,26 @@
 (define postprocess-notes (λ (x) x))
 (provide postprocess-notes)
 
-(define (includecode path #:lang [lang "racket"])
-  (highlight
-   lang
-   (file->string path #:mode 'text)))
+(define (includecode path #:lang [lang "racket"]  #:fn [fn #f])
+  (let ([highlighted (highlight
+                      lang
+                      (file->string path #:mode 'text))])
+    (if fn
+        `(div () (span () ,fn) ,highlighted)
+        highlighted)))
 
-(define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty])
-  (define raw-source (file->string f #:mode 'text))
-; TODO: terug opknappen
-;  (define pyg
-;    (highlight
-;     lang
-;     raw-source))
-;  (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
-;  (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
-;  (define num-lines (length pre-lines))
-;  (define table (code-tablify pre-lines lang fn new num-lines raw-source))
-  (txexpr 'div '((class "annotated-code")) (list raw-source)))
+  (define (newincludecode f #:lang [lang "racket"] #:fn [fn #f] #:new [new empty])
+    (define raw-source (file->string f #:mode 'text))
+    ; TODO: terug opknappen
+    ;  (define pyg
+    ;    (highlight
+    ;     lang
+    ;     raw-source))
+    ;  (define pre (cadr (findf*-txexpr pyg (λ (tx) (and (txexpr? tx) (eq? (get-tag tx) 'pre))))))
+    ;  (define pre-lines (reverse (drop (foldl break-code-lines '(()) (get-elements pre)) 1)))
+    ;  (define num-lines (length pre-lines))
+    ;  (define table (code-tablify pre-lines lang fn new num-lines raw-source))
+    (txexpr 'div '((class "annotated-code")) (list raw-source)))
 
-(provide (all-defined-out))
+  (provide (all-defined-out))
+  

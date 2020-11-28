@@ -1,5 +1,5 @@
 #lang pollen
-◊(require file/convertible pict racket/math)
+◊(require file/convertible pict racket/math graphviz)
 ◊(define query-pict
    (text "answer query"))
 ◊(define empty?-pict
@@ -18,20 +18,17 @@
                           answer-pict
                           apply-rule-pict))))
 ◊(define lines
-   (pin-arrow-line
-    5
-    (pin-arrow-line
-     5
-     (pin-arrow-line
-      5 blocks
-      apply-rule-pict ct-find
-      query-pict rc-find
-      #:start-angle (/ pi 2)
-      #:end-angle pi)
-     empty?-pict cb-find
-     apply-rule-pict ct-find
-     #:label (text "no"))
-    empty?-pict cb-find
-    answer-pict ct-find
-    #:label (text "yes")))
+   (inset
+   (digraph->pict
+    (make-digraph
+     `(("answer" #:label "answer query" #:shape "none")
+       ("empty" #:label "empty?" #:shape "none")
+       ("yield" #:label "yield answer" #:shape "none")
+       ("apply" #:label "apply rule" #:shape "none")
+
+       (edge ("answer" "empty"))
+       (edge ("empty" "yield") #:label "yes")
+       (edge ("empty" "apply") #:label "no")
+       (edge ("apply" "answer")))))
+   0 0 0 0))
 ◊(bytes->string/utf-8 (convert lines 'svg-bytes))

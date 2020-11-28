@@ -15,7 +15,9 @@
      (compile-rule (likes (father athena) lightning))
      (compile-rule (greek X))))
   (let* ([query '((likes athena X))]
-         [expected (list #hasheq((X . battle)) #hasheq((X . logic)) #hasheq((X . math)))]
+         [expected (list #hasheq((X . battle))
+                         #hasheq((X . logic))
+                         #hasheq((X . math)))]
          [answer-generator (answer-query query theory #hasheq())])
     (check-equal?
      (for/list ([a (in-producer answer-generator 'done)])

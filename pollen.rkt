@@ -238,7 +238,7 @@
 (define (pagenode->pagetitle sym)
   (define sqlc
     (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
-  (query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a'" (symbol->string sym))))
+  (query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a' LIMIT 1" (symbol->string sym))))
 
 ; FIXME
 ; dit veronderstelt dat (de titels van) alle voorouders al gegenereerd zijn

@@ -12,7 +12,7 @@ The mother of all logic programming languages is ◊a[#:href "https://en.wikiped
 
 You'll agree that Ares and Athena are friends. So will Prolog. Now, you could pretty easily encode computations that tell you this into more or less any language, but in Prolog there's nothing to encode other than the knowledge. And that takes the following, simple form:
 
-◊newincludecode["code/theory_part_one.pl" #:lang "prolog"]
+◊includecode["code/theory_part_one.pl" #:lang "prolog"]
 Let's step it up. Suppose we have the following knowledge in addition to what we already had.
 
 ◊ol['((start "4"))]{
@@ -30,7 +30,7 @@ Let's step it up. Suppose we have the following knowledge in addition to what we
 
 Now, you'll agree that Eratosthenes, Pythagoras and Athena are all friends. Again, so will Prolog. And you (and Prolog) will agree that Ares and Athena are friends who should be feared. Or that every one of these individuals has a friend who should be feared. Here's how you would encode the rest of the knowledge base (the ◊glossaryterm[#:explanation "an ordered sequence of clauses which together make up a logic program"]{theory} in Prolog speak):
 
-◊newincludecode["code/theory_part_two.pl" #:lang "prolog"]
+◊includecode["code/theory_part_two.pl" #:lang "prolog"]
 
 Pretty straightforward, right? We'll need some basic terminology before we can start doing computations with this. First, ◊predicate{friends(X,Y)}, ◊predicate{likes(eratosthenes,primes)},... are all ◊glossaryterm[#:canonical "predicate" #:explanation "in logic programming, a term indicating that its argument belongs to a set of values with some property (in the case of one argument), a relation between its arguments (in the case of multiple arguments), a set of values (in the case of one argument), or a mathematical relation between sets to which those arguments belong"]{predicates}. These are ◊glossaryterm[#:canonical "term" #:explanation "in logic programming, either a logic variable, an atom or a compound"]{terms} which indicate a relation between their arguments: ◊glossaryterm[#:canonical "logic variable" #:explanation "a mathematical unknown which can be bound only once to a term"]{logic variables} (which begin with an upper case letter), ◊glossaryterm[#:canonical "atom" #:explanation "in logic programming (assuming no extra-logical features such as built-in arithmetic), a constant"]{atoms} (which begin with a lower case letter), or ◊glossaryterm[#:canonical "compound" #:explanation "a term consisting of a symbol and several nested terms"]{compounds} (which begin with a lower case letter and have other terms as their arguments, so they look like predicates, but predicates only occur in the outermost syntactic position as far as we're concerned). That information can take the form of a ◊glossaryterm[#:explanation "in logic programming, an axiomatic encoding of information"]{fact}, which is just "raw", axiomatic information or that of a ◊glossaryterm[#:explanation "in logic programming, an encoding of an allowed deduction"]{rule}, which is knowledge that can be used in a deduction. Facts are written as predicates immediately followed by a period (e.g. ◊code{likes(ares,battle).}) and rules are written as one predicate, followed by the ◊glossaryterm[#:explanation "in logic programming, an operator expressing \"if A, then B\""]{implication} symbol ◊code{:-}, followed by a non-zero number of predicates and terminated by a period. Facts and rules are collectively known as ◊glossaryterm[#:canonical "clause" #:explanation "either a fact or a rule"]{clauses}.
 
