@@ -26,11 +26,13 @@
          "navigation.rkt"
          anaphoric
          db
+         sugar/coerce
          pollen/core
          pollen/decode
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
+         (only-in racket/file file->lines)
          (only-in pollen/template/html ->html)
          (only-in pollen/unstable/pygments highlight)
          (only-in racket/contract listof)
@@ -70,6 +72,36 @@
       postprocess-notes)
      tx))
   result)
+
+(define (code-discussion . elems)
+  (define (listing? e) (and (txexpr? e) (eq? (get-tag e) 'listing)))
+  ; TODO: check that there is at least one element
+  ; TODO: check that all elements are listings or whitespace
+  `(div ((class "code-discussion")
+         (style "border: 1px solid")
+         (num-listings
+          ,(->string
+            (length (filter listing? elems))))
+         (current-listing "1"))
+        ; TODO: initially hide all elements after first
+        (div () (button "previous") (button "next"))
+        ,@elems))
+(provide code-discussion)
+
+(define (listing #:fn fn #:highlights hl #:source src . elems)
+  ; TODO: convert every line of src to a table row
+  ; specifically, div should put an inlined table in front of elems
+  ; first column should consist of line numbers
+  ; second column should consist of lines
+  ; lines (or segments of lines) in hl should be wrapped inside a span with a class for just this listing
+  ; pre elements have a large vertical margin for some reason -> why?!
+  ; may also want to use flexbox to make sure listing and comments are side-by-side
+  ; also: pygments?!
+  ; and: use 10pt font size for code!
+  (define table-elems (map (λ (l) `(tr () (td () (pre () ,l)))) (file->lines src)))
+  `(div () (table ((style "display: inline-block")) ,@table-elems) ,@elems))
+(provide listing)
+  
 
 ;(define (post-process tx) tx)
 ;

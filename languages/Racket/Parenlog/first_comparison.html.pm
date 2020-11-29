@@ -9,6 +9,11 @@ Jay's version of ◊code{compile-rule}, however, is quite different from what we
 ◊includecode["code/my-compile-rule.rkt"]
 ◊includecode["code/compile-rule-jay.rkt"]
 
+◊code-discussion{
+◊listing[#:fn "myfile.rkt" #:highlights '((1 1 8) (3 4 9)) #:source "code/my-compile-rule.rkt"]{Op regel 1 merk je... Op regel 3 zie je...}
+◊listing[#:fn "jaysfile.rkt" #:highlights '((2 1 4) (3 4 9)) #:source "code/compile-rule-jay.rkt"]{Op regel 2 merk je... Op regel 3 zie je...}
+}
+
 ◊ul{
 ◊li{Jay's ◊code{extract-vars} (not to be confused with our own, which maps to ◊code{variables-in}) is a normal function, used at compile time. Very vaguely, it also extracts variables, but not from a quoted S-expression. More specifically, it extracts ◊em{Racket} syntax for ◊em{Prolog} variables from unquoted S-expressions. So, in something like ◊code{(compile-rule (human X) (mortal X))}, the pattern ◊code{(var ...)} will match the identifier ◊code{X}, because the associated symbol is valid notation for a Prolog variable.}
 ◊li{Line 9 of Jay's code: This clause transforms syntax for ◊em{Racket} variable symbols into quoted symbols, but only if those symbols are not valid representations of Prolog variables. In other words, ◊code{rewrite-se} would replace the syntax objects ◊code{#'human} and ◊code{#'mortal} with syntax ◊code{#''human} and ◊code{#''mortal}, but it would leave ◊code{#'X} intact. So take the expression "sans vars" with a grain of salt.}
