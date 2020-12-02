@@ -12,6 +12,42 @@ border: 1px solid ◊light-gray;
 font-size: ◊code-pt-size;
 }
 
+listing {
+display: block;
+}
+
+.code-discussion {
+  font-size: 12pt;
+}
+
+.code-discussion-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+
+.code-discussion pre {
+  /* onduidelijk waar bestaande marges vandaan komen */
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 12pt;
+}
+
+.annotated-listing {
+  display: flex;
+  flex-direction: row;
+  align-items: first baseline;
+}
+
+.annotated-listing table {
+  flex: 1 0 0;
+}
+
+.annotated-listing p {
+  flex: 1 0 0;
+  margin-top: 0;
+}
+
 work {
 font-style: italic;
 }
@@ -23,4 +59,8 @@ todonote {
 signature {
 font-family: ◊code-font-family;
 font-size: ◊code-pt-size;
+}
+
+.hidden {
+  display: none;
 }

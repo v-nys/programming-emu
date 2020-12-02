@@ -37,7 +37,7 @@
          (only-in pollen/unstable/pygments highlight)
          (only-in racket/contract listof)
          (only-in racket/list add-between append* drop drop-right first flatten group-by last)
-         (only-in racket/match match match-lambda)
+         (only-in racket/match match match-lambda match-lambda**)
          racket/string
          txexpr)
 
@@ -73,33 +73,64 @@
      tx))
   result)
 
+;; volgende stap:
+;; display: none voor listing als current-listing van .code-discussion != listing-number van de listing in kwestie -> vereist JS
+;; daarna kunnen switchen tussen nummers -> vereist JS
+;; ten slotte spans highlighten -> in de define van listing, niet hier
 (define (code-discussion . elems)
   (define (listing? e) (and (txexpr? e) (eq? (get-tag e) 'listing)))
+  (define listings (filter listing? elems))
+  (define
+    numbered-listings
+    (reverse
+     (cdr
+      (foldl
+       (match-lambda**
+        [(listing (cons counter listings))
+         (let ([numbered-listing
+                (attr-set
+                 listing
+                 'listing-number
+                 (->string counter))])
+           (cons
+            (add1 counter)
+            (cons
+             (if (> counter 1) (attr-join numbered-listing 'class "hidden") numbered-listing)
+             listings)))])
+       (cons 1 (list))
+       listings))))
   ; TODO: check that there is at least one element
   ; TODO: check that all elements are listings or whitespace
   `(div ((class "code-discussion")
          (style "border: 1px solid")
          (num-listings
           ,(->string
-            (length (filter listing? elems))))
+            (length listings)))
          (current-listing "1"))
         ; TODO: initially hide all elements after first
-        (div () (button "previous") (button "next"))
-        ,@elems))
+        ; first step will be te number listings
+        (div ((class "code-discussion-controls")) (button "previous") (button "next"))
+        ,@numbered-listings))
 (provide code-discussion)
 
 (define (listing #:fn fn #:highlights hl #:source src . elems)
-  ; TODO: convert every line of src to a table row
-  ; specifically, div should put an inlined table in front of elems
-  ; first column should consist of line numbers
-  ; second column should consist of lines
   ; lines (or segments of lines) in hl should be wrapped inside a span with a class for just this listing
   ; pre elements have a large vertical margin for some reason -> why?!
   ; may also want to use flexbox to make sure listing and comments are side-by-side
   ; also: pygments?!
   ; and: use 10pt font size for code!
-  (define table-elems (map (λ (l) `(tr () (td () (pre () ,l)))) (file->lines src)))
-  `(div () (table ((style "display: inline-block")) ,@table-elems) ,@elems))
+  (define table-elems
+    (reverse
+     (cdr
+      (foldl
+       (match-lambda**
+        [(line (cons counter lines))
+         (cons
+          (add1 counter)
+          (cons `(tr () (td () ,(->string counter)) (td () (pre () ,line))) lines))])
+       (cons 1 (list))
+       (file->lines src)))))
+  `(listing ((class "annotated-listing")) (table ((style "display: inline-block")) ,@table-elems) ,@elems))
 (provide listing)
   
 

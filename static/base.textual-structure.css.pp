@@ -65,9 +65,7 @@ line-height: 150%;
 }
 
 pre {
-border-left: 1px dashed;
 font-size: ◊code-pt-size;
-padding-left: 1em;
 }
 
 warning {

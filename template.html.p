@@ -51,6 +51,7 @@ SOFTWARE.}
 <script src="/static/jquery.js"></script>
 <script src="/static/clipboard.min.js"></script>
 <script src="/static/copy-to-clipboard.js"></script>
+<script src="/static/paginate-listings.js"></script>
 <script src="/static/hide-listing-notes.js"></script>
 <script src="/static/highlight-pageturns.js"></script>
 <script src="/static/hide-js-warning.js"></script>
