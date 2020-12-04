@@ -24,6 +24,7 @@
          "doc-linking.rkt"
          "logging.rkt"
          "navigation.rkt"
+         "highlight-spans.rkt"
          anaphoric
          db
          sugar/coerce
@@ -74,8 +75,9 @@
   result)
 
 ;; volgende stap:
-;; display: none voor listing als current-listing van .code-discussion != listing-number van de listing in kwestie -> vereist JS
-;; daarna kunnen switchen tussen nummers -> vereist JS
+;; bij attribuutwijziging wordt klasse hidden verwijderd van descendant listings
+;; en toegevoegd aan descendant listings met ander nummer dan current-listing
+
 ;; ten slotte spans highlighten -> in de define van listing, niet hier
 (define (code-discussion . elems)
   (define (listing? e) (and (txexpr? e) (eq? (get-tag e) 'listing)))
@@ -107,31 +109,40 @@
           ,(->string
             (length listings)))
          (current-listing "1"))
-        ; TODO: initially hide all elements after first
         ; first step will be te number listings
         (div ((class "code-discussion-controls")) (button "previous") (button "next"))
         ,@numbered-listings))
 (provide code-discussion)
+;; TODO: simplify tests
+(module+ test
+  (require rackunit)
+  (test-equal?
+   "code gebruikt op pagina"
+   (listing #:fn "myfile.rkt" #:highlights '((1 1) (3 4)) #:source "languages/Racket/Parenlog/code/my-compile-rule.rkt" "Op regel 1 merk je... Op regel 3 zie je...")
+   "blabla")
+  (test-equal?
+   "code discussion op pagina"
+   (code-discussion
+    (listing #:fn "myfile.rkt" #:highlights '((1 1) (3 4)) #:source "languages/Racket/Parenlog/code/my-compile-rule.rkt" "Op regel 1 merk je... Op regel 3 zie je...")
+    (listing #:fn "myfile.rkt" #:highlights '((1 1) (3 4)) #:source "languages/Racket/Parenlog/code/my-compile-rule.rkt" "Op regel 2 merk je... Op regel 3 zie je..."))
+   "blablabla"))
 
+;; elems: de annotaties!
 (define (listing #:fn fn #:highlights hl #:source src . elems)
-  ; lines (or segments of lines) in hl should be wrapped inside a span with a class for just this listing
-  ; pre elements have a large vertical margin for some reason -> why?!
-  ; may also want to use flexbox to make sure listing and comments are side-by-side
-  ; also: pygments?!
-  ; and: use 10pt font size for code!
   (define table-elems
     (reverse
      (cdr
       (foldl
        (match-lambda**
-        [(line (cons counter lines))
+        [(highlighted-line (cons counter lines))
          (cons
           (add1 counter)
-          (cons `(tr () (td () ,(->string counter)) (td () (pre () ,line))) lines))])
+          (cons `(tr () (td () ,(->string counter)) (td () (pre () ,@highlighted-line))) lines))])
        (cons 1 (list))
-       (file->lines src)))))
+       (highlight-spans (file->lines src) hl)))))
   `(listing ((class "annotated-listing")) (table ((style "display: inline-block")) ,@table-elems) ,@elems))
 (provide listing)
+
   
 
 ;(define (post-process tx) tx)

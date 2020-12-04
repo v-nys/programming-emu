@@ -10,8 +10,8 @@ Jay's version of ◊code{compile-rule}, however, is quite different from what we
 ◊includecode["code/compile-rule-jay.rkt"]
 
 ◊code-discussion{
-◊listing[#:fn "myfile.rkt" #:highlights '((1 1 8) (3 4 9)) #:source "code/my-compile-rule.rkt"]{Op regel 1 merk je... Op regel 3 zie je...}
-◊listing[#:fn "jaysfile.rkt" #:highlights '((2 1 4) (3 4 9)) #:source "code/compile-rule-jay.rkt"]{Op regel 2 merk je... Op regel 3 zie je...}
+◊listing[#:fn "myfile.rkt" #:highlights '((1 1) (3 4)) #:source "code/my-compile-rule.rkt"]{Op regel 1 merk je... Op regel 3 zie je...}
+◊listing[#:fn "jaysfile.rkt" #:highlights '((2 1) (3 4)) #:source "code/compile-rule-jay.rkt"]{Op regel 2 merk je... Op regel 3 zie je...}
 }
 
 ◊ul{

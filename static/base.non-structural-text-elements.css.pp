@@ -16,6 +16,10 @@ listing {
 display: block;
 }
 
+.highlighted {
+  background-color: yellow;
+}
+
 .code-discussion {
   font-size: 12pt;
 }
