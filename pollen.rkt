@@ -127,17 +127,17 @@
    "blablabla"))
 
 ;; elems: de annotaties!
-(define (listing #:fn [fn #f] #:highlights [hl empty] #:source src . elems)
-  (let ([bare (bare-listing #:highlights hl #:source src)])
+(define (listing #:fn [fn #f] #:highlights [hl empty] #:source src #:lang [lang "plaintext"] . elems)
+  (let ([bare (bare-listing #:highlights hl #:source src #:lang lang)])
     `(listing ((class "annotated-listing")) ,bare (div ((class "code-annotation")) ,@elems))))
 (provide listing)
 
-(define (bare-listing #:highlights [hl empty] #:source src)
-  `(div
-    ((class "counted-lines"))
-    ,@(map
-       (λ (l) `(span ((class "line")) ,l))
-       (file->lines src))))
+(define (bare-listing #:highlights [hl empty] #:source src #:lang lang)
+  `(pre
+    ()
+    (code
+     ((class ,lang))
+     ,(file->string src))))
 (provide bare-listing)
 
 ;                                          
