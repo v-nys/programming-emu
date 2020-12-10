@@ -33,7 +33,7 @@
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
-         (only-in racket/file file->lines)
+         (only-in racket/file file->lines file->string)
          (only-in pollen/template/html ->html)
          (only-in pollen/unstable/pygments highlight)
          (only-in racket/contract listof)
@@ -133,18 +133,11 @@
 (provide listing)
 
 (define (bare-listing #:highlights [hl empty] #:source src)
-  (define table-elems
-    (reverse
-     (cdr
-      (foldl
-       (match-lambda**
-        [(highlighted-line (cons counter lines))
-         (cons
-          (add1 counter)
-          (cons `(tr () (td () (pre () ,(->string counter))) (td () (pre () ,@highlighted-line))) lines))])
-       (cons 1 (list))
-       (highlight-spans (file->lines src) hl)))))
-  `(table () ,@table-elems))
+  `(div
+    ((class "counted-lines"))
+    ,@(map
+       (λ (l) `(span ((class "line")) ,l))
+       (file->lines src))))
 (provide bare-listing)
 
 ;                                          

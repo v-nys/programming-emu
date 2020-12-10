@@ -32,6 +32,12 @@ SOFTWARE.}
 <link rel="stylesheet" type="text/css" href="/static/generic.font-specifications.css" />
 <!-- itcss base layer (unclassed elements) -->
 <!-- could still add more, like lists, etc. -->
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8"
+ src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/languages/go.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/base.code.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.inputs.css" />
 <link rel="stylesheet" type="text/css" href="/static/base.links.css" />

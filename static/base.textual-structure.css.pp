@@ -89,3 +89,16 @@ font-family: Gentium Basic;
 padding: 0 1em;
 font-size: ◊code-pt-size;
 }
+
+.counted-lines {
+  counter-reset: line;
+}
+
+.line {
+  display: block;
+}
+
+.line:before {
+  counter-increment: line;
+  content: counter(line);
+}
