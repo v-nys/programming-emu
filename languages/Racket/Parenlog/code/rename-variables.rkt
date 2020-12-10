@@ -13,6 +13,8 @@
   (define se-subst
     (for/hasheq ([var (extract-vars se)])
       (values var (gensym var))))
-  (foldr (λ (e acc) (cons (apply-variable-substitution se-subst e) acc))
-         empty
-         se))
+  (foldr
+   (λ (e acc)
+     (cons (apply-variable-substitution se-subst e) acc))
+   empty
+   se))

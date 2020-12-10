@@ -66,6 +66,7 @@ line-height: 150%;
 
 pre {
 font-size: ◊code-pt-size;
+margin: 0;
 }
 
 warning {
@@ -76,4 +77,15 @@ border: 1px solid red;
 background-color: pink;
 border-radius: 5px;
 padding: .5em;
+}
+
+listing {
+margin: 0;
+}
+
+.code-annotation {
+white-space: normal;
+font-family: Gentium Basic;
+padding: 0 1em;
+font-size: ◊code-pt-size;
 }

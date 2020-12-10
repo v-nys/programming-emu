@@ -49,7 +49,7 @@
                   #:txexpr-elements-proc decode-paragraphs
                   #:inline-txexpr-proc link-to-docs
                   #:string-proc (compose1 smart-quotes smart-dashes)
-                  #:exclude-tags '(style script headappendix pre code)
+                  #:exclude-tags '(style script headappendix pre code listing)
                   #:exclude-attrs '((class "ws"))
                   #:txexpr-proc txexpr-proc)
           #:txexpr-proc postprocess-comparisons)]) ; need two steps of decoding
@@ -69,8 +69,7 @@
 (define (txexpr-proc tx)
   (define result
     ((compose
-      move-head-appendix
-      postprocess-notes)
+      move-head-appendix)
      tx))
   result)
 
@@ -128,7 +127,12 @@
    "blablabla"))
 
 ;; elems: de annotaties!
-(define (listing #:fn fn #:highlights hl #:source src . elems)
+(define (listing #:fn [fn #f] #:highlights [hl empty] #:source src . elems)
+  (let ([bare (bare-listing #:highlights hl #:source src)])
+    `(listing ((class "annotated-listing")) ,bare (div ((class "code-annotation")) ,@elems))))
+(provide listing)
+
+(define (bare-listing #:highlights [hl empty] #:source src)
   (define table-elems
     (reverse
      (cdr
@@ -137,33 +141,11 @@
         [(highlighted-line (cons counter lines))
          (cons
           (add1 counter)
-          (cons `(tr () (td () ,(->string counter)) (td () (pre () ,@highlighted-line))) lines))])
+          (cons `(tr () (td () (pre () ,(->string counter))) (td () (pre () ,@highlighted-line))) lines))])
        (cons 1 (list))
        (highlight-spans (file->lines src) hl)))))
-  `(listing ((class "annotated-listing")) (table ((style "display: inline-block")) ,@table-elems) ,@elems))
-(provide listing)
-
-  
-
-;(define (post-process tx) tx)
-;
-;(define (map-txexpr proc tx)
-;  (proc
-;   (txexpr (get-tag tx)
-;           (get-attrs tx)
-;           (map (λ (e)
-;                  (if (txexpr? e)
-;                      (map-txexpr proc e)
-;                      e))
-;                (get-elements tx)))))
-;
-;(define (my->html xexpr-or-xexprs)
-;  (define (my->html-aux x)
-;    (if ((listof txexpr?) x)
-;        (map my->html-aux x)
-;        (map-txexpr post-process x)))
-;  (->html (my->html-aux xexpr-or-xexprs)))
-;(provide my->html)
+  `(table () ,@table-elems))
+(provide bare-listing)
 
 ;                                          
 ;                                          

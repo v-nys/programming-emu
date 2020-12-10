@@ -357,34 +357,6 @@
       tx))
 (provide postprocess-comparisons)
 
-;(define (postprocess-notes tx)
-;  ;; note: would be cleaner not to use placeholder tag, but will leave as is because comparison is not assumed
-;  (if (eq? (get-tag tx) 'root)
-;      (let*-values
-;          ([(temp clippings)
-;            (splitf-txexpr
-;             tx
-;             (λ (e)
-;               (and (txexpr? e)
-;                    (let ([class-attr-values (string-split (attr-ref e 'class ""))])
-;                      (or
-;                       (member "annotated-code" class-attr-values)
-;                       (member "code-note-container" class-attr-values)))))
-;             (λ (e) (txexpr 'placeholder '() '())))]
-;           [(clippings-generator)
-;            (annotated-code-generator clippings)])
-;        (let-values ([(replaced _)
-;                      (splitf-txexpr
-;                       temp
-;                       (λ (e)
-;                         (and (txexpr? e)
-;                              (eq? (get-tag e) 'placeholder)))
-;                       (λ (_) (clippings-generator)))])
-;          replaced))
-;      tx))
-(define postprocess-notes (λ (x) x))
-(provide postprocess-notes)
-
 (define (includecode path #:lang [lang "racket"]  #:fn [fn #f])
   (let ([highlighted (highlight
                       lang
