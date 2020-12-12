@@ -178,8 +178,6 @@
 
 (provide codecmp)
 
-(provide newincludecode)
-
 (define (popquiz . elements)
   (txexpr 'span '((class "popquiz")) (append '("Pop quiz: ") elements)))
 (provide popquiz)
