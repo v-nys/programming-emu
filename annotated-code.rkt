@@ -38,8 +38,6 @@
       (enumerate t (add1 count)))]))
 
 
-
-
 (define (codenote #:line line . elements)
   (txexpr
    'div
@@ -62,92 +60,6 @@
            (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
          (cons (append curr-line (list e)) prev-lines))]))
 
-(define (code-trowify line/no new)
-  (define (group-adjacent-lines e acc)
-    (match acc
-      [(cons groups newest)
-       #:when (not (= (add1 newest) e))
-       (cons
-        (cons (list e) groups)
-        e)]
-      [(cons groups 0)
-       (cons
-        '((1))
-        e)]
-      [(cons groups newest)
-       (cons
-        (cons
-         (append
-          (first groups)
-          (list e))
-         (cdr groups))
-        e)]))
-  (define new-groups
-    (car (foldl group-adjacent-lines (cons '() 0) (sort new <))))
-  (define (first-in-group? e)
-    (ormap (λ (g) (= (first g) e)) new-groups))
-  (define (last-in-group? e)
-    (ormap (λ (g) (= (last g) e)) new-groups))
-  (txexpr
-   'tr
-   '()
-   (list
-    (txexpr
-     'td
-     `((class "code-note-margin")
-       (line-no ,(number->string (car line/no))))
-     '())
-    (txexpr
-     'td
-     `((colspan "2")
-       (class
-           ,(string-append
-             "listing-line-content"
-             (if (member (car line/no) new) " added-line" "")
-             (if (first-in-group? (car line/no)) " first-added-line" "")
-             (if (last-in-group? (car line/no)) " last-added-line" "")))
-       (line-no ,(number->string (car line/no))))
-     (map preserve (cdr line/no))))))
-(define (code-tbodify lines new num-lines)
-  (txexpr
-   'tbody
-   '()
-   (map
-    (λ (l) (code-trowify l new))
-    (enumerate (extend lines num-lines) 1))))
-(define (code-theadify fn raw-source)
-  (txexpr
-   'thead
-   `()
-   (list (txexpr
-          'tr
-          '()
-          (list
-           (txexpr
-            'td
-            `((class "code-note-margin")
-              (id ,(symbol->string (gensym 'margin-cell-))))
-            (list ""))
-           (txexpr
-            'td
-            '((class "listing-header")
-              (colspan "2"))
-            (list
-             fn
-             (let ([generated-id (symbol->string (gensym "clipped-code-"))])
-               (txexpr
-                'i
-                `((class "fa fa-files-o")
-                  (aria-hidden "true")
-                  (data-clipboard-action "copy")
-                  (data-clipboard-text ,raw-source)))))))))))
-(define (code-tablify lines lang fn new num-lines raw-source)
-  (txexpr
-   'table
-   `((class "code-table"))
-   (if fn
-       (list (code-theadify fn raw-source) (code-tbodify lines new num-lines))
-       (list (code-theadify "" raw-source) (code-tbodify lines new num-lines)))))
 
 ;; add surrounding tags to preserve whitespace if necessary
 (define (preserve se)
