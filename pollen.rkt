@@ -20,21 +20,17 @@
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 #lang racket/base
-(require "annotated-code.rkt"
-         "doc-linking.rkt"
+(require "doc-linking.rkt"
          "logging.rkt"
          "navigation.rkt"
-         "highlight-spans.rkt"
          anaphoric
          db
          sugar/coerce
-         pollen/core
          pollen/decode
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
          (only-in racket/file file->lines file->string)
-         (only-in pollen/template/html ->html)
          (only-in pollen/unstable/pygments highlight)
          (only-in racket/contract listof)
          (only-in racket/list add-between append* drop drop-right first flatten group-by last)
@@ -170,7 +166,6 @@
   (txexpr 'exercise '() (cons "Exercise: " elements)))
 (provide exercise)
 
-(provide codecmp)
 
 (define (popquiz . elements)
   (txexpr 'span '((class "popquiz")) (append '("Pop quiz: ") elements)))
@@ -215,8 +210,6 @@
 (provide glossary)
 
 (provide highlight)
-
-(provide includecode)
 
 (define (predicate . elements)
   (txexpr 'code '() elements))
