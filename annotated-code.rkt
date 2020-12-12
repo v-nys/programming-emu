@@ -37,78 +37,8 @@
       (cons count h)
       (enumerate t (add1 count)))]))
 
-(define (insert-note note/no ann-c)
-  (match-define (cons no note) note/no)
-  (define note-line (string->number (attr-ref note 'line)))
-  (define cmp-1? (member "cmp-1" (string-split (attr-ref note 'class))))
-  (define tbodies
-    (findf*-txexpr
-     ann-c
-     (λ (e)
-       (and (txexpr? e)
-            (eq? (get-tag e) 'tbody)))))
-  (define tbody
-    (first tbodies))
-  (define trow
-    (list-ref
-     (findf*-txexpr
-      tbody
-      (λ (e)
-        (and (txexpr? e)
-             (eq? (get-tag e) 'tr))))
-     (sub1 note-line)))
-  (define note-cell
-    (findf-txexpr
-     trow
-     (λ (e)
-       (and (txexpr? e)
-            (eq? (get-tag e) 'td)
-            (not (equal? (attr-ref e 'colspan #f) "2"))))))
-  (define new-cell
-    (txexpr 'td
-            (get-attrs note-cell)
-            (append (get-elements note-cell)
-                    (list
-                     (txexpr
-                      'div
-                      `((class ,(format "listingnote active-number-circle number-circle ~a" "left-number-circle"))
-                        (target-note ,(attr-ref note 'id)))
-                      (list (number->string no)))))))
-  (let-values
-      ([(replaced _)
-        (splitf-txexpr
-         ann-c
-         (λ (e)
-           (and (txexpr? e)
-                (equal?
-                 (attr-ref e 'line-no #f)
-                 (number->string note-line))
-                (string-contains? (attr-ref e 'class) "code-note-margin")))
-         (λ (_) new-cell))])
-    replaced))
 
-(define (number-note note/no)
-  (define no (car note/no))
-  (define note (cdr note/no))
-  (define note-elements (get-elements note))
-  (txexpr
-   (get-tag note)
-   (get-attrs note)
-   (cons
-    (txexpr
-     'note-nb
-     empty
-     (list (number->string no)))
-    note-elements)))
 
-;; edit both the comparison (inserting note numbers in margin)
-;; and the notes themselves (inserting numbers as elements)
-(define (process-annotated-code group)
-  (define ann-c (car group))
-  (define notes/no (enumerate (cdr group) 1))
-  (define inserted (foldl insert-note ann-c notes/no))
-  (define numbered (map number-note notes/no))
-  (cons inserted numbered))
 
 (define (codenote #:line line . elements)
   (txexpr
@@ -239,26 +169,6 @@
          #:fn2 [fn2 #f]
          #:new/2 [new/2 empty])
   (txexpr 'dummy empty empty))
-
-(define (annotated-code-generator txexprs)
-  ;; this works by grouping a comparison (or standalone bit of code) with the following elements
-  ;; those are assumed to be notes
-  (define groups
-    (reverse
-     (foldl
-      (λ (e acc)
-        (let ([class-attr-values (string-split (attr-ref e 'class ""))])
-          (if (member "annotated-code" class-attr-values)
-              (cons (list e) acc)
-              (cons (append (car acc) (list e)) (cdr acc)))))
-      empty
-      txexprs)))
-  (define processed-groups (map process-annotated-code groups))
-  (generator
-   ()
-   (for ([grp processed-groups])
-     (for ([grp-elem grp])
-       (yield grp-elem)))))
 
 (define (postprocess-comparisons tx)
   (define (classify-nested-snippet-components prefix nsc)
