@@ -31,9 +31,7 @@
          pollen/pagetree
          pollen/setup
          (only-in racket/file file->lines file->string)
-         (only-in pollen/unstable/pygments highlight)
-         (only-in racket/contract listof)
-         (only-in racket/list add-between append* drop drop-right first flatten group-by last)
+         (only-in racket/list add-between drop-right first)
          (only-in racket/match match match-lambda match-lambda**)
          racket/string
          txexpr)
@@ -208,8 +206,6 @@
                (txexpr 'dd '() readdef)
                (txexpr 'dd '() (list readdef))))))))
 (provide glossary)
-
-(provide highlight)
 
 (define (predicate . elements)
   (txexpr 'code '() elements))
