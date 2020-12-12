@@ -19,7 +19,7 @@
 ;; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
-#lang racket/base
+#lang at-exp racket
 (require "doc-linking.rkt"
          "logging.rkt"
          "navigation.rkt"
@@ -30,11 +30,13 @@
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
-         (only-in racket/file file->lines file->string)
+         (only-in racket/file file->string)
          (only-in racket/list add-between drop-right first)
          (only-in racket/match match match-lambda match-lambda**)
          racket/string
-         txexpr)
+         txexpr
+         scribble/srcdoc
+         (for-doc racket/base scribble/manual))
 
 (define (root . elements)
   (let ([decoded
@@ -261,12 +263,19 @@
     (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read/write))
   (query-exec sqlc (format "INSERT INTO Titles(pagenode,title) VALUES ('~a','~a')" here str))
   (txexpr 'h1 '() (list str)))
-(provide title)
+(provide
+ (proc-doc/names
+  title (-> hash? string? txexpr?) (metas str)
+  @{Registers @(racket str) as the title of the current page in the cross-referencing database and returns an @(code "h1") tagged X-expression containing @(racket str) as its contents.}))
 
 (define (pagenode->pagetitle sym)
   (define sqlc
     (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
   (query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a' LIMIT 1" (symbol->string sym))))
+(provide
+ (proc-doc/names
+  pagenode->pagetitle (-> symbol? string?) (sym)
+  @{Looks up the title for the pagenode @(racket sym) in the cross-referencing database.}))
 
 ; FIXME
 ; dit veronderstelt dat (de titels van) alle voorouders al gegenereerd zijn
