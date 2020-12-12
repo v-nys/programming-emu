@@ -38,29 +38,6 @@
       (enumerate t (add1 count)))]))
 
 
-(define (codenote #:line line . elements)
-  (txexpr
-   'div
-   `((class "code-note-container") (id ,(symbol->string (gensym 'note-nb-))) (line ,(number->string line)))
-   (list (txexpr 'aside '() elements))))
-
-(define (cmpnote/2 #:line line . elements)
-  (txexpr 'dummy empty empty))
-
-(define (cmpnote/1 #:line line . elements)
-  (txexpr 'dummy empty empty))
-
-;; used to preserve line structure in included code
-(define (break-code-lines e acc)
-  (match acc
-    [(list-rest curr-line prev-lines)
-     (if (and (string? e) (regexp-match? #rx"\n" e))
-         (let* ([upto (cadr (regexp-match #rx"([^\n]*)\n" e))]
-                [remainder (regexp-replace (string-append upto "\n") e "")])
-           (break-code-lines remainder (cons '() (cons (append curr-line (list upto)) prev-lines))))
-         (cons (append curr-line (list e)) prev-lines))]))
-
-
 ;; add surrounding tags to preserve whitespace if necessary
 (define (preserve se)
   (if (string? se)

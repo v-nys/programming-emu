@@ -170,12 +170,6 @@
   (txexpr 'exercise '() (cons "Exercise: " elements)))
 (provide exercise)
 
-(provide codenote)
-
-(provide cmpnote/1) ; TODO: should just use an optional argument to indicate which listing this belongs with
-
-(provide cmpnote/2)
-
 (provide codecmp)
 
 (define (popquiz . elements)
