@@ -1,6 +1,6 @@
 ;; MIT License
 ;; 
-;; Copyright (c) 2017 Vincent Nys
+;; Copyright (c) 2017-2020 Vincent Nys
 ;; 
 ;; Permission is hereby granted, free of charge, to any person obtaining a copy
 ;; of this software and associated documentation files (the "Software"), to deal
@@ -41,12 +41,12 @@
 (define (root . elements)
   (let ([decoded
          (decode (txexpr 'root '() elements)
-                  #:txexpr-elements-proc decode-paragraphs
-                  #:inline-txexpr-proc link-to-docs
-                  #:string-proc (compose1 smart-quotes smart-dashes)
-                  #:exclude-tags '(style script headappendix pre code listing)
-                  #:exclude-attrs '((class "ws"))
-                  #:txexpr-proc txexpr-proc)])
+                 #:txexpr-elements-proc decode-paragraphs
+                 #:inline-txexpr-proc link-to-docs
+                 #:string-proc (compose1 smart-quotes smart-dashes)
+                 #:exclude-tags '(style script headappendix pre code listing)
+                 #:exclude-attrs '((class "ws"))
+                 #:txexpr-proc txexpr-proc)])
     decoded))
 (provide root)
 
@@ -67,11 +67,6 @@
      tx))
   result)
 
-;; volgende stap:
-;; bij attribuutwijziging wordt klasse hidden verwijderd van descendant listings
-;; en toegevoegd aan descendant listings met ander nummer dan current-listing
-
-;; ten slotte spans highlighten -> in de define van listing, niet hier
 (define (code-discussion . elems)
   (define (listing? e) (and (txexpr? e) (eq? (get-tag e) 'listing)))
   (define listings (filter listing? elems))
@@ -120,11 +115,30 @@
     (listing #:fn "myfile.rkt" #:highlights '((1 1) (3 4)) #:source "languages/Racket/Parenlog/code/my-compile-rule.rkt" "Op regel 2 merk je... Op regel 3 zie je..."))
    "blablabla"))
 
-;; elems: de annotaties!
 (define (listing #:fn [fn #f] #:highlights [hl empty] #:source src #:lang [lang "plaintext"] . elems)
   (let ([bare (bare-listing #:highlights hl #:source src #:lang lang)])
-    `(listing ((class "annotated-listing")) ,bare (div ((class "code-annotation")) ,@elems))))
-(provide listing)
+    `(listing
+      ((class "annotated-listing"))
+      ,bare
+      (div ((class "code-annotation"))
+           ,@elems))))
+; think I cannot do rest argument with proc-doc/names
+(provide
+ (proc-doc/names
+  listing
+  (->*
+   (#:source path-string?)
+   (#:fn (or/c string? #f)
+    #:highlights (listof pair?)
+    #:lang string?)
+   #:rest (listof (or/c string? txexpr?))
+   txexpr?)
+  ((src)
+   ((fn #f)
+    (hl empty)
+    (lang "plaintext")
+    (elems empty)))
+  @{Wraps a @racket[bare-listing] in a @code[listing] tag which also contains annotations supplied as @racket[elems].}))
 
 (define (bare-listing #:highlights [hl empty] #:source src #:lang lang)
   `(pre
@@ -132,7 +146,15 @@
     (code
      ((class ,lang))
      ,(file->string src))))
-(provide bare-listing)
+(provide
+ (proc-doc/names
+  bare-listing
+  (->*
+   (#:source path-string? #:lang string?)
+   (#:highlights (listof pair?))
+   txexpr?)
+  ((src lang) ((hl empty)))
+  @{Wraps the contents of @racket[src] so that highlight.js can be applied. This procedure is incomplete. It does not highlight using @racket[hl] yet (which is an additional form of highlighting on top of highlight.js). @racket[hl] is a list of pairs indicating a line number and character number where highlighting is toggled.}))
 
 ;                                          
 ;                                          
