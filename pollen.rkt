@@ -122,23 +122,18 @@
       ,bare
       (div ((class "code-annotation"))
            ,@elems))))
-; think I cannot do rest argument with proc-doc/names
 (provide
- (proc-doc/names
+ (proc-doc
   listing
-  (->*
-   (#:source path-string?)
-   (#:fn (or/c string? #f)
-    #:highlights (listof pair?)
-    #:lang string?)
-   #:rest (listof (or/c string? txexpr?))
-   txexpr?)
-  ((src)
-   ((fn #f)
-    (hl empty)
-    (lang "plaintext")
-    (elems empty)))
-  @{Wraps a @racket[bare-listing] in a @code[listing] tag which also contains annotations supplied as @racket[elems].}))
+  (->i
+   (#:source [src path-string?])
+   (#:fn [fn (or/c string? #f)]
+    #:highlights [hl (listof pair?)]
+    #:lang [lang string?])
+   #:rest [elems (listof (or/c string? txexpr?))]
+   [result txexpr?])
+  (#f empty "plaintext")
+  @{Wraps a @racket[bare-listing] in a listing tag which also contains annotations supplied as @racket[elems].}))
 
 (define (bare-listing #:highlights [hl empty] #:source src #:lang lang)
   `(pre
