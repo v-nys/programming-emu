@@ -100,7 +100,15 @@
         ; first step will be te number listings
         (div ((class "code-discussion-controls")) (button "previous") (button "next"))
         ,@numbered-listings))
-(provide code-discussion)
+(provide
+ (proc-doc
+  code-discussion
+  (->i
+   ()
+   ()
+   #:rest [elems (listof txexpr?)]
+   [result txexpr?])
+  @{Wraps a number of listings produced by @racket[listing] with previous/next controls.}))
 ;; TODO: simplify tests
 (module+ test
   (require rackunit)
