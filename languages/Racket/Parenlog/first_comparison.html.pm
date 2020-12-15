@@ -6,14 +6,14 @@ Most pairs in this table do contain slight implementation differences, but this 
 
 Jay's version of ◊code{compile-rule}, however, is quite different from what we wrote. Specifically, it's written as a macro, rather than as a plain old function.◊aside{If you need an introduction to macros, ◊a[#:href "http://www.greghendershott.com/fear-of-macros/"]{Greg Hendershott's article} is mandatory reading for the aspiring Racketeer.} This has some implications on how variable renaming is implemented. Here is a comparison between a "skeleton" for a slightly simplified version of Jay's implementation and our existing implementation.
 
-◊code-discussion{
+◊code-discussion[
 ◊listing[#:source "code/my-compile-rule.rkt"]{}
 ◊listing[#:source "code/compile-rule-jay.rkt" #:highlights '((5 11) (8 46))]{Jay's ◊code{extract-vars} (not to be confused with our own, which maps to Jay's ◊code{variables-in}) is a normal function, used at compile time. Very vaguely, it also extracts variables, but not from a quoted S-expression. More specifically, it extracts ◊em{Racket} syntax for ◊em{Prolog} variables from unquoted S-expressions. So, in something like ◊code{(compile-rule (human X) (mortal X))}, the pattern ◊code{(var ...)} will match the identifier ◊code{X}, because the associated symbol is valid notation for a Prolog variable.}
 ◊listing[#:source "code/compile-rule-jay.rkt" #:highlights '((9 11) (9 45))]{This clause transforms syntax for ◊em{Racket} variable symbols into quoted symbols, but only if those symbols are not valid representations of Prolog variables. In other words, ◊code{rewrite-se} would replace the syntax objects ◊code{#'human} and ◊code{#'mortal} with syntax ◊code{#''human} and ◊code{#''mortal}, but it would leave ◊code{#'X} intact. So take the expression "sans vars" with a grain of salt.}
 ◊listing[#:source "code/compile-rule-jay.rkt" #:highlights '((11 11) (12 50))]{This does the same as the previously discussed part, but for S-expressions in the body rather than in the head.}
 ◊listing[#:source "code/compile-rule-jay.rkt" #:highlights '((15 11) (16 0))]{This is important. Variables following the Prolog naming conventions are not quoted by ◊code{rewrite-se}, but are instead bound to unique symbols generated at runtime. If you don't see how this line works, we'll discuss it further down.}
 ◊listing[#:source "code/compile-rule-jay.rkt" #:highlights '((24 16) (29 34))]{The extra argument ◊code{yield} to ◊code{reyield} is here for historical reasons. You do not need it.}
-}
+]
 
 
 
@@ -28,10 +28,10 @@ These tests require ◊code{◊a[#:href "http://docs.racket-lang.org/syntax/macr
 
 Here's my implementation, juxtaposed with Jay's:
 
-◊code-discussion{
+◊code-discussion[
 ◊listing[#:source "code/my-extract-stx-vars.rkt"]
 ◊listing[#:source "code/extract-stx-vars-jay.rkt"]
-}
+]
 
 ◊ul{
 ◊li{Line 8: I use ◊code{append-map} while Jay uses ◊code{map}. Either works, because I keep the intermediate lists of variables flat, whereas Jay flattens the resulting structure in the top-level call.}
@@ -42,10 +42,10 @@ You can use these tests for ◊code{rewrite-se}:
 ◊listing[#:source "code/rewrite-se-tests.rkt"]
 
 Again, my implementation and Jay's:
-◊code-discussion{
+◊code-discussion[
 ◊listing[#:source "code/my-rewrite-se.rkt"]
 ◊listing[#:source "code/rewrite-se-jay.rkt"]
-}
+]
 
 Ah, I should get into the habit of using ◊code{quasisyntax} as well :-)
 
@@ -64,9 +64,9 @@ Here's the trick to assigning symbols to variables represented with Prolog synta
 ◊answer{No. Doing so would associate the identifiers with symbols, but those symbols would be compiled into the rule. Therefore, multiple applications of the same rule could introduce a naming conflict.}
 
 Here is my version, juxtaposed with the original.
-◊code-discussion{
+◊code-discussion[
 ◊listing[#:source "code/my-compile-rule-stx.rkt"]
 ◊listing[#:source "code/compile-rule-jay.rkt"]
-}
+]
 
 Next, let's see how well each approach lends itself to interaction with Racket.
