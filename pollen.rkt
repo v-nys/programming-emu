@@ -45,25 +45,9 @@
                  #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
                  #:exclude-tags '(style script headappendix pre code listing)
-                 #:exclude-attrs '((class "ws"))
-                 #:txexpr-proc txexpr-proc)])
+                 #:exclude-attrs '((class "ws")))])
     decoded))
 (provide root)
-
-(define (move-head-appendix tx)
-  (cond [(eq? (get-tag tx) 'root)
-         (let-values ([(pruned clippings)
-                       (splitf-txexpr tx (λ (e) (if (txexpr? e) (eq? (get-tag e) 'headappendix) #f)))])
-           (txexpr 'root '()
-                   (if (not (null? clippings))
-                       (append clippings (list (txexpr 'unmoved '() (get-elements pruned))))
-                       (list (txexpr 'unmoved '() (get-elements pruned))))))]
-        [else tx]))
-
-(define (txexpr-proc tx)
-  (define result
-    (move-head-appendix tx))
-  result)
 
 (define (code-discussion . elems)
   (define (listing? e) (and (txexpr? e) (eq? (get-tag e) 'listing)))

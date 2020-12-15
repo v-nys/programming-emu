@@ -62,8 +62,6 @@ SOFTWARE.}
 <script src="/static/hide-listing-notes.js"></script>
 <script src="/static/highlight-pageturns.js"></script>
 <script src="/static/hide-js-warning.js"></script>
-
-◊when/splice[(select 'headappendix doc)]{◊(->html (select* 'headappendix doc))}
 </head>
 <body>
 ◊when/splice[(previous here)]{<a class="c-pageturn c-pageturn-left" href="/◊(previous here)"><img id="pageturn-left-img" class="c-pageturn-img" src="/static/images/turn-left-light.svg"></a>}
@@ -72,7 +70,7 @@ SOFTWARE.}
 
 ◊(->html (navbar here))
 
-◊(->html (select* 'unmoved doc))
+◊(->html doc)
 </content>
 ◊when/splice[(next here)]{<a class="c-pageturn c-pageturn-right" href="/◊(next here)"><img id="pageturn-right-img" class="c-pageturn-img c-pageturn-right__img" src="/static/images/turn-left-light.svg"></a>}
 </body>
