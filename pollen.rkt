@@ -62,9 +62,7 @@
 
 (define (txexpr-proc tx)
   (define result
-    ((compose
-      move-head-appendix)
-     tx))
+    (move-head-appendix tx))
   result)
 
 (define (code-discussion . elems)
