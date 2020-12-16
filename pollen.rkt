@@ -42,7 +42,7 @@
          (decode (txexpr 'root '() elements)
                  #:txexpr-elements-proc decode-paragraphs
                  #:string-proc (compose1 smart-quotes smart-dashes)
-                 #:exclude-tags '(style script headappendix pre code listing)
+                 #:exclude-tags '(style script pre code listing)
                  #:exclude-attrs '((class "ws")))])
     decoded))
 (provide root)
@@ -282,35 +282,19 @@
   pagenode->pagetitle (-> symbol? string?) (sym)
   @{Looks up the title for the pagenode @(racket sym) in the cross-referencing database.}))
 
-; FIXME
-; dit veronderstelt dat (de titels van) alle voorouders al gegenereerd zijn
-; anderzijds kunnen de voorouders uitgesteld zijn tot na hun afstammelingen (bv. inhoudstafel pas na inhoud)
-; korte termijnoplossing: conventies
-; lange termijnoplossing: in parallel renderen en blokkeren tot nodige info er is; in template plaatsen kan pas als doc af is.
-; zou moeten gaan: render eerst het mogelijke => eerst titels, dan inhoudstafels, dan navbars,...
-; voordeel is dat ik de Makefile dan niet meer zo strak moet ordenen
-; kan misschien zonder patchen als decodefunctie checkt of er nog "unmet dependencies" zijn, dan thread.sleep of iets dergelijks oproept...
+
 (define (navbar loc)
-  ; creates a trail of page nodes, from root to current node
-  ; starts from a list with the current node, prepends most recent remaining ancestor until done
   (define (trail lst)
     (aif (parent (first lst))
          (trail (cons it lst))
          lst))
-  ; transforms trail of pagenodes into trail of pagenodes with displayable representation
-  ; so this is what I should change
-  ; basically, for everything which has "languages"
   (define pairs
     (map
-     ; this is less than ideal
-     ; will have to do until parallel rendering with dependencies is working
      (λ (e)
        (cons e
              (match e
                ['index.html "Table of contents"]
                ['languages/index.html "Languages"]
-               ;['languages/C♯/index.html "C♯"]
-               ;['languages/Python/index.html "Python"]
                ['languages/Racket/index.html "Racket"]
                ['languages/Racket/Parenlog/parenlog.html "Parenlog"]
                [_ (pagenode->pagetitle e)])))
@@ -329,7 +313,12 @@
           (drop-right (cdr pairs) 1)))
         " » "))
       ""))
-(provide navbar)
+(provide
+ (proc-doc/names
+  navbar
+  (-> pagenode? (or/c "" txexpr?))
+  (loc)
+  @{Creates a nav element leading from the homepage to @racket[loc]. This is not a "smart" function. It does not work in the general case. Any page with a table of contents must be added to the code.}))
 
 ;; this should be fine, even if pollen.rkt is evaluated multiple times
 ;; as per section 11.1 of the reference:
