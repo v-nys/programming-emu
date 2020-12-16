@@ -20,8 +20,7 @@
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 #lang at-exp racket
-(require "doc-linking.rkt"
-         "logging.rkt"
+(require "logging.rkt"
          "navigation.rkt"
          anaphoric
          db
@@ -42,7 +41,6 @@
   (let ([decoded
          (decode (txexpr 'root '() elements)
                  #:txexpr-elements-proc decode-paragraphs
-                 #:inline-txexpr-proc link-to-docs
                  #:string-proc (compose1 smart-quotes smart-dashes)
                  #:exclude-tags '(style script headappendix pre code listing)
                  #:exclude-attrs '((class "ws")))])
