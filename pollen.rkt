@@ -22,6 +22,7 @@
 #lang at-exp racket
 (require "logging.rkt"
          "navigation.rkt"
+         "initSQLiteDB.rkt"
          anaphoric
          db
          sugar/coerce
