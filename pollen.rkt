@@ -38,6 +38,9 @@
          scribble/srcdoc
          (for-doc racket/base scribble/manual))
 
+(define dbpath (build-path (current-project-root) "db.sqlite"))
+(define dbpath/exists (if (file-exists? dbpath) dbpath (begin (setup-db!) dbpath)))
+
 (define (root . elements)
   (let ([decoded
          (decode (txexpr 'root '() elements)
@@ -182,7 +185,7 @@
 (define (glossaryterm #:explanation [explanation "TODO: add an explanation"] #:canonical [canonical #f] . elements)
   (set! canonical (or canonical (string-append* elements)))
   (define sqlc
-    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read/write))
+    (sqlite3-connect #:database dbpath/exists #:mode 'read/write))
   (query-exec sqlc (format "INSERT INTO Glossary(term,explanation) VALUES ('~a','~s')" canonical explanation))
   (txexpr 'termlabel
           `((id ,(format "term-~a" canonical))
@@ -201,14 +204,13 @@
 
 (define (glossary)
   (define sqlc
-    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
+    (sqlite3-connect #:database dbpath/exists #:mode 'read-only))
   (txexpr
    'dl
    '()
    (for*/list ([(term def) (in-query sqlc "SELECT * FROM Glossary")] [dt? '(#t #f)])
      (if dt?
          (txexpr 'dt '() (list term))
-         ;(txexpr 'dd '() (list (read (open-input-string def))))
          (let ([readdef (read (open-input-string def))])
            (if (list? readdef)
                (txexpr 'dd '() readdef)
@@ -266,7 +268,7 @@
   (define here
     (path->pagenode (hash-ref metas 'here-path)))
   (define sqlc
-    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read/write))
+    (sqlite3-connect #:database dbpath/exists #:mode 'read/write))
   (query-exec sqlc (format "INSERT INTO Titles(pagenode,title) VALUES ('~a','~a')" here str))
   (txexpr 'h1 '() (list str)))
 (provide
@@ -276,7 +278,7 @@
 
 (define (pagenode->pagetitle sym)
   (define sqlc
-    (sqlite3-connect #:database (build-path (current-project-root) "db.sqlite") #:mode 'read-only))
+    (sqlite3-connect #:database dbpath/exists #:mode 'read-only))
   (query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a' LIMIT 1" (symbol->string sym))))
 (provide
  (proc-doc/names
