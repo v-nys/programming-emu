@@ -133,7 +133,7 @@
   `(pre
     ()
     (code
-     ((class ,lang))
+     ((class ,(format"lang-~a" lang)))
      ,(file->string src))))
 (provide
  (proc-doc/names
