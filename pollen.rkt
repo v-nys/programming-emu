@@ -279,7 +279,7 @@
 (define (pagenode->pagetitle sym)
   (define sqlc
     (sqlite3-connect #:database dbpath/exists #:mode 'read-only))
-  (query-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a' LIMIT 1" (symbol->string sym))))
+  (or (query-maybe-value sqlc (format "SELECT title FROM Titles WHERE pagenode = '~a' LIMIT 1" (symbol->string sym))) "Untitled"))
 (provide
  (proc-doc/names
   pagenode->pagetitle (-> symbol? string?) (sym)
