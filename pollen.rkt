@@ -38,8 +38,10 @@
          scribble/srcdoc
          (for-doc racket/base scribble/manual))
 
-(define dbpath (build-path (current-project-root) "db.sqlite"))
-(define dbpath/exists (if (file-exists? dbpath) dbpath (begin (setup-db!) dbpath)))
+;; creates database on the fly if necessary and returns path
+(define dbpath/exists
+  (let ([dbpath (build-path (current-project-root) "db.sqlite")])
+    (if (file-exists? dbpath) dbpath (begin (setup-db!) dbpath))))
 
 (define (root . elements)
   (let ([decoded
