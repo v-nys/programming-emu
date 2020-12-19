@@ -83,6 +83,10 @@ listing {
 margin: 0;
 }
 
+listing pre {
+width: 100%;
+}
+
 .code-annotation {
 white-space: normal;
 font-family: Gentium Basic;

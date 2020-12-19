@@ -50,12 +50,17 @@
                  #:string-proc (compose1 smart-quotes smart-dashes)
                  #:exclude-tags '(style script pre code listing)
                  #:exclude-attrs '((class "ws")))])
+    ;(log-emu-debug (format "\nORIGINEEL:\n~a\nDECODED:\n~a" `(root () ,@elements) decoded))
     decoded))
 (provide root)
 
 (define (code-discussion . elems)
-  (define (listing? e) (and (txexpr? e) (eq? (get-tag e) 'listing)))
-  (define listings (filter listing? elems))
+  (define (some-listing? e)
+    (and
+     (txexpr? e)
+     (or (eq? (get-tag e) 'listing)
+         (eq? (get-tag e) 'namedlisting))))
+  (define listings (filter some-listing? elems))
   (define
     numbered-listings
     (reverse
@@ -75,17 +80,31 @@
              listings)))])
        (cons 1 (list))
        listings))))
+  ; TODO: add one or two spans before listing child of namedlisting
+  ; may be possible through pattern matching?
+  ; TODO: make them functional
+  (define (add-discussion-controls namedlisting)
+    (match namedlisting
+      [(list
+        'namedlisting
+        attrs
+        child ...
+        lastchild)
+       `(namedlisting
+         ,attrs
+         ,@(append
+            child
+            `((span ((class "listingtab previoustab")) "previous")
+              (span ((class "listingtab nexttab")) "next")
+              ,lastchild)))]))
   ; TODO: check that there is at least one element
   ; TODO: check that all elements are listings or whitespace
   `(div ((class "code-discussion")
-         (style "border: 1px solid")
          (num-listings
           ,(->string
             (length listings)))
          (current-listing "1"))
-        ; first step will be te number listings
-        (div ((class "code-discussion-controls")) (button "previous") (button "next"))
-        ,@numbered-listings))
+        ,@(map add-discussion-controls numbered-listings)))
 (provide
  (proc-doc
   code-discussion
@@ -99,6 +118,16 @@
 (module+ test
   (require rackunit)
   (test-equal?
+   "namedlisting"
+   (code-discussion
+    (listing
+     #:fn "myfile.rkt"
+     #:source "languages/Racket/Parenlog/code/simplesrc.rkt")
+    (listing
+     #:fn "myfile.rkt"
+     #:source "languages/Racket/Parenlog/code/simplesrc.rkt"))
+   `(namedlisting () (span ((class "listingtab")) "myfile.rkt") (listing () )))
+  (test-equal?
    "code gebruikt op pagina"
    (listing #:fn "myfile.rkt" #:highlights '((1 1) (3 4)) #:source "languages/Racket/Parenlog/code/my-compile-rule.rkt" "Op regel 1 merk je... Op regel 3 zie je...")
    "blabla")
@@ -110,12 +139,24 @@
    "blablabla"))
 
 (define (listing #:fn [fn #f] #:highlights [hl empty] #:source src #:lang [lang "plaintext"] . elems)
-  (let ([bare (bare-listing #:highlights hl #:source src #:lang lang)])
-    `(listing
-      ((class "annotated-listing"))
-      ,bare
-      (div ((class "code-annotation"))
-           ,@elems))))
+  (let* ([bare (bare-listing #:highlights hl #:source src #:lang lang)]
+         [annotated (if (not (empty? elems))
+                        `(listing
+                          ((class "annotated-listing"))
+                          ,bare
+                          (div ((class "code-annotation"))
+                               ,@elems))
+                        `(listing
+                          ((class "annotated-listing"))
+                          ,bare))])
+    (if fn
+        `(namedlisting
+          ()
+          (span ((class "listingtab")) ,fn)
+          ,annotated)
+        `(namedlisting
+          ()
+          ,annotated))))
 (provide
  (proc-doc
   listing
@@ -332,6 +373,6 @@
 (module setup racket/base
   (provide (all-defined-out))
   (require pollen/setup)
-  (define block-tags (append '(img exercise note-nb toc cmp) default-block-tags))
+  (define block-tags (append '(img exercise toc namedlisting) default-block-tags))
   ;; cache is disabled to keep TOC up to date
   (define render-cache-active #f))

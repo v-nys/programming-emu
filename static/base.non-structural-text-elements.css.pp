@@ -20,6 +20,10 @@ display: block;
   background-color: yellow;
 }
 
+listing code {
+border-radius: 0;
+}
+
 .code-discussion {
   font-size: 12pt;
 }
@@ -45,6 +49,13 @@ display: block;
 
 .annotated-listing table {
   flex: 1 0 0;
+}
+
+.listingtab {
+  display: inline-block;
+  background: ◊light-gray;
+  font-size: ◊code-pt-size;
+  padding: .25em .5em;
 }
 
 .annotated-listing p {
