@@ -282,35 +282,6 @@
   `(ul () ,@(map (λ (c) `(li () (a ((href ,(string-append "/" (symbol->string c)))) ,(pagenode->pagetitle c)))) children-here)))
 (provide toc-for-descendants)
 
-(define (toc #:depth [depth 1]
-             #:exceptions [exceptions '(index.html)]
-             #:ptree [ptree-fn "index.ptree"]
-             #:ordered? [ol? #f])
-  (log-emu-info "generating TOC")
-  (let ([ptree (get-pagetree ptree-fn)]
-        [prefix
-         (string-replace
-          (path->string (current-directory))
-          (path->string (current-project-root))
-          "")])
-    (ptree->html-list
-     (map-elements
-      (λ (e)
-        (if
-         (symbol? e)
-         (string->symbol
-          (string-append
-           prefix
-           (symbol->string e)))
-         e))
-      (splice-out-nodes
-       (prune-tree/depth ptree depth)
-       exceptions))
-     ol?)))
-;(provide toc)
-
-;; getting the top-level pagetree is straightforward, but how can I get the current page's pagenode from a function?
-
 (define (todo . elements)
   (txexpr 'todonote '() (append (list "TODO: ") elements)))
 (provide todo)
