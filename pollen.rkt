@@ -23,6 +23,7 @@
 (require "logging.rkt"
          "navigation.rkt"
          "initSQLiteDB.rkt"
+         "highlight-spans.rkt"
          anaphoric
          db
          sugar/coerce
@@ -80,9 +81,6 @@
              listings)))])
        (cons 1 (list))
        listings))))
-  ; TODO: add one or two spans before listing child of namedlisting
-  ; may be possible through pattern matching?
-  ; TODO: make them functional
   (define (add-discussion-controls namedlisting)
     (match namedlisting
       [(list
@@ -97,8 +95,6 @@
             `((span ((class "listingtab previoustab")) "previous")
               (span ((class "listingtab nexttab")) "next")
               ,lastchild)))]))
-  ; TODO: check that there is at least one element
-  ; TODO: check that all elements are listings or whitespace
   `(div ((class "code-discussion")
          (num-listings
           ,(->string
@@ -147,7 +143,7 @@
                           (div ((class "code-annotation"))
                                ,@elems))
                         `(listing
-                          ((class "annotated-listing"))
+                          ((class "non-annotated-listing"))
                           ,bare))])
     (if fn
         `(namedlisting
@@ -171,11 +167,23 @@
   @{Wraps a @racket[bare-listing] in a listing tag which also contains annotations supplied as @racket[elems].}))
 
 (define (bare-listing #:highlights [hl empty] #:source src #:lang lang)
+  ;; TODO: add highlights
+  ;; how?
+  ;; could start by converting src to lines instead of single string
+  ;; would then have to insert certain segments into span tags
+  ;; create a list of strings and txexprs?
+  ;; non-highlighted lines could just be appended
+  ;; tricky part: highlight spanning multiple lines
+  ;; might be easier to translate line+character to overall character?
+  ;; also: don't want highlighted leading whitespace...
+  ;; BEZIG MET FLOWCHART -> zie flowcharts.rkt
   `(pre
     ()
     (code
      ((class ,(format"lang-~a" lang)))
-     ,(file->string src))))
+     ,@(map
+        (λ (s) `(span ((style "display:block")) ,@s))
+        (highlight-spans (file->lines src) hl)))))
 (provide
  (proc-doc/names
   bare-listing

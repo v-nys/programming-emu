@@ -22,6 +22,7 @@ display: block;
 
 listing code {
 border-radius: 0;
+font-size: 15pt;
 }
 
 .code-discussion {
@@ -38,17 +39,12 @@ border-radius: 0;
   /* onduidelijk waar bestaande marges vandaan komen */
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 12pt;
 }
 
-.annotated-listing {
+listing {
   display: flex;
   flex-direction: row;
   align-items: first baseline;
-}
-
-.annotated-listing table {
-  flex: 1 0 0;
 }
 
 .listingtab {
@@ -56,11 +52,6 @@ border-radius: 0;
   background: ◊light-gray;
   font-size: ◊code-pt-size;
   padding: .25em .5em;
-}
-
-.annotated-listing p {
-  flex: 1 0 0;
-  margin-top: 0;
 }
 
 work {
