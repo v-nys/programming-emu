@@ -1,4 +1,0 @@
-#lang pollen
-◊(for/list ([fn (cadr (dynamic-require "languages/Racket/Racket.ptree" 'doc))])
-   (string->symbol (string-append "Racket/" (symbol->string fn))))
-◊;(for/list ([fn (cadr (dynamic-require "languages/Python/Python.ptree" 'doc))]) (string->symbol (string-append "Python/" (symbol->string fn))))

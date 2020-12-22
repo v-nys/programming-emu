@@ -1,3 +1,0 @@
-#lang pollen
-◊(for/list ([fn (cadr (dynamic-require "languages/Racket/Parenlog/Parenlog.ptree" 'doc))])
-   (string->symbol (string-append "Parenlog/" (symbol->string fn))))
