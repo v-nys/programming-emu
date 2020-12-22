@@ -4,15 +4,12 @@
         (string-ref 
          (symbol->string q)
          0))))
-
 (define (unbound-variable? env q1)
   (and (variable? q1)
        (not (hash-has-key? env q1))))
-
 (define (bound-variable? env q1)
   (and (variable? q1)
        (hash-has-key? env q1)))
-
 (define (unify env q1 q2)
   (cond
     [(equal? q1 q2)
