@@ -31,7 +31,6 @@
          pollen/misc/tutorial
          pollen/pagetree
          pollen/setup
-         (only-in racket/file file->string)
          (only-in racket/list add-between drop-right first)
          (only-in racket/match match match-lambda match-lambda**)
          racket/string
@@ -85,16 +84,24 @@
     (match namedlisting
       [(list
         'namedlisting
-        attrs
+        (list-no-order (list 'listing-number ln) rest-attrs ...)
         child ...
         lastchild)
        `(namedlisting
-         ,attrs
+         ,(cons (list 'listing-number ln) rest-attrs)
          ,@(append
             child
-            `((span ((class "listingtab previoustab")) "previous")
-              (span ((class "listingtab nexttab")) "next")
-              ,lastchild)))]))
+            (cond
+              [(eq? (->int ln) 1)
+               `((span ((class "listingtab nexttab")) "next")
+                 ,lastchild)]
+              [(eq? (->int ln) (length listings))
+               `((span ((class "listingtab previoustab")) "previous")
+                 ,lastchild)]
+              [else
+               `((span ((class "listingtab previoustab")) "previous")
+                 (span ((class "listingtab nexttab")) "next")
+                 ,lastchild)])))]))
   `(div ((class "code-discussion")
          (num-listings
           ,(->string
@@ -167,16 +174,6 @@
   @{Wraps a @racket[bare-listing] in a listing tag which also contains annotations supplied as @racket[elems].}))
 
 (define (bare-listing #:highlights [hl empty] #:source src #:lang lang)
-  ;; TODO: add highlights
-  ;; how?
-  ;; could start by converting src to lines instead of single string
-  ;; would then have to insert certain segments into span tags
-  ;; create a list of strings and txexprs?
-  ;; non-highlighted lines could just be appended
-  ;; tricky part: highlight spanning multiple lines
-  ;; might be easier to translate line+character to overall character?
-  ;; also: don't want highlighted leading whitespace...
-  ;; BEZIG MET FLOWCHART -> zie flowcharts.rkt
   `(pre
     ()
     (code

@@ -26,6 +26,6 @@ Here's my code, juxtaposed with Jay's. I should point out that this was written 
 ◊listing[#:source "code/unify-jay.rkt" #:fn "core.rkt"]{Hier nog wat opmerkingen, gewoon om te zien wat het effect is.}
 ]
 
-Conceptually, both do the same things, but there are a few differences. ◊exercise{Name the differences and see whether either snippet contains any improvements over your own code.} ◊exercise{Modify your own code to incorporate any improvements that you see.} ◊exercise{Notify me if you notice any bugs in my code 😁}
+Conceptually, both do the same things, but there are a few differences. ◊exercise{Modify your own code to incorporate any improvements that you see.} ◊exercise{Notify me if you notice any bugs in my code 😁}
 
 Our next stop is the mechanism which allows Prolog to reason in multiple directions: resolution!
