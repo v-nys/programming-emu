@@ -21,5 +21,5 @@
          [answer-generator (answer-query query theory #hasheq())])
     (check-equal?
      (for/list ([a (in-producer answer-generator 'done)])
-       (restrict a query))
+       (restrict-vars a query))
      expected)))

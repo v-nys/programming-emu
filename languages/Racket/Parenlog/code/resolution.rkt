@@ -1,7 +1,6 @@
 (define (reyield g)
   (for ([v (in-producer g 'done)])
     (yield v)))
-
 (define (answer-query q th env)
   (match q
     [(list) (generator () (yield env) (yield 'done))]
@@ -12,7 +11,6 @@
                     (for ([h-ans (in-producer ans-gen 'done)])
                       (reyield (answer-query t th h-ans)))))
                 (yield 'done))]))
-
 (define (compile-rule se)
   (λ (at th env)
     (generator ()
