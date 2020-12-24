@@ -83,6 +83,10 @@ listing {
 margin: 0;
 }
 
+listing pre {
+position: relative;
+}
+
 .non-annotated-listing pre {
 width: 100%;
 }

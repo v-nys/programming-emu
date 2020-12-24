@@ -40,20 +40,6 @@ border-top: 1px solid grey;
 text-align: right;
 }
 
-.compared-snippet-1__listing-header-cls {
-background-color: ◊cmp-aqua-transparent;
-color: ◊cmp-aqua;
-border-bottom: 1px solid ◊cmp-aqua;
-border-top: 1px solid ◊cmp-aqua;
-}
-
-.compared-snippet-2__listing-header-cls {
-background-color: ◊cmp-orange-transparent;
-color: ◊cmp-orange;
-border-bottom: 1px solid ◊cmp-orange;
-border-top: 1px solid ◊cmp-orange;
-}
-
 .code-note-container {
 margin-bottom: .25em;
 }
@@ -87,22 +73,6 @@ border-top: 1px solid gray;
 
 .code-table tr:last-child .listing-line-content {
 border-bottom: 1px solid gray;
-}
-
-.cmp-1 tr:first-child .listing-line-content{
-border-top: 1px solid ◊cmp-aqua;
-}
-
-.cmp-1 tr:last-child .listing-line-content {
-border-bottom: 1px solid ◊cmp-aqua;
-}
-
-.cmp-2 tr:first-child .listing-line-content{
-border-top: 1px solid ◊cmp-orange;
-}
-
-.cmp-2 tr:last-child .listing-line-content {
-border-bottom: 1px solid ◊cmp-orange;
 }
 
 .code-table {
@@ -228,40 +198,12 @@ font-size: ◊code-pt-size;
 height: ◊code-line-height;
 }
 
-.cmp-1 .first-added-line {
-border-top: 1px dashed ◊cmp-aqua;
-}
-
-.cmp-2 .first-added-line {
-border-top: 1px dashed ◊cmp-orange;
-}
-
-.cmp-1 .last-added-line {
-border-bottom: 1px dashed ◊cmp-aqua;
-}
-
-.cmp-2 .last-added-line {
-border-bottom: 1px dashed ◊cmp-orange;
-}
-
 .active-number-circle.left-number-circle {
 background: ◊cmp-aqua;
 }
 
 .linenos {
 display: none;
-}
-
-.number-circle {
-border-radius: 50%;
-width: 15px;
-height: 15px;
-padding: 2px;
-color: white;
-text-align: center;
-font-family: ◊code-font-family;
-font-size: 11px;
-display: inline-block;
 }
 
 .active-number-circle.right-number-circle {
@@ -272,11 +214,9 @@ background: ◊cmp-orange;
 white-space: pre;
 }
 
-aside.cmp-n {
-display: inline-block;
-vertical-align: middle;
-margin-bottom: 0px;
-/* own width = entire div, without note width, note padding, own border, own padding*/
-width: calc(100% - (5.5em + 2px) - 8px - 2px - 8px);
-margin: .5em 0 .5em 0;
+.clipboard {
+position: absolute;
+top: .5em;
+right: .5em;
+cursor: pointer;
 }

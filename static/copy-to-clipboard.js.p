@@ -1,3 +1,3 @@
 $(document).ready(function(){
-  var clipboard = new Clipboard('.fa-files-o');
+  var clipboard = new Clipboard('.clipboard');
 });

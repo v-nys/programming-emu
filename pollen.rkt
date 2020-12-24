@@ -176,6 +176,7 @@
 (define (bare-listing #:highlights [hl empty] #:source src #:lang lang)
   `(pre
     ()
+    (span ((class "clipboard") (data-clipboard-text ,(file->string src))) "📋")
     (code
      ((class ,(format"lang-~a" lang)))
      ,@(map
