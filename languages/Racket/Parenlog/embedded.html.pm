@@ -19,4 +19,4 @@ Incidentally, why do we need to define ◊code{:-} outside of ◊code{define-mod
 
 Finally, both versions of ◊code{query-model}.
 
-Nothing too crazy in this section if you managed to get through the previous ones. If you're still early in your Racket career, the next section should stretch your brain a little more.
+Nothing too crazy in this section if you managed to get through the previous ones. If you're still early in your Racket career, the next section should stretch your neurons a little more.

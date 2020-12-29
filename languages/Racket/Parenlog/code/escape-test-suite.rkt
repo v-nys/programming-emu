@@ -23,7 +23,7 @@
          [answer-generator (answer-query query theory #hasheq())])
     (check-equal?
      (for/list ([a (in-producer answer-generator 'done)])
-       (restrict a query))
+       (restrict-vars a query))
      expected))
   (let* ([realfriends-theory
           (cons
@@ -45,7 +45,7 @@
      (for/list ([a (in-producer answer-generator 'done)])
        (restrict-vars a query))
      expected))
-  (let* ([fact-theory (list (compile-rule `((fact) (,#t))))]
+  (let* ([fact-theory (list (compile-rule `((fact) (#t))))]
          [query '((fact))]
          [expected (list #hasheq())]
          [answer-generator
@@ -54,7 +54,7 @@
      (for/list ([a (in-producer answer-generator 'done)])
        (restrict-vars a query))
      expected))
-  (let* ([failure-theory (list (compile-rule `((failure) (,#f))))]
+  (let* ([failure-theory (list (compile-rule `((failure) (#f))))]
          [query '((failure))]
          [expected (list)]
          [answer-generator
