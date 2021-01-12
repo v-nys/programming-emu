@@ -12,13 +12,18 @@ Third, a unified mechanism for queries that occur in the Parenlog file and queri
 
 So here is my thought process:
 ◊ul{
-◊li{◊code{(? body-query)} occurrences should be extracted and translated to expressions entered at the REPL}
+◊li{◊code{(? body-query)} occurrences should be implemented the same way as queries entered at the REPL}
 ◊li{everything else should be wrapped inside a module which consists of a model definition}
 ◊li{REPL interactions are implicitly wrapped in ◊code{#%top-interaction}, so maybe I can just define this so that the queries are run}
 ◊li{◊code{next} looks like an ◊a[#:href "https://docs.racket-lang.org/guide/pattern-macros.html?q=identifier%20macro#%28tech._identifier._macro%29"]{"identifier macro"} and can probably be translated into a generator call for the most recently started query}
 }
 
-Let's start by getting ◊code{#lang parenlog} working and making it define the model before we worry about anything related to actually running queries. As explained in ◊a[#:href "https://docs.racket-lang.org/guide/hash-lang_syntax.html"]{the Racket Guide}, we can start by creating a ◊code{parenlog/lang/reader} module with ◊code{read} and ◊code{read-syntax} functions.
+Let's start by getting ◊code{#lang parenlog} working and making it define the model before we worry about anything related to actually running queries. As explained in ◊a[#:href "https://docs.racket-lang.org/guide/hash-lang_syntax.html"]{the Racket Guide}, we can start by creating a ◊code{parenlog/lang/reader} module with ◊code{read} and ◊code{read-syntax} functions. This does not involve a lot of work, because we are using Racket syntax, which means we can let ◊a[#:href "https://docs.racket-lang.org/guide/syntax_module-reader.html"]{◊code{#lang s-exp syntax/module-reader}} do the heavy lifting.
+
+So, here's what I did:
+◊listing[#:source "code/my-reader.rkt" #:fn "(my) /lang/reader.rkt" #:lang "scheme"]
+
+I put the macros required by the language in that file ◊code{main.rkt}. 
 
 Eerste tussenstap: commit 7ab65634 zorgt dat ik een #lang parenlog2021 file kan runnen en niet meer.
 Tweede tussenstap: shiften van (? ...) naar achteraan in de module. Heb dit nog niet.

@@ -26,7 +26,7 @@
       (for ([new-env (in-producer (rule h theory env) 'done)])
         (for ([final-env (in-producer (answer-query t theory new-env) 'done)])
           (yield final-env))))])
- (yield 'done)]
+ 'done]
 
 (define (deref v env)
   (if (symbol? v)

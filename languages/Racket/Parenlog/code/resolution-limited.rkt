@@ -5,7 +5,7 @@
           (match conjunction
             [(list)
              (yield env)
-             (yield 'done)]
+             'done]
             [(list-rest h t)
              (cond
                [(procedure? (first h))
@@ -26,7 +26,7 @@
                            (in-producer
                             (answer-query t theory new-env) 'done)])
                       (yield final-env))))])
-             (yield 'done)]))]
+             'done]))]
         [answers 0])
     (generator
      ()
@@ -34,4 +34,4 @@
            #:break (and limit (= answers limit)))
        (yield v)
        (set! answers (add1 answers)))
-     (yield 'done))))
+     'done)))
